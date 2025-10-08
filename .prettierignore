@@ -1,0 +1,14 @@
+# Ignore build output
+dist
+
+# Ignore node modules
+node_modules
+
+# Ignore angular cache
+.angular/cache
+
+# Ignore coverage reports
+coverage
+
+# Ignore package lock file
+package-lock.json
