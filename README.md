@@ -1,59 +1,85 @@
 # Kulkomat
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 20.3.4.
+## Table of Contents
 
-## Development server
+- [Project Description](#project-description)
+- [Tech Stack](#tech-stack)
+- [Getting Started Locally](#getting-started-locally)
+- [Available Scripts](#available-scripts)
+- [Project Scope](#project-scope)
+- [Project Status](#project-status)
+- [License](#license)
 
-To start a local development server, run:
+## Project Description
 
-```bash
-ng serve
+**Kulkomat** is a web application designed to digitize and enhance the loyalty program for an ice cream shop. It replaces traditional, physical stamp cards with a virtual system for collecting stamps and discount coupons. The primary goal is to solve the common problem of customers forgetting or losing their physical cards, which leads to frustration and loss of accumulated benefits.
+
+## Tech Stack
+
+- **Frontend**: Angular, TypeScript, Tailwind CSS v4
+- **Backend & Database**: Supabase
+- **CI/CD & Hosting**: GitHub Actions, DigitalOcean (via Docker image)
+
+## Getting Started Locally
+
+To get a local copy up and running, follow these simple steps.
+
+### Prerequisites
+
+- Node.js and npm installed.
+- Angular CLI installed globally: `npm install -g @angular/cli`
+
+### Installation
+
+1. Clone the repo:
+   ```sh
+   git clone https://github.com/your_username/kulkomat.git
+   ```
+2. Navigate to the project directory:
+   ```sh
+   cd kulkomat
+   ```
+3. Install NPM packages:
+   ```sh
+   npm install
+   ```
+
+### Running the Application
+
+Run the development server:
+```sh
+npm start
 ```
+The application will be available at `http://localhost:4200/`.
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+## Available Scripts
 
-## Code scaffolding
+In the project directory, you can run the following scripts:
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+- `npm start`: Runs the app in development mode.
+- `npm run build`: Builds the app for production.
+- `npm run watch`: Builds the app in watch mode for development.
+- `npm test`: Launches the test runner.
+- `npm run lint`: Lints the project files.
+- `npm run format`: Formats code with Prettier.
 
-```bash
-ng generate component component-name
-```
+## Project Scope
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+The MVP (Minimum Viable Product) of this project includes:
 
-```bash
-ng generate --help
-```
+- A web application for customers and an admin panel for the owner/staff.
+- User registration and login system.
+- A digital stamp collection system (10 stamps = 1 free scoop).
+- Management of discount coupons (percentage and fixed amount).
+- A simple admin panel to add stamps/coupons to a user's account via their unique `user_id`.
+- An informational page displaying current ice cream flavors.
 
-## Building
+Features **out of scope** for the MVP include native mobile apps, online ordering, payment systems, and QR code scanning.
 
-To build the project run:
+## Project Status
 
-```bash
-ng build
-```
+This project is currently **in development**.
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+## License
 
-## Running unit tests
-
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
-
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+Distributed under the MIT License. See `LICENSE` for more information.
