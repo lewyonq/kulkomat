@@ -43,8 +43,8 @@ __screenshots__/
 Thumbs.db
 
 # Environment files
-/src/environments/environment.ts
-/src/environments/environment.prod.ts
+/src/app/environment/environment.ts
+/src/app/environment/environment.prod.ts
 
 # Never commit these
 .env
