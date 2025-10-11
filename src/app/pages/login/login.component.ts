@@ -17,43 +17,32 @@ import { Supabase } from '../../services/supabase';
   standalone: true,
   imports: [AuthCardComponent, OAuthButtonComponent],
   template: `
-  
     <app-auth-card>
       <!-- Header -->
-      <div class="mb-8 text-center">
-        <h1 class="text-3xl font-bold text-gray-900">
-          Witaj ponownie!
+      <div class="mb-3 text-center">
+        <h1 class="text-3xl font-bold" style="color: var(--md-sys-color-primary);">
+          Odkryj korzyści już teraz!
         </h1>
-        <p class="mt-2 text-sm text-gray-600">
-          Zaloguj się, aby kontynuować
+
+        <p class="mt-2 text-lg" style="color: var(--md-sys-color-on-surface-variant);">
+          Dołącz do programu lojalnościowego naszej lodziarni i zacznij zbierać pieczątki!
         </p>
       </div>
 
-      <!-- Loyalty Program Description -->
-      <div class="mb-6 rounded-lg bg-primary-50 p-4">
-        <h2 class="mb-2 text-lg font-semibold text-primary-900">
-          Program lojalnościowy
-        </h2>
-        <ul class="space-y-2 text-sm text-primary-800">
-          <li class="flex items-start gap-2">
-            <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-primary-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-            </svg>
-            <span>Zbieraj pieczątki za każdy zakup</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-primary-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-            </svg>
-            <span>Otrzymuj darmowe lody po zebraniu 10 pieczątek</span>
-          </li>
-          <li class="flex items-start gap-2">
-            <svg class="mt-0.5 h-5 w-5 flex-shrink-0 text-primary-600" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
-              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.857-9.809a.75.75 0 00-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 10-1.06 1.061l2.5 2.5a.75.75 0 001.137-.089l4-5.5z" clip-rule="evenodd" />
-            </svg>
-            <span>Śledź historię swoich nagród</span>
-          </li>
-        </ul>
+      <!-- Benefits -->
+      <div class="my-6 space-y-3 text-left" style="color: var(--md-sys-color-on-surface-variant);">
+        <div class="flex items-start">
+          <span class="mr-2 mt-1 text-primary" style="color: var(--md-sys-color-primary);">✓</span>
+          <p>Zbierz 10 pieczątek i wymień je na darmową kulkę.</p>
+        </div>
+        <div class="flex items-start">
+          <span class="mr-2 mt-1 text-primary" style="color: var(--md-sys-color-primary);">✓</span>
+          <p>Otrzymuj kupony rabatowe na kulki.</p>
+        </div>
+        <div class="flex items-start">
+          <span class="mr-2 mt-1 text-primary" style="color: var(--md-sys-color-primary);">✓</span>
+          <p>Przeglądaj swoją historię doładowań pieczątek i wykorzystanych kuponów w wygodny sposób.</p>
+        </div>
       </div>
 
       <!-- OAuth Button -->
@@ -76,7 +65,7 @@ import { Supabase } from '../../services/supabase';
 
       <!-- Loading State -->
       @if (isLoading()) {
-        <div class="mt-4 text-center text-sm text-gray-600" role="status" aria-live="polite">
+        <div class="mt-4 text-center text-sm" style="color: var(--md-sys-color-primary);" role="status" aria-live="polite">
           <span>Przekierowywanie do Google...</span>
         </div>
       }

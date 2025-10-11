@@ -1,39 +1,60 @@
-// Include theming for Angular Material with `mat.theme()`.
-// This Sass mixin will define CSS variables that are used for styling Angular Material
-// components according to the Material 3 design spec.
-// Learn more about theming and how to use it for your application's
-// custom components at https://material.angular.dev/guide/theming
 @use '@angular/material' as mat;
 @use './tailwind.css';
 
+:root {
+  --md-sys-color-primary: rgb(154 63 96);
+  --md-sys-color-surface-tint: rgb(154 63 96);
+  --md-sys-color-on-primary: rgb(255 255 255);
+  --md-sys-color-primary-container: rgb(234 128 163);
+  --md-sys-color-on-primary-container: rgb(104 24 57);
+  --md-sys-color-secondary: rgb(0 107 88);
+  --md-sys-color-on-secondary: rgb(255 255 255);
+  --md-sys-color-secondary-container: rgb(69 223 189);
+  --md-sys-color-on-secondary-container: rgb(0 95 78);
+  --md-sys-color-tertiary: rgb(106 95 17);
+  --md-sys-color-on-tertiary: rgb(255 255 255);
+  --md-sys-color-tertiary-container: rgb(236 220 130);
+  --md-sys-color-on-tertiary-container: rgb(107 96 18);
+  --md-sys-color-error: rgb(178 33 31);
+  --md-sys-color-on-error: rgb(255 255 255);
+  --md-sys-color-error-container: rgb(213 59 52);
+  --md-sys-color-on-error-container: rgb(255 251 255);
+  --md-sys-color-background: rgb(255 248 248);
+  --md-sys-color-on-background: rgb(34 25 27);
+  --md-sys-color-surface: rgb(255 248 248);
+  --md-sys-color-on-surface: rgb(34 25 27);
+  --md-sys-color-surface-variant: rgb(246 220 225);
+  --md-sys-color-on-surface-variant: rgb(84 66 71);
+  --md-sys-color-outline: rgb(134 114 119);
+  --md-sys-color-outline-variant: rgb(217 192 198);
+  --md-sys-color-shadow: rgb(0 0 0);
+  --md-sys-color-scrim: rgb(0 0 0);
+  --md-sys-color-inverse-surface: rgb(56 46 48);
+  --md-sys-color-inverse-on-surface: rgb(254 237 239);
+  --md-sys-color-inverse-primary: rgb(255 177 199);
+  --md-sys-color-primary-fixed: rgb(255 217 226);
+  --md-sys-color-on-primary-fixed: rgb(62 0 29);
+  --md-sys-color-primary-fixed-dim: rgb(255 177 199);
+  --md-sys-color-on-primary-fixed-variant: rgb(124 40 73);
+  --md-sys-color-secondary-fixed: rgb(103 250 215);
+  --md-sys-color-on-secondary-fixed: rgb(0 32 25);
+  --md-sys-color-secondary-fixed-dim: rgb(67 221 187);
+  --md-sys-color-on-secondary-fixed-variant: rgb(0 81 66);
+  --md-sys-color-tertiary-fixed: rgb(244 228 137);
+  --md-sys-color-on-tertiary-fixed: rgb(32 28 0);
+  --md-sys-color-tertiary-fixed-dim: rgb(215 200 112);
+  --md-sys-color-on-tertiary-fixed-variant: rgb(81 71 0);
+  --md-sys-color-surface-dim: rgb(230 214 217);
+  --md-sys-color-surface-bright: rgb(255 248 248);
+  --md-sys-color-surface-container-lowest: rgb(255 255 255);
+  --md-sys-color-surface-container-low: rgb(255 240 242);
+  --md-sys-color-surface-container: rgb(251 234 237);
+  --md-sys-color-surface-container-high: rgb(245 228 231);
+  --md-sys-color-surface-container-highest: rgb(239 222 225);
+}
+
 html {
-  @include mat.theme((
-    color: (
-      primary: mat.$magenta-palette,
-      tertiary: mat.$violet-palette,
-    ),
-    typography: Roboto,
-    density: 0,
-  ));
+  background: linear-gradient(135deg, var(--md-sys-color-primary-container) 20%, var(--md-sys-color-secondary-container) 290%);
 }
 
-body {
-  // Default the application to a light color theme. This can be changed to
-  // `dark` to enable the dark color theme, or to `light dark` to defer to the
-  // user's system settings.
-  color-scheme: light;
-
-  // Set a default background, font and text colors for the application using
-  // Angular Material's system-level CSS variables. Learn more about these
-  // variables at https://material.angular.dev/guide/system-variables
-  background-color: var(--mat-sys-surface);
-  color: var(--mat-sys-on-surface);
-  font: var(--mat-sys-body-medium);
-
-  // Reset the user agent margin.
-  margin: 0;
-}
-
-/* You can add global styles to this file, and also import other style files */
-html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; font-family: Adamina, "Helvetica Neue", sans-serif; }
