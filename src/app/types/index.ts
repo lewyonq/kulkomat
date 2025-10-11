@@ -5,7 +5,7 @@
  * All types are derived from database entity definitions to ensure type safety.
  */
 
-import { Tables, TablesInsert, TablesUpdate, Enums } from '../../db/database.types';
+import { Tables, TablesInsert, Enums } from '../../db/database.types';
 
 // ============================================================================
 // Re-export Database Enums
@@ -415,6 +415,4 @@ export interface RewardCodeQueryParams extends PaginationParams {
  * Contact Submission Query Parameters - Query parameters for contact submissions
  * API: GET /api/contact-submissions
  */
-export interface ContactSubmissionQueryParams extends PaginationParams {
-  // No additional filters specified in API plan
-}
+export type ContactSubmissionQueryParams = PaginationParams;
