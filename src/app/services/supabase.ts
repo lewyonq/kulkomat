@@ -72,15 +72,13 @@ export class Supabase implements OnDestroy {
   public async signInWithGoogle(): Promise<void> {
     try {
       const { error } = await this.supabase.auth.signInWithOAuth({
-        provider: 'google',
-        options: {
-          redirectTo: `${window.location.origin}/login`
-        }
+        provider: 'google'
       });
 
       if (error) {
         throw error;
       }
+      await this.initAuth();
     } catch (err) {
       this.error.set(err as Error);
       console.error('Sign in error:', err);
