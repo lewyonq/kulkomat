@@ -185,12 +185,7 @@ import { Router } from '@angular/router';
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(
-          135deg,
-          rgba(219, 39, 119, 1) 0%,
-          rgba(236, 72, 153, 1) 50%,
-          rgba(244, 114, 182, 1) 100%
-        );
+        background: var(--gradient-primary);
         border-radius: 12px;
         color: white;
         box-shadow: 0 4px 12px rgba(219, 39, 119, 0.3);

@@ -404,12 +404,7 @@ import { UserIdDisplayComponent } from '../../components/profile/user-id-display
       }
 
       .action-button.primary {
-        background: linear-gradient(
-          135deg,
-          rgba(219, 39, 119, 1) 0%,
-          rgba(236, 72, 153, 1) 50%,
-          rgba(244, 114, 182, 1) 100%
-        );
+        background: var(--gradient-primary);
         color: white;
       }
 

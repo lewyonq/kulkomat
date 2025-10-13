@@ -197,12 +197,7 @@ import { CommonModule } from '@angular/common';
         align-items: center;
         gap: 0.5rem;
         padding: 0.75rem 1.5rem;
-        background: linear-gradient(
-          135deg,
-          rgba(219, 39, 119, 1) 0%,
-          rgba(236, 72, 153, 1) 50%,
-          rgba(244, 114, 182, 1) 100%
-        );
+        background: var(--gradient-primary);
         color: white;
         border: none;
         border-radius: 8px;

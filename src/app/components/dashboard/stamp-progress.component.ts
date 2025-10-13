@@ -95,12 +95,7 @@ import { CommonModule } from '@angular/common';
       }
 
       .icon-wrapper.collected {
-        background: linear-gradient(
-          135deg,
-          rgba(219, 39, 119, 1) 0%,
-          rgba(236, 72, 153, 1) 50%,
-          rgba(244, 114, 182, 1) 100%
-        );
+        background: var(--gradient-primary);
         transform: scale(1.05);
         box-shadow: 0 4px 12px rgba(219, 39, 119, 0.4);
       }
@@ -141,12 +136,7 @@ import { CommonModule } from '@angular/common';
 
       .progress-bar-fill {
         height: 100%;
-        background: linear-gradient(
-          90deg,
-          rgba(219, 39, 119, 1) 0%,
-          rgba(236, 72, 153, 1) 50%,
-          rgba(244, 114, 182, 1) 100%
-        );
+        background: var(--gradient-primary);
         border-radius: 6px;
         transition: width 0.6s ease;
         box-shadow: 0 2px 8px rgba(219, 39, 119, 0.4);
@@ -162,7 +152,7 @@ import { CommonModule } from '@angular/common';
       }
 
       .progress-text .current {
-        color: #6750a4;
+        color: rgb(var(--color-primary));
         font-size: 1.5rem;
       }
 

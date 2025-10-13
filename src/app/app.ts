@@ -25,14 +25,7 @@ import { Navigation } from './components/navigation/navigation.component';
   styles: `
     .futuristic-header {
       /* Pink gradient background using CSS variables */
-      background: linear-gradient(
-        135deg,
-        rgba(219, 39, 119, 0.95) 0%,
-        rgba(236, 72, 153, 0.95) 25%,
-        rgba(244, 114, 182, 0.95) 50%,
-        rgba(219, 39, 119, 0.95) 75%,
-        rgba(190, 24, 93, 0.95) 100%
-      );
+      background: var(--gradient-primary);
 
       /* Glass morphism effect */
       backdrop-filter: blur(20px);

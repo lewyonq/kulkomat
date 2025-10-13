@@ -93,12 +93,7 @@ interface NavLink {
         bottom: 0;
         left: 0;
         right: 0;
-        background: linear-gradient(
-          135deg,
-          rgba(219, 39, 119, 0.95) 0%,
-          rgba(236, 72, 153, 0.95) 50%,
-          rgba(219, 39, 119, 0.95) 100%
-        );
+        background: var(--gradient-primary);
         backdrop-filter: blur(20px);
         box-shadow:
           0 -8px 32px rgba(219, 39, 119, 0.3),

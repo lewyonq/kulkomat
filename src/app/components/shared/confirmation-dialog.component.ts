@@ -180,12 +180,7 @@ import { CommonModule } from '@angular/common';
       }
 
       .confirm-button {
-        background: linear-gradient(
-          135deg,
-          rgba(219, 39, 119, 1) 0%,
-          rgba(236, 72, 153, 1) 50%,
-          rgba(244, 114, 182, 1) 100%
-        );
+        background: var(--gradient-primary);
         color: white;
         box-shadow: 0 2px 8px rgba(103, 80, 164, 0.3);
       }
