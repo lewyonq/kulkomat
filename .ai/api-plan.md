@@ -3,6 +3,7 @@
 ## 1. Resources
 
 ### Core Resources
+
 - **Profiles** - Customer profile data (`profiles` table)
 - **Sellers** - Staff/seller accounts (`sellers` table)
 - **Stamps** - Individual stamp records (`stamps` table)
@@ -19,28 +20,37 @@
 **Note**: Authentication is handled by Supabase Auth (built-in). The API relies on Supabase JWT tokens for authentication. All authenticated endpoints require `Authorization: Bearer <token>` header.
 
 #### User Registration
+
 Handled by Supabase Auth client-side:
+
 - `POST /auth/v1/signup` (Supabase endpoint)
 - After successful registration, create profile via API
 
 #### User Login
+
 Handled by Supabase Auth client-side:
+
 - `POST /auth/v1/token?grant_type=password` (Supabase endpoint)
 
 #### Password Reset
+
 Handled by Supabase Auth client-side:
+
 - `POST /auth/v1/recover` (Supabase endpoint)
 
 ### 2.2 Profile Management
 
 #### Get Current User Profile
+
 ```
 GET /api/profiles/me
 ```
+
 **Description**: Retrieve the authenticated user's profile  
 **Authentication**: Required (customer)  
 **Query Parameters**: None  
 **Response Body**:
+
 ```json
 {
   "id": "uuid",
@@ -49,28 +59,36 @@ GET /api/profiles/me
   "created_at": "2024-01-15T10:30:00Z"
 }
 ```
+
 **Success Codes**:
+
 - `200 OK` - Profile retrieved successfully
 
 **Error Codes**:
+
 - `401 Unauthorized` - No valid authentication token
 - `404 Not Found` - Profile not found
 
 ---
 
 #### Create Profile
+
 ```
 POST /api/profiles
 ```
+
 **Description**: Create a profile after Supabase auth registration  
 **Authentication**: Required (new user)  
 **Request Body**:
+
 ```json
 {
   "user_id": "uuid"
 }
 ```
+
 **Response Body**:
+
 ```json
 {
   "id": "uuid",
@@ -79,30 +97,38 @@ POST /api/profiles
   "created_at": "2024-01-15T10:30:00Z"
 }
 ```
+
 **Success Codes**:
+
 - `201 Created` - Profile created successfully
 
 **Error Codes**:
+
 - `400 Bad Request` - Invalid request data
 - `401 Unauthorized` - No valid authentication token
 - `409 Conflict` - Profile already exists for this user
 
 **Validation**:
+
 - Generate unique `short_id` (6-8 character alphanumeric code)
 - Initialize `stamp_count` to 0
 
 ---
 
 #### Get Profile by Short ID (Seller Only)
+
 ```
 GET /api/profiles/by-short-id/{short_id}
 ```
+
 **Description**: Retrieve a customer profile by their short ID  
 **Authentication**: Required (seller)  
 **Path Parameters**:
+
 - `short_id` (string, required) - Customer's short identifier
 
 **Response Body**:
+
 ```json
 {
   "id": "uuid",
@@ -111,10 +137,13 @@ GET /api/profiles/by-short-id/{short_id}
   "created_at": "2024-01-15T10:30:00Z"
 }
 ```
+
 **Success Codes**:
+
 - `200 OK` - Profile retrieved successfully
 
 **Error Codes**:
+
 - `401 Unauthorized` - Not authenticated as seller
 - `403 Forbidden` - Not authorized (not a seller)
 - `404 Not Found` - Profile not found
@@ -124,19 +153,24 @@ GET /api/profiles/by-short-id/{short_id}
 ### 2.3 Stamp Management
 
 #### Add Stamps to Customer (Seller Only)
+
 ```
 POST /api/stamps
 ```
+
 **Description**: Add stamp(s) to a customer's account  
 **Authentication**: Required (seller)  
 **Request Body**:
+
 ```json
 {
   "user_id": "uuid",
   "count": 1
 }
 ```
+
 **Response Body**:
+
 ```json
 {
   "stamps_added": 1,
@@ -153,16 +187,20 @@ POST /api/stamps
   ]
 }
 ```
+
 **Success Codes**:
+
 - `201 Created` - Stamps added successfully
 
 **Error Codes**:
+
 - `400 Bad Request` - Invalid count or user_id
 - `401 Unauthorized` - Not authenticated
 - `403 Forbidden` - Not authorized (not a seller)
 - `404 Not Found` - User profile not found
 
 **Business Logic**:
+
 - Database trigger automatically generates `free_scoop` coupon when stamp_count reaches 10
 - Trigger resets `stamp_count` to 0 after coupon generation
 - Trigger marks 10 stamps as `redeemed` and links them to the generated coupon
@@ -170,23 +208,28 @@ POST /api/stamps
 - Maximum `count` per request is 10
 
 **Validation**:
+
 - `count` must be positive integer (1-10)
 - `user_id` must exist in profiles table
 
 ---
 
 #### Get My Stamps (Customer)
+
 ```
 GET /api/profiles/me/stamps
 ```
+
 **Description**: Retrieve authenticated user's stamp history  
 **Authentication**: Required (customer)  
 **Query Parameters**:
+
 - `status` (string, optional) - Filter by status: `active`, `redeemed`
 - `limit` (integer, optional, default: 50)
 - `offset` (integer, optional, default: 0)
 
 **Response Body**:
+
 ```json
 {
   "stamps": [
@@ -203,21 +246,27 @@ GET /api/profiles/me/stamps
   "offset": 0
 }
 ```
+
 **Success Codes**:
+
 - `200 OK` - Stamps retrieved successfully
 
 **Error Codes**:
+
 - `401 Unauthorized` - Not authenticated
 
 ---
 
 #### Get Customer Stamps (Seller Only)
+
 ```
 GET /api/stamps
 ```
+
 **Description**: Retrieve stamps for a specific customer  
 **Authentication**: Required (seller)  
 **Query Parameters**:
+
 - `user_id` (uuid, required) - Customer's user ID
 - `status` (string, optional)
 - `limit` (integer, optional, default: 50)
@@ -226,9 +275,11 @@ GET /api/stamps
 **Response Body**: Same as "Get My Stamps"
 
 **Success Codes**:
+
 - `200 OK` - Stamps retrieved successfully
 
 **Error Codes**:
+
 - `400 Bad Request` - Missing user_id parameter
 - `401 Unauthorized` - Not authenticated
 - `403 Forbidden` - Not authorized (not a seller)
@@ -238,18 +289,22 @@ GET /api/stamps
 ### 2.4 Coupon Management
 
 #### Get My Coupons (Customer)
+
 ```
 GET /api/profiles/me/coupons
 ```
+
 **Description**: Retrieve authenticated user's coupons  
 **Authentication**: Required (customer)  
 **Query Parameters**:
+
 - `status` (string, optional) - Filter by status: `active`, `used`, `expired`
 - `type` (string, optional) - Filter by type: `free_scoop`, `percentage`, `amount`
 - `limit` (integer, optional, default: 50)
 - `offset` (integer, optional, default: 0)
 
 **Response Body**:
+
 ```json
 {
   "coupons": [
@@ -268,21 +323,27 @@ GET /api/profiles/me/coupons
   "offset": 0
 }
 ```
+
 **Success Codes**:
+
 - `200 OK` - Coupons retrieved successfully
 
 **Error Codes**:
+
 - `401 Unauthorized` - Not authenticated
 
 ---
 
 #### Get Customer Coupons (Seller Only)
+
 ```
 GET /api/coupons
 ```
+
 **Description**: Retrieve coupons for a specific customer  
 **Authentication**: Required (seller)  
 **Query Parameters**:
+
 - `user_id` (uuid, required)
 - `status` (string, optional)
 - `type` (string, optional)
@@ -292,9 +353,11 @@ GET /api/coupons
 **Response Body**: Same as "Get My Coupons"
 
 **Success Codes**:
+
 - `200 OK` - Coupons retrieved successfully
 
 **Error Codes**:
+
 - `400 Bad Request` - Missing user_id parameter
 - `401 Unauthorized` - Not authenticated
 - `403 Forbidden` - Not authorized (not a seller)
@@ -302,43 +365,52 @@ GET /api/coupons
 ---
 
 #### Add Manual Coupon (Seller Only)
+
 ```
 POST /api/coupons
 ```
+
 **Description**: Manually add a coupon to a customer's account  
 **Authentication**: Required (seller)  
 **Request Body**:
+
 ```json
 {
   "user_id": "uuid",
   "type": "percentage",
-  "value": 10.00,
+  "value": 10.0,
   "expires_at": "2024-02-15T23:59:59Z"
 }
 ```
+
 **Response Body**:
+
 ```json
 {
   "id": 458,
   "user_id": "uuid",
   "type": "percentage",
-  "value": 10.00,
+  "value": 10.0,
   "status": "active",
   "created_at": "2024-01-16T15:00:00Z",
   "used_at": null,
   "expires_at": "2024-02-15T23:59:59Z"
 }
 ```
+
 **Success Codes**:
+
 - `201 Created` - Coupon created successfully
 
 **Error Codes**:
+
 - `400 Bad Request` - Invalid request data
 - `401 Unauthorized` - Not authenticated
 - `403 Forbidden` - Not authorized (not a seller)
 - `404 Not Found` - User profile not found
 
 **Validation**:
+
 - `type` must be one of: `free_scoop`, `percentage`, `amount`
 - `value` required for `percentage` and `amount` types, must be null for `free_scoop`
 - `value` must be > 0 for percentage (typically 1-100) or amount (typically > 0)
@@ -348,43 +420,53 @@ POST /api/coupons
 ---
 
 #### Mark Coupon as Used (Seller Only)
+
 ```
 PATCH /api/coupons/{coupon_id}/use
 ```
+
 **Description**: Mark a coupon as used after customer redeems it  
 **Authentication**: Required (seller)  
 **Path Parameters**:
+
 - `coupon_id` (integer, required) - Coupon ID
 
 **Request Body**:
+
 ```json
 {
   "user_id": "uuid"
 }
 ```
+
 **Response Body**:
+
 ```json
 {
   "id": 458,
   "user_id": "uuid",
   "type": "percentage",
-  "value": 10.00,
+  "value": 10.0,
   "status": "used",
   "created_at": "2024-01-16T15:00:00Z",
   "used_at": "2024-01-17T12:30:00Z",
   "expires_at": "2024-02-15T23:59:59Z"
 }
 ```
+
 **Success Codes**:
+
 - `200 OK` - Coupon marked as used successfully
 
 **Error Codes**:
+
 - `400 Bad Request` - Coupon already used or expired
 - `401 Unauthorized` - Not authenticated
 - `403 Forbidden` - Not authorized (not a seller) or coupon doesn't belong to user_id
 - `404 Not Found` - Coupon not found
 
 **Validation**:
+
 - Coupon must belong to the specified `user_id`
 - Coupon must have `status` = `active`
 - Current timestamp must be before `expires_at`
@@ -394,12 +476,15 @@ PATCH /api/coupons/{coupon_id}/use
 ### 2.5 Customer Management (Seller Only)
 
 #### List Customers
+
 ```
 GET /api/customers
 ```
+
 **Description**: Retrieve list of all registered customers  
 **Authentication**: Required (seller)  
 **Query Parameters**:
+
 - `search` (string, optional) - Search by short_id
 - `sort` (string, optional, default: `created_at`)
 - `order` (string, optional, default: `desc`)
@@ -407,6 +492,7 @@ GET /api/customers
 - `offset` (integer, optional, default: 0)
 
 **Response Body**:
+
 ```json
 {
   "customers": [
@@ -423,10 +509,13 @@ GET /api/customers
   "offset": 0
 }
 ```
+
 **Success Codes**:
+
 - `200 OK` - Customers retrieved successfully
 
 **Error Codes**:
+
 - `401 Unauthorized` - Not authenticated
 - `403 Forbidden` - Not authorized (not a seller)
 
@@ -435,29 +524,33 @@ GET /api/customers
 ### 2.6 Activity History
 
 #### Get My Activity History (Customer)
+
 ```
 GET /api/profiles/me/activity-history
 ```
+
 **Description**: Retrieve authenticated user's activity history  
 **Authentication**: Required (customer)  
 **Query Parameters**:
+
 - `limit` (integer, optional, default: 50)
 - `offset` (integer, optional, default: 0)
 
 **Response Body**:
+
 ```json
 {
   "activities": [
     {
       "type": "coupon_generated",
       "id": 456,
-      "details": {"coupon_type": "free_scoop"},
+      "details": { "coupon_type": "free_scoop" },
       "created_at": "2024-01-15T10:30:00Z"
     },
     {
       "type": "stamp_added",
       "id": 123,
-      "details": {"status": "active"},
+      "details": { "status": "active" },
       "created_at": "2024-01-15T10:25:00Z"
     }
   ],
@@ -466,13 +559,17 @@ GET /api/profiles/me/activity-history
   "offset": 0
 }
 ```
+
 **Success Codes**:
+
 - `200 OK` - Activity history retrieved successfully
 
 **Error Codes**:
+
 - `401 Unauthorized` - Not authenticated
 
 **Business Logic**:
+
 - Returns unified view combining stamps and coupons
 - Ordered by timestamp (most recent first)
 - Activity types: `stamp_added`, `coupon_generated`, `coupon_used`, `coupon_expired`
@@ -480,12 +577,15 @@ GET /api/profiles/me/activity-history
 ---
 
 #### Get Customer Activity History (Seller Only)
+
 ```
 GET /api/activity-history
 ```
+
 **Description**: Retrieve activity history for a specific customer  
 **Authentication**: Required (seller)  
 **Query Parameters**:
+
 - `user_id` (uuid, required)
 - `limit` (integer, optional, default: 50)
 - `offset` (integer, optional, default: 0)
@@ -493,9 +593,11 @@ GET /api/activity-history
 **Response Body**: Same as "Get My Activity History"
 
 **Success Codes**:
+
 - `200 OK` - Activity history retrieved successfully
 
 **Error Codes**:
+
 - `400 Bad Request` - Missing user_id parameter
 - `401 Unauthorized` - Not authenticated
 - `403 Forbidden` - Not authorized (not a seller)
@@ -505,15 +607,19 @@ GET /api/activity-history
 ### 2.7 Ice Cream Flavors
 
 #### List Available Flavors (Public)
+
 ```
 GET /api/flavors
 ```
+
 **Description**: Retrieve list of available ice cream flavors  
 **Authentication**: Optional  
 **Query Parameters**:
+
 - `available_only` (boolean, optional, default: true)
 
 **Response Body**:
+
 ```json
 {
   "flavors": [
@@ -526,7 +632,9 @@ GET /api/flavors
   ]
 }
 ```
+
 **Success Codes**:
+
 - `200 OK` - Flavors retrieved successfully
 
 **Error Codes**: None (public endpoint)
@@ -534,19 +642,24 @@ GET /api/flavors
 ---
 
 #### Create Flavor (Seller Only)
+
 ```
 POST /api/flavors
 ```
+
 **Description**: Add a new ice cream flavor  
 **Authentication**: Required (seller)  
 **Request Body**:
+
 ```json
 {
   "name": "Strawberry",
   "is_available": true
 }
 ```
+
 **Response Body**:
+
 ```json
 {
   "id": 3,
@@ -555,36 +668,46 @@ POST /api/flavors
   "created_at": "2024-01-16T10:00:00Z"
 }
 ```
+
 **Success Codes**:
+
 - `201 Created` - Flavor created successfully
 
 **Error Codes**:
+
 - `400 Bad Request` - Invalid name or missing required fields
 - `401 Unauthorized` - Not authenticated
 - `403 Forbidden` - Not authorized (not a seller)
 
 **Validation**:
+
 - `name` is required, max 100 characters
 - `is_available` defaults to true if not provided
 
 ---
 
 #### Update Flavor Availability (Seller Only)
+
 ```
 PATCH /api/flavors/{flavor_id}
 ```
+
 **Description**: Update flavor availability status  
 **Authentication**: Required (seller)  
 **Path Parameters**:
+
 - `flavor_id` (integer, required)
 
 **Request Body**:
+
 ```json
 {
   "is_available": false
 }
 ```
+
 **Response Body**:
+
 ```json
 {
   "id": 3,
@@ -593,10 +716,13 @@ PATCH /api/flavors/{flavor_id}
   "created_at": "2024-01-16T10:00:00Z"
 }
 ```
+
 **Success Codes**:
+
 - `200 OK` - Flavor updated successfully
 
 **Error Codes**:
+
 - `400 Bad Request` - Invalid request data
 - `401 Unauthorized` - Not authenticated
 - `403 Forbidden` - Not authorized (not a seller)
@@ -607,18 +733,23 @@ PATCH /api/flavors/{flavor_id}
 ### 2.8 Reward Codes
 
 #### Generate Reward Code (Seller Only)
+
 ```
 POST /api/reward-codes
 ```
+
 **Description**: Generate a new one-time reward code  
 **Authentication**: Required (seller)  
 **Request Body**:
+
 ```json
 {
   "expires_at": "2024-02-15T23:59:59Z"
 }
 ```
+
 **Response Body**:
+
 ```json
 {
   "id": 789,
@@ -628,36 +759,45 @@ POST /api/reward-codes
   "expires_at": "2024-02-15T23:59:59Z"
 }
 ```
+
 **Success Codes**:
+
 - `201 Created` - Reward code generated successfully
 
 **Error Codes**:
+
 - `400 Bad Request` - Invalid expires_at (must be in future)
 - `401 Unauthorized` - Not authenticated
 - `403 Forbidden` - Not authorized (not a seller)
 
 **Business Logic**:
+
 - Generate unique code (12-16 character alphanumeric, uppercase)
 - Ensure uniqueness in database
 - Default `is_used` to false
 
 **Validation**:
+
 - `expires_at` must be in the future
 
 ---
 
 #### List Reward Codes (Seller Only)
+
 ```
 GET /api/reward-codes
 ```
+
 **Description**: Retrieve list of generated reward codes  
 **Authentication**: Required (seller)  
 **Query Parameters**:
+
 - `is_used` (boolean, optional)
 - `limit` (integer, optional, default: 50)
 - `offset` (integer, optional, default: 0)
 
 **Response Body**:
+
 ```json
 {
   "codes": [
@@ -674,27 +814,34 @@ GET /api/reward-codes
   "offset": 0
 }
 ```
+
 **Success Codes**:
+
 - `200 OK` - Codes retrieved successfully
 
 **Error Codes**:
+
 - `401 Unauthorized` - Not authenticated
 - `403 Forbidden` - Not authorized (not a seller)
 
 ---
 
 #### Redeem Reward Code (Customer)
+
 ```
 POST /api/reward-codes/{code}/redeem
 ```
+
 **Description**: Redeem a reward code  
 **Authentication**: Required (customer)  
 **Path Parameters**:
+
 - `code` (string, required)
 
 **Request Body**: None
 
 **Response Body**:
+
 ```json
 {
   "success": true,
@@ -703,26 +850,31 @@ POST /api/reward-codes/{code}/redeem
     "details": {
       "coupon_id": 460,
       "type": "amount",
-      "value": 5.00,
+      "value": 5.0,
       "expires_at": "2024-02-15T23:59:59Z"
     }
   }
 }
 ```
+
 **Success Codes**:
+
 - `200 OK` - Code redeemed successfully
 
 **Error Codes**:
+
 - `400 Bad Request` - Code already used
 - `401 Unauthorized` - Not authenticated
 - `404 Not Found` - Code not found or expired
 
 **Business Logic**:
+
 - Mark code as used (`is_used` = true)
 - Generate a coupon for the customer (amount type, e.g., $5 off)
 - Coupon expires at the same time as the code
 
 **Validation**:
+
 - Code must exist and not be used
 - Current timestamp must be before `expires_at`
 
@@ -731,19 +883,24 @@ POST /api/reward-codes/{code}/redeem
 ### 2.9 Contact Submissions
 
 #### Submit Contact Form (Public/Authenticated)
+
 ```
 POST /api/contact
 ```
+
 **Description**: Submit a message via contact form  
 **Authentication**: Optional (if authenticated, user_id is captured automatically)  
 **Request Body**:
+
 ```json
 {
   "email": "customer@example.com",
   "message": "I have a question about..."
 }
 ```
+
 **Response Body**:
+
 ```json
 {
   "id": 123,
@@ -751,13 +908,17 @@ POST /api/contact
   "created_at": "2024-01-16T10:00:00Z"
 }
 ```
+
 **Success Codes**:
+
 - `201 Created` - Message submitted successfully
 
 **Error Codes**:
+
 - `400 Bad Request` - Invalid email or missing message
 
 **Validation**:
+
 - If user is authenticated, capture `user_id` automatically; `email` field is optional
 - If user is not authenticated, `email` field is required and must be valid email format
 - `message` is required, max 2000 characters
@@ -765,16 +926,20 @@ POST /api/contact
 ---
 
 #### List Contact Submissions (Seller Only)
+
 ```
 GET /api/contact-submissions
 ```
+
 **Description**: Retrieve list of contact form submissions  
 **Authentication**: Required (seller)  
 **Query Parameters**:
+
 - `limit` (integer, optional, default: 50)
 - `offset` (integer, optional, default: 0)
 
 **Response Body**:
+
 ```json
 {
   "submissions": [
@@ -791,10 +956,13 @@ GET /api/contact-submissions
   "offset": 0
 }
 ```
+
 **Success Codes**:
+
 - `200 OK` - Submissions retrieved successfully
 
 **Error Codes**:
+
 - `401 Unauthorized` - Not authenticated
 - `403 Forbidden` - Not authorized (not a seller)
 
@@ -830,10 +998,12 @@ The application uses **Supabase Authentication** with JWT (JSON Web Tokens).
 ### 3.2 Authorization Roles
 
 Two primary roles:
+
 - **Customer** (default) - Regular users who collect stamps and use coupons
 - **Seller** - Staff/owner who can add stamps, coupons, manage flavors, etc.
 
 Role determination:
+
 - Role is stored in Supabase `auth.users` metadata or custom claims
 - Presence of record in `sellers` table indicates seller role
 - API checks role before allowing seller-only operations
@@ -857,17 +1027,20 @@ Role determination:
 ### 4.1 Validation Rules
 
 #### Profiles
+
 - `short_id`: Must be unique, 6-8 alphanumeric characters, auto-generated
 - `stamp_count`: Must be >= 0 AND < 10 (enforced by database constraint)
 
 #### Stamps
+
 - `count`: Must be positive integer (1-10) when adding stamps
 - `user_id`: Must reference existing profile
 - `status`: Must be one of `active`, `redeemed`
 
 #### Coupons
+
 - `type`: Must be one of `free_scoop`, `percentage`, `amount` (ENUM validation)
-- `value`: 
+- `value`:
   - Required for `percentage` and `amount` types
   - Must be NULL for `free_scoop` type
   - For `percentage`: typically 1-100
@@ -877,24 +1050,29 @@ Role determination:
 - Cannot mark coupon as used if already used or expired
 
 #### Reward Codes
+
 - `code`: Must be unique, 12-16 uppercase alphanumeric characters, auto-generated
 - `expires_at`: Must be in the future when creating
 - Cannot redeem if already used or expired
 
 #### Ice Cream Flavors
+
 - `name`: Required, non-empty string, max 100 characters
 - `is_available`: Boolean, defaults to true
 
 #### Contact Submissions
+
 - `email`: Required if user not authenticated, must be valid email format
 - `message`: Required, non-empty, max 2000 characters
 
 ### 4.2 Business Logic Implementation
 
 #### Automatic Coupon Generation
+
 **Implementation**: PostgreSQL database trigger on `stamps` table
 
 **Logic**:
+
 1. After INSERT on `stamps`, check if user's `stamp_count` + new stamps >= 10
 2. If true:
    - Insert new coupon record with `type` = 'free_scoop'
@@ -907,6 +1085,7 @@ Role determination:
    - Increment user's `stamp_count` by number of stamps added
 
 **Database Function**:
+
 ```sql
 CREATE OR REPLACE FUNCTION process_stamp_addition()
 RETURNS TRIGGER AS $$
@@ -916,12 +1095,12 @@ DECLARE
   new_coupon_id BIGINT;
 BEGIN
   SELECT stamp_count INTO current_count FROM profiles WHERE id = NEW.user_id;
-  
+
   IF current_count >= stamps_needed THEN
     INSERT INTO coupons (user_id, type, status, expires_at)
     VALUES (NEW.user_id, 'free_scoop', 'active', NOW() + INTERVAL '30 days')
     RETURNING id INTO new_coupon_id;
-    
+
     UPDATE stamps
     SET status = 'redeemed', redeemed_for_coupon_id = new_coupon_id
     WHERE id IN (
@@ -930,12 +1109,12 @@ BEGIN
       ORDER BY created_at ASC
       LIMIT stamps_needed
     );
-    
+
     UPDATE profiles
     SET stamp_count = stamp_count - stamps_needed
     WHERE id = NEW.user_id;
   END IF;
-  
+
   RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -947,7 +1126,9 @@ EXECUTE FUNCTION process_stamp_addition();
 ```
 
 #### Stamp Count Management
+
 **Database Trigger**:
+
 ```sql
 CREATE OR REPLACE FUNCTION update_stamp_count()
 RETURNS TRIGGER AS $$
@@ -966,7 +1147,9 @@ EXECUTE FUNCTION update_stamp_count();
 ```
 
 #### Coupon Expiration
+
 Scheduled job (daily cron or Supabase Edge Function):
+
 ```sql
 UPDATE coupons
 SET status = 'expired'
@@ -974,6 +1157,7 @@ WHERE expires_at < NOW() AND status = 'active';
 ```
 
 #### Reward Code Redemption Logic
+
 1. Verify code exists and not used
 2. Verify code not expired
 3. Mark code as used

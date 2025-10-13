@@ -47,9 +47,11 @@ To get a local copy up and running, follow these simple steps.
 ### Running the Application
 
 Run the development server:
+
 ```sh
 npm start
 ```
+
 The application will be available at `http://localhost:4200/`.
 
 ## Available Scripts

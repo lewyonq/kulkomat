@@ -1,4 +1,4 @@
-```markdown
+````markdown
 # Schemat Bazy Danych PostgreSQL dla Aplikacji Kulkomat
 
 ## 1. Lista Tabel
@@ -10,6 +10,7 @@ CREATE TYPE coupon_type AS ENUM ('free_scoop', 'percentage', 'amount');
 CREATE TYPE coupon_status AS ENUM ('active', 'used', 'expired');
 CREATE TYPE stamp_status AS ENUM ('active', 'redeemed');
 ```
+````
 
 ### Tabela: `profiles` (Klienci)
 
@@ -164,4 +165,7 @@ CREATE POLICY "Users can view their own coupons" ON coupons
 - **Denormalizacja `stamp_count`**: Kolumna `stamp_count` w tabeli `profiles` jest celowo zdenormalizowana. Przechowuje ona aktualną liczbę aktywnych pieczątek, co eliminuje potrzebę kosztownego obliczania `COUNT(*)` przy każdym wyświetleniu głównego ekranu aplikacji klienta. Jej wartość będzie aktualizowana przez ten sam trigger, który zarządza kuponami.
 - **Widok `activity_history`**: Zgodnie z notatkami z planowania, historia aktywności użytkownika nie będzie fizyczną tabelą, lecz zostanie zaimplementowana jako **widok (`VIEW`)** w bazie danych. Widok ten będzie łączyć dane z tabel `stamps` i `coupons`, aby dynamicznie tworzyć chronologiczną listę zdarzeń dla danego użytkownika. Zapewnia to spójność danych (Single Source of Truth).
 - **Rola `seller_role`**: Dostęp dla sprzedawców do modyfikacji danych (np. dodawania pieczątek) będzie realizowany nie przez bezpośrednie uprawnienia `INSERT`/`UPDATE`, ale przez wywoływanie dedykowanych funkcji bazodanowych z opcją `SECURITY DEFINER`. Takie podejście hermetyzuje logikę biznesową i zwiększa bezpieczeństwo, uniemożliwiając sprzedawcom dowolną manipulację danymi.
+
+```
+
 ```

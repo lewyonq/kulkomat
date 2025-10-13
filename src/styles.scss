@@ -54,7 +54,14 @@
 }
 
 html {
-  background: linear-gradient(135deg, var(--md-sys-color-primary-container) 20%, var(--md-sys-color-secondary-container) 290%);
+  background: linear-gradient(
+    135deg,
+    var(--md-sys-color-primary-container) 20%,
+    var(--md-sys-color-secondary-container) 290%
+  );
 }
 
-body { margin: 0; font-family: Adamina, "Helvetica Neue", sans-serif; }
+body {
+  margin: 0;
+  font-family: Adamina, 'Helvetica Neue', sans-serif;
+}

@@ -72,7 +72,7 @@ export class Supabase implements OnDestroy {
   public async signInWithGoogle(): Promise<void> {
     try {
       const { error } = await this.supabase.auth.signInWithOAuth({
-        provider: 'google'
+        provider: 'google',
       });
 
       if (error) {
@@ -122,7 +122,7 @@ export class Supabase implements OnDestroy {
     }
   }
 
-    /**
+  /**
    * Get Current User Profile
    * GET /api/profiles/me
    * Retrieve the authenticated user's profile
@@ -152,7 +152,7 @@ export class Supabase implements OnDestroy {
         }
 
         return data;
-      })
+      }),
     ).pipe(
       map((profile) => ({
         id: profile.id,
@@ -169,7 +169,7 @@ export class Supabase implements OnDestroy {
         this.error.set(errorMessage);
         this.isLoading.set(false);
         return throwError(() => new Error(errorMessage));
-      })
+      }),
     );
   }
 
@@ -204,13 +204,11 @@ export class Supabase implements OnDestroy {
       const shortId = await this.generateUniqueShortId();
 
       // Create new profile
-      const { error: insertError } = await this.supabase
-        .from('profiles')
-        .insert({
-          id: userId,
-          short_id: shortId,
-          stamp_count: 0,
-        });
+      const { error: insertError } = await this.supabase.from('profiles').insert({
+        id: userId,
+        short_id: shortId,
+        stamp_count: 0,
+      });
 
       if (insertError) {
         // Handle duplicate key error (race condition)
@@ -218,7 +216,7 @@ export class Supabase implements OnDestroy {
           console.warn('Profile already exists (race condition detected)');
           return;
         }
-        
+
         console.error('Error creating profile:', insertError);
         throw insertError;
       }
@@ -231,7 +229,7 @@ export class Supabase implements OnDestroy {
     }
   }
 
-    /**
+  /**
    * Get Profile by Short ID (Seller Only)
    * GET /api/profiles/by-short-id/{short_id}
    * Retrieve a customer profile by their short ID
@@ -240,13 +238,7 @@ export class Supabase implements OnDestroy {
     this.isLoading.set(true);
     this.error.set(null);
 
-    return from(
-      this.supabase
-        .from('profiles')
-        .select('*')
-        .eq('short_id', shortId)
-        .single()
-    ).pipe(
+    return from(this.supabase.from('profiles').select('*').eq('short_id', shortId).single()).pipe(
       map(({ data, error }) => {
         if (error) {
           throw error;
@@ -268,7 +260,7 @@ export class Supabase implements OnDestroy {
       }),
       catchError((err) => {
         let errorMessage = 'Failed to fetch profile';
-        
+
         if (err?.code === 'PGRST116') {
           errorMessage = 'Profile not found';
         } else if (err?.message) {
@@ -278,7 +270,7 @@ export class Supabase implements OnDestroy {
         this.error.set(new Error(errorMessage));
         this.isLoading.set(false);
         return throwError(() => new Error(errorMessage));
-      })
+      }),
     );
   }
 
@@ -289,33 +281,33 @@ export class Supabase implements OnDestroy {
   private async generateUniqueShortId(): Promise<string> {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
     const maxAttempts = 10;
-    
+
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       const length = Math.floor(Math.random() * 3) + 6; // 6-8 characters
       let shortId = '';
-      
+
       for (let i = 0; i < length; i++) {
         shortId += chars.charAt(Math.floor(Math.random() * chars.length));
       }
-      
+
       // Check if short_id already exists
       const { data, error } = await this.supabase
         .from('profiles')
         .select('short_id')
         .eq('short_id', shortId)
         .maybeSingle();
-      
+
       if (error) {
         console.error('Error checking short_id uniqueness:', error);
         continue;
       }
-      
+
       // If no profile found with this short_id, it's unique
       if (!data) {
         return shortId;
       }
     }
-    
+
     throw new Error('Failed to generate unique short_id after multiple attempts');
   }
 

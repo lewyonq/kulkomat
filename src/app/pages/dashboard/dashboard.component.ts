@@ -32,7 +32,7 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
     CommonModule,
     UserIdDisplayComponent,
     StampProgressComponent,
-    CouponNavigationCardComponent
+    CouponNavigationCardComponent,
   ],
   template: `
     <div class="dashboard-container">
@@ -49,19 +49,14 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
         <div class="error-container">
           <div class="error-icon">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/>
-              <path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="12" cy="16" r="1" fill="currentColor"/>
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+              <path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <circle cx="12" cy="16" r="1" fill="currentColor" />
             </svg>
           </div>
           <h2 class="error-title">Nie udało się pobrać danych</h2>
           <p class="error-message">{{ getErrorMessage() }}</p>
-          <button
-            class="retry-button"
-            (click)="onRetry()"
-            type="button">
-            Spróbuj ponownie
-          </button>
+          <button class="retry-button" (click)="onRetry()" type="button">Spróbuj ponownie</button>
         </div>
       }
 
@@ -82,24 +77,19 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
           <main class="dashboard-content">
             <!-- Stamp Progress -->
             <section class="section">
-              <app-stamp-progress
-                [stampCount]="profile()!.stamp_count"
-                [maxStamps]="10">
+              <app-stamp-progress [stampCount]="profile()!.stamp_count" [maxStamps]="10">
               </app-stamp-progress>
             </section>
-            
+
             <!-- User ID Display -->
             <section class="section">
-              <app-user-id-display
-                [shortId]="shortId() || ''"
-                [showQRCode]="true">
+              <app-user-id-display [shortId]="shortId() || ''" [showQRCode]="true">
               </app-user-id-display>
             </section>
 
             <!-- Coupon Navigation -->
             <section class="section">
-              <app-coupon-navigation-card
-                [activeCouponsCount]="activeCouponsCount()">
+              <app-coupon-navigation-card [activeCouponsCount]="activeCouponsCount()">
               </app-coupon-navigation-card>
             </section>
           </main>
@@ -112,236 +102,245 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
                 (click)="onRefresh()"
                 [disabled]="refreshing()"
                 type="button"
-                aria-label="Odśwież dane">
+                aria-label="Odśwież dane"
+              >
                 <svg
                   class="refresh-icon"
                   [class.spinning]="refreshing()"
                   viewBox="0 0 24 24"
                   fill="none"
-                  xmlns="http://www.w3.org/2000/svg">
-                  <path d="M21.5 2V8M21.5 8H16M21.5 8L18 4.5C16.5 3 14.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C17 22 21 18.5 21.5 13.5"
-                        stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M21.5 2V8M21.5 8H16M21.5 8L18 4.5C16.5 3 14.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C17 22 21 18.5 21.5 13.5"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
                 {{ refreshing() ? 'Odświeżanie...' : 'Odśwież' }}
               </button>
             </div>
           }
-            <div class="logout-container">
-              <button
-                    class="logout-button"
-                    (click)="onLogout()"
-                    type="button"
-                    aria-label="logout">
-                    Wyloguj sie leszczu
-              </button>
-            </div>
+          <div class="logout-container">
+            <button class="logout-button" (click)="onLogout()" type="button" aria-label="logout">
+              Wyloguj sie leszczu
+            </button>
+          </div>
         </div>
       }
     </div>
   `,
-  styles: [`
-    .dashboard-container {
-      min-height: 100vh;
-      background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
-      padding: 1rem;
-    }
-
-    /* Loading State */
-    .loading-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      gap: 1.5rem;
-    }
-
-    .spinner {
-      width: 48px;
-      height: 48px;
-      border: 4px solid #e0e0e0;
-      border-top-color: #6750a4;
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-
-    @keyframes spin {
-      to { transform: rotate(360deg); }
-    }
-
-    .loading-text {
-      font-size: 1rem;
-      color: #666;
-      font-weight: 500;
-    }
-
-    /* Error State */
-    .error-container {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      gap: 1.5rem;
-      padding: 2rem;
-      text-align: center;
-    }
-
-    .error-icon {
-      width: 64px;
-      height: 64px;
-      color: #d32f2f;
-    }
-
-    .error-icon svg {
-      width: 100%;
-      height: 100%;
-    }
-
-    .error-title {
-      font-size: 1.5rem;
-      font-weight: 700;
-      color: #1a1a1a;
-      margin: 0;
-    }
-
-    .error-message {
-      font-size: 1rem;
-      color: #666;
-      margin: 0;
-      max-width: 400px;
-      line-height: 1.5;
-    }
-
-    .retry-button {
-      padding: 0.875rem 2rem;
-      background: #6750a4;
-      color: white;
-      border: none;
-      border-radius: 8px;
-      font-size: 1rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 8px rgba(103, 80, 164, 0.3);
-    }
-
-    .retry-button:hover {
-      background: #5842a0;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 12px rgba(103, 80, 164, 0.4);
-    }
-
-    .retry-button:active {
-      transform: translateY(0);
-    }
-
-    /* Content State */
-    .content-wrapper {
-      max-width: 800px;
-      margin: 0 auto;
-      padding-bottom: 2rem;
-    }
-
-    .dashboard-header {
-      text-align: center;
-      padding: 2rem 1rem;
-      margin-bottom: 1rem;
-    }
-
-    .welcome-title {
-      font-size: 1.75rem;
-      font-weight: 700;
-      color: #1a1a1a;
-      margin: 0 0 0.5rem 0;
-    }
-
-    .welcome-subtitle {
-      font-size: 1rem;
-      color: #666;
-      margin: 0;
-    }
-
-    .dashboard-content {
-      display: flex;
-      flex-direction: column;
-      gap: 1rem;
-    }
-
-    .section {
-      width: 100%;
-    }
-
-    /* Refresh Button */
-    .refresh-container, .logout-container {
-      display: flex;
-      justify-content: center;
-      padding: 2rem 1rem;
-    }
-
-    .refresh-button, .logout-button {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      background: white;
-      color: #6750a4;
-      border: 2px solid #6750a4;
-      border-radius: 8px;
-      font-size: 0.875rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-
-    .refresh-button:hover:not(:disabled) {
-      background: #f5f3ff;
-      transform: translateY(-1px);
-    }
-
-    .refresh-button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-    }
-
-    .refresh-icon {
-      width: 20px;
-      height: 20px;
-    }
-
-    .refresh-icon.spinning {
-      animation: spin 1s linear infinite;
-    }
-
-    /* Responsive Design */
-    @media (max-width: 640px) {
+  styles: [
+    `
       .dashboard-container {
-        padding: 0.5rem;
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
+        padding: 1rem;
       }
 
-      .dashboard-header {
-        padding: 1.5rem 0.5rem;
-      }
-
-      .welcome-title {
-        font-size: 1.5rem;
-      }
-
-      .welcome-subtitle {
-        font-size: 0.875rem;
-      }
-    }
-
-    @media (min-width: 768px) {
-      .dashboard-content {
+      /* Loading State */
+      .loading-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
         gap: 1.5rem;
       }
 
-      .welcome-title {
-        font-size: 2rem;
+      .spinner {
+        width: 48px;
+        height: 48px;
+        border: 4px solid #e0e0e0;
+        border-top-color: #6750a4;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
       }
-    }
-  `]
+
+      @keyframes spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      .loading-text {
+        font-size: 1rem;
+        color: #666;
+        font-weight: 500;
+      }
+
+      /* Error State */
+      .error-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        gap: 1.5rem;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .error-icon {
+        width: 64px;
+        height: 64px;
+        color: #d32f2f;
+      }
+
+      .error-icon svg {
+        width: 100%;
+        height: 100%;
+      }
+
+      .error-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0;
+      }
+
+      .error-message {
+        font-size: 1rem;
+        color: #666;
+        margin: 0;
+        max-width: 400px;
+        line-height: 1.5;
+      }
+
+      .retry-button {
+        padding: 0.875rem 2rem;
+        background: #6750a4;
+        color: white;
+        border: none;
+        border-radius: 8px;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        box-shadow: 0 2px 8px rgba(103, 80, 164, 0.3);
+      }
+
+      .retry-button:hover {
+        background: #5842a0;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(103, 80, 164, 0.4);
+      }
+
+      .retry-button:active {
+        transform: translateY(0);
+      }
+
+      /* Content State */
+      .content-wrapper {
+        max-width: 800px;
+        margin: 0 auto;
+        padding-bottom: 2rem;
+      }
+
+      .dashboard-header {
+        text-align: center;
+        padding: 2rem 1rem;
+        margin-bottom: 1rem;
+      }
+
+      .welcome-title {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #1a1a1a;
+        margin: 0 0 0.5rem 0;
+      }
+
+      .welcome-subtitle {
+        font-size: 1rem;
+        color: #666;
+        margin: 0;
+      }
+
+      .dashboard-content {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem;
+      }
+
+      .section {
+        width: 100%;
+      }
+
+      /* Refresh Button */
+      .refresh-container,
+      .logout-container {
+        display: flex;
+        justify-content: center;
+        padding: 2rem 1rem;
+      }
+
+      .refresh-button,
+      .logout-button {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        padding: 0.75rem 1.5rem;
+        background: white;
+        color: #6750a4;
+        border: 2px solid #6750a4;
+        border-radius: 8px;
+        font-size: 0.875rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .refresh-button:hover:not(:disabled) {
+        background: #f5f3ff;
+        transform: translateY(-1px);
+      }
+
+      .refresh-button:disabled {
+        opacity: 0.6;
+        cursor: not-allowed;
+      }
+
+      .refresh-icon {
+        width: 20px;
+        height: 20px;
+      }
+
+      .refresh-icon.spinning {
+        animation: spin 1s linear infinite;
+      }
+
+      /* Responsive Design */
+      @media (max-width: 640px) {
+        .dashboard-container {
+          padding: 0.5rem;
+        }
+
+        .dashboard-header {
+          padding: 1.5rem 0.5rem;
+        }
+
+        .welcome-title {
+          font-size: 1.5rem;
+        }
+
+        .welcome-subtitle {
+          font-size: 0.875rem;
+        }
+      }
+
+      @media (min-width: 768px) {
+        .dashboard-content {
+          gap: 1.5rem;
+        }
+
+        .welcome-title {
+          font-size: 2rem;
+        }
+      }
+    `,
+  ],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   private supabase = inject(Supabase);
@@ -374,7 +373,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       total,
       percentage: (current / total) * 100,
       stampsToReward: Math.max(0, total - current),
-      isComplete: current >= total
+      isComplete: current >= total,
     };
   });
 
@@ -409,7 +408,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.error.set(err);
         this.isLoading.set(false);
-      }
+      },
     });
   }
 
@@ -421,7 +420,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       next: (response) => {
         // Count only non-expired active coupons
         const now = new Date();
-        const activeCount = response.coupons.filter(coupon => {
+        const activeCount = response.coupons.filter((coupon) => {
           const expiresAt = new Date(coupon.expires_at);
           return coupon.status === 'active' && expiresAt > now;
         }).length;
@@ -432,7 +431,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
         console.error('Failed to load active coupons count:', err);
         // Don't set error state, just log it
         // We don't want to block the dashboard if coupons fail to load
-      }
+      },
     });
   }
 
@@ -456,7 +455,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
             event: 'UPDATE',
             schema: 'public',
             table: 'profiles',
-            filter: `id=eq.${userId}`
+            filter: `id=eq.${userId}`,
           },
           (payload) => {
             console.log('Realtime update received:', payload);
@@ -465,7 +464,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
             // Optional: Show toast notification
             // this.showToast('Otrzymałeś pieczątkę!');
-          }
+          },
         )
         .subscribe((status) => {
           if (status === 'SUBSCRIBED') {
@@ -513,9 +512,9 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.loadActiveCouponsCount();
         this.refreshing.set(false);
       },
-      error: (err) => {
+      error: () => {
         this.refreshing.set(false);
-      }
+      },
     });
   }
 

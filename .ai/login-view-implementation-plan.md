@@ -1,9 +1,11 @@
 # Plan implementacji widoku Logowania
 
 ## 1. Przegląd
+
 Widok logowania stanowi punkt wejścia dla powracających użytkowników aplikacji "Kulkomat". Jego głównym celem jest umożliwienie szybkiego i bezpiecznego uwierzytelnienia za pomocą zewnętrznego dostawcy tożsamości (Google), co jest zgodne z nowoczesnymi standardami i minimalizuje potrzebę zarządzania hasłami przez użytkownika. Widok ten ma również za zadanie w prosty sposób komunikować korzyści płynące z programu lojalnościowego, zachęcając do zalogowania.
 
 ## 2. Routing widoku
+
 Widok będzie dostępny pod ścieżką `/login`. Zostanie zaimplementowany jako samodzielny komponent (standalone) z własną definicją trasy.
 
 ```typescript
@@ -15,6 +17,7 @@ Widok będzie dostępny pod ścieżką `/login`. Zostanie zaimplementowany jako 
 ```
 
 ## 3. Struktura komponentów
+
 Widok będzie składał się z jednego głównego komponentu-strony, który będzie zawierał mniejsze, prezentacyjne komponenty UI.
 
 ```mermaid
@@ -32,6 +35,7 @@ graph TD
 ## 4. Szczegóły komponentów
 
 ### `LoginComponent`
+
 - **Opis komponentu**: Główny komponent strony `/login`. Odpowiada za wyświetlenie interfejsu logowania, obsługę logiki związanej z procesem uwierzytelniania za pomocą `AuthService` oraz nawigację po pomyślnym zalogowaniu.
 - **Główne elementy**: Komponent `app-auth-card` zawierający nagłówek, tekst informacyjny oraz przycisk `app-oauth-button`.
 - **Obsługiwane interakcje**: Inicjowanie procesu logowania przez Google po kliknięciu przycisku.
@@ -40,6 +44,7 @@ graph TD
 - **Propsy**: Brak.
 
 ### `app-auth-card` (komponent reużywalny)
+
 - **Opis komponentu**: Karta UI służąca jako kontener dla formularzy i przycisków związanych z uwierzytelnianiem (logowanie, rejestracja). Zapewnia spójny branding i układ.
 - **Główne elementy**: `<div>` stylizowany za pomocą Tailwind CSS, wykorzystujący `ng-content` do projekcji treści (nagłówka, opisu, przycisków).
 - **Obsługiwane interakcje**: Brak.
@@ -48,6 +53,7 @@ graph TD
 - **Propsy**: Brak.
 
 ### `app-oauth-button` (komponent reużywalny)
+
 - **Opis komponentu**: Specjalizowany przycisk do logowania za pomocą dostawcy OAuth (np. Google). Wyświetla logo dostawcy i odpowiedni tekst.
 - **Główne elementy**: `<button>` zawierający `<img>` (logo Google) oraz `<span>` (tekst przycisku).
 - **Obsługiwane interakcje**: Emituje zdarzenie `(click)` w celu poinformowania komponentu nadrzędnego o zamiarze rozpoczęcia logowania.
@@ -57,10 +63,12 @@ graph TD
   - `provider: 'google' | 'facebook' | ...` (do ewentualnej rozbudowy)
 
 ## 5. Typy
+
 Implementacja tego widoku nie wymaga definiowania nowych, niestandardowych typów DTO ani ViewModel. Proces logowania jest obsługiwany przez bibliotekę kliencką Supabase, która zarządza sesją i danymi użytkownika (`User` z `@supabase/supabase-js`).
 
 ## 6. Zarządzanie stanem
-Stan uwierzytelnienia użytkownika będzie zarządzany globalnie w aplikacji za pomocą dedykowanego serwisu `AuthService`. 
+
+Stan uwierzytelnienia użytkownika będzie zarządzany globalnie w aplikacji za pomocą dedykowanego serwisu `AuthService`.
 
 - **`AuthService`**: Będzie to serwis typu singleton (`providedIn: 'root'`), który:
   - Przechowuje stan zalogowania użytkownika (np. w `BehaviorSubject<boolean>`).
@@ -69,6 +77,7 @@ Stan uwierzytelnienia użytkownika będzie zarządzany globalnie w aplikacji za 
   - `LoginComponent` wstrzyknie ten serwis i wywoła metodę `signInWithGoogle()` w odpowiedzi na akcję użytkownika.
 
 ## 7. Integracja API
+
 Integracja z API Supabase odbędzie się w całości poprzez serwis `AuthService`, który będzie wykorzystywał bibliotekę `@supabase/supabase-js`.
 
 - **Wywołanie**: `supabase.auth.signInWithOAuth(options)`
@@ -78,6 +87,7 @@ Integracja z API Supabase odbędzie się w całości poprzez serwis `AuthService
 - **Typy żądania i odpowiedzi**: Zarządzane wewnętrznie przez bibliotekę kliencką. Po pomyślnym zalogowaniu, biblioteka automatycznie zarządza sesją (tokenem JWT) i udostępnia obiekt zalogowanego użytkownika.
 
 ## 8. Interakcje użytkownika
+
 1.  **Użytkownik wchodzi na stronę `/login`**: Widzi kartę z informacją o programie lojalnościowym i przycisk "Zaloguj się z Google".
 2.  **Użytkownik klika przycisk "Zaloguj się z Google"**:
     - Aplikacja Angular wywołuje metodę `signInWithGoogle()` w `AuthService`.
@@ -90,10 +100,12 @@ Integracja z API Supabase odbędzie się w całości poprzez serwis `AuthService
     - `AuthService` przekierowuje użytkownika na stronę główną aplikacji (np. `/dashboard`).
 
 ## 9. Warunki i walidacja
+
 Cały proces walidacji danych logowania (poprawność konta Google, hasło, 2FA) jest delegowany do Google. Aplikacja frontendowa nie implementuje żadnej logiki walidacyjnej dla tego procesu. Jedynym warunkiem po stronie aplikacji jest zapewnienie, że Supabase URL i klucz `anon` są poprawnie skonfigurowane w środowisku Angulara.
 
 ## 10. Obsługa błędów
-Potencjalne błędy w procesie logowania OAuth są zazwyczaj obsługiwane przez przekierowanie zwrotne z odpowiednimi parametrami błędu w URL. 
+
+Potencjalne błędy w procesie logowania OAuth są zazwyczaj obsługiwane przez przekierowanie zwrotne z odpowiednimi parametrami błędu w URL.
 
 - **Scenariusze błędów**:
   1.  **Użytkownik zamyka okno Google**: Proces logowania jest przerwany. Użytkownik pozostaje na stronie `/login`.
@@ -101,6 +113,7 @@ Potencjalne błędy w procesie logowania OAuth są zazwyczaj obsługiwane przez 
   3.  **Problem z siecią**: Próba wywołania `signInWithOAuth` może zakończyć się niepowodzeniem. Należy opakować to wywołanie w bloku `try...catch` i w przypadku błędu sieciowego wyświetlić stosowny komunikat.
 
 ## 11. Kroki implementacji
+
 1.  **Konfiguracja Supabase**: Dostawca OAuth (Google) jest włączony i poprawnie skonfigurowany w panelu Supabase, w tym podany jest Client ID i Client Secret.
 2.  **Konfiguracja środowiska Angular**: `SUPABASE_URL` i `SUPABASE_ANON_KEY` są już poprawnie skonfigurowane w plikach `environment.ts`.
 3.  **Utworzenie `AuthService`**: `AuthService` jest już zaimplementowany. Dokonaj analizy i zatwierdzenia kodu.

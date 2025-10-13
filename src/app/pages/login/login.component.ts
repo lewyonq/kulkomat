@@ -41,15 +41,14 @@ import { Supabase } from '../../services/supabase';
         </div>
         <div class="flex items-start">
           <span class="mr-2 mt-1 text-primary" style="color: var(--md-sys-color-primary);">✓</span>
-          <p>Przeglądaj swoją historię doładowań pieczątek i wykorzystanych kuponów w wygodny sposób.</p>
+          <p>
+            Przeglądaj swoją historię doładowań pieczątek i wykorzystanych kuponów w wygodny sposób.
+          </p>
         </div>
       </div>
 
       <!-- OAuth Button -->
-      <app-oauth-button
-        provider="google"
-        (clickEvent)="onGoogleSignIn()"
-      />
+      <app-oauth-button provider="google" (clickEvent)="onGoogleSignIn()" />
 
       <!-- Error Message -->
       @if (error()) {
@@ -65,13 +64,18 @@ import { Supabase } from '../../services/supabase';
 
       <!-- Loading State -->
       @if (isLoading()) {
-        <div class="mt-4 text-center text-sm" style="color: var(--md-sys-color-primary);" role="status" aria-live="polite">
+        <div
+          class="mt-4 text-center text-sm"
+          style="color: var(--md-sys-color-primary);"
+          role="status"
+          aria-live="polite"
+        >
           <span>Przekierowywanie do Google...</span>
         </div>
       }
     </app-auth-card>
   `,
-  styles: []
+  styles: [],
 })
 export class LoginComponent implements OnInit {
   private supabase = inject(Supabase);
@@ -106,9 +110,10 @@ export class LoginComponent implements OnInit {
     } catch (err) {
       this.isLoading.set(false);
 
-      const errorMessage = err instanceof Error
-        ? err.message
-        : 'Wystąpił błąd podczas próby logowania. Spróbuj ponownie później.';
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : 'Wystąpił błąd podczas próby logowania. Spróbuj ponownie później.';
 
       this.error.set(errorMessage);
       console.error('Login error:', err);

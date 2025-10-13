@@ -1,6 +1,6 @@
 /**
  * DTO (Data Transfer Object) and Command Model Type Definitions
- * 
+ *
  * This file contains all types used for API requests and responses.
  * All types are derived from database entity definitions to ensure type safety.
  */
@@ -145,16 +145,12 @@ export interface CustomersListDTO {
 /**
  * Activity Type - Types of activities in history
  */
-export type ActivityType = 
-  | 'stamp_added' 
-  | 'coupon_generated' 
-  | 'coupon_used' 
-  | 'coupon_expired';
+export type ActivityType = 'stamp_added' | 'coupon_generated' | 'coupon_used' | 'coupon_expired';
 
 /**
  * Activity Details - Type-specific activity details
  */
-export type ActivityDetails = 
+export type ActivityDetails =
   | { status: StampStatus }
   | { coupon_type: CouponType }
   | Record<string, never>;

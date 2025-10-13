@@ -42,7 +42,7 @@ import { CommonModule } from '@angular/common';
       <span>{{ buttonText() }}</span>
     </button>
   `,
-  styles: []
+  styles: [],
 })
 export class OAuthButtonComponent {
   /**
@@ -70,7 +70,7 @@ export class OAuthButtonComponent {
 
   protected providerName(): string {
     const names: Record<string, string> = {
-      google: 'Google'
+      google: 'Google',
     };
     return names[this.provider()] || 'Provider';
   }

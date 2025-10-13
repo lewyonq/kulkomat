@@ -1,5 +1,5 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { from, Observable, pipe, throwError } from 'rxjs';
+import { from, Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Supabase } from './supabase';
 import { CouponDTO, CouponsListDTO, CouponQueryParams } from '../types';
@@ -11,7 +11,7 @@ import { CouponDTO, CouponsListDTO, CouponQueryParams } from '../types';
  * Integrates with Supabase for data persistence and real-time updates.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class CouponService {
   private supabase = inject(Supabase);
@@ -41,7 +41,7 @@ export class CouponService {
       this.supabase.client
         .from('coupons')
         .select('*', { count: 'exact' })
-        .eq('user_id', currentUser.id)
+        .eq('user_id', currentUser.id),
     ).pipe(
       map(({ data, error, count }) => {
         if (error) {
@@ -53,7 +53,7 @@ export class CouponService {
           coupons: data as CouponDTO[],
           total: count ?? 0,
           limit: params?.limit ?? 100,
-          offset: params?.offset ?? 0
+          offset: params?.offset ?? 0,
         };
       }),
       tap(() => {
@@ -64,7 +64,7 @@ export class CouponService {
         this.error.set(new Error(errorMessage));
         this.isLoading.set(false);
         return throwError(() => new Error(errorMessage));
-      })
+      }),
     );
   }
 
@@ -79,13 +79,7 @@ export class CouponService {
     this.isLoading.set(true);
     this.error.set(null);
 
-    return from(
-      this.supabase.client
-        .from('coupons')
-        .select('*')
-        .eq('id', couponId)
-        .single()
-    ).pipe(
+    return from(this.supabase.client.from('coupons').select('*').eq('id', couponId).single()).pipe(
       map(({ data, error }) => {
         if (error) {
           throw error;
@@ -105,7 +99,7 @@ export class CouponService {
         this.error.set(new Error(errorMessage));
         this.isLoading.set(false);
         return throwError(() => new Error(errorMessage));
-      })
+      }),
     );
   }
 }

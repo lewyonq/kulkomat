@@ -10,6 +10,7 @@ Widok Coupons to chroniony widok aplikacji, który umożliwia zalogowanym użytk
 - **Ochrona**: Widok chroniony przez `authGuard`
 - **Lazy loading**: Komponent ładowany asynchronicznie
 - **Konfiguracja w `app.routes.ts`**:
+
 ```typescript
 {
   path: 'coupons',
@@ -38,6 +39,7 @@ CouponsComponent (Page Container)
 **Opis komponentu**: Główny kontener strony kuponów. Zarządza stanem ładowania, pobieraniem danych z API, obsługą błędów i wyświetlaniem listy kuponów. Odpowiada za sortowanie kuponów (aktywne na górze, posortowane od najnowszych).
 
 **Główne elementy HTML**:
+
 - Kontener główny z gradientowym tłem
 - Nagłówek strony z tytułem "Moje kupony"
 - Stan ładowania (spinner + tekst)
@@ -47,22 +49,26 @@ CouponsComponent (Page Container)
 - Przycisk odświeżania (opcjonalnie)
 
 **Komponenty dzieci**:
+
 - `CouponCardComponent` - wyświetlany dla każdego kuponu w pętli
 - Opcjonalnie: `EmptyStateComponent` - gdy lista kuponów jest pusta
 
 **Obsługiwane zdarzenia**:
+
 - `ngOnInit()` - inicjalizacja, pobieranie kuponów
 - `ngOnDestroy()` - cleanup subskrypcji
 - `onRetry()` - ponowne pobieranie danych po błędzie
 - `onRefresh()` - manualne odświeżenie listy kuponów
 
 **Warunki walidacji**:
+
 - Użytkownik musi być zalogowany (weryfikowane przez `authGuard`)
 - Kupony sortowane według statusu (aktywne > nieaktywne) i daty utworzenia (najnowsze pierwsze)
 - Kupony wygasłe (`expires_at < now()`) traktowane jako nieaktywne
 - Kupony wykorzystane (`status === 'used'`) traktowane jako nieaktywne
 
 **Typy**:
+
 - `CouponDTO` - dane kuponu z API
 - `CouponsListDTO` - lista kuponów z paginacją
 - `CouponQueryParams` - parametry zapytania
@@ -75,6 +81,7 @@ CouponsComponent (Page Container)
 **Opis komponentu**: Komponent prezentacyjny wyświetlający pojedynczy kupon. Wizualnie rozróżnia typy kuponów (ikona, kolor) oraz statusy (aktywny, wykorzystany, wygasły). Wyświetla kluczowe informacje: typ, wartość, datę wygaśnięcia i status.
 
 **Główne elementy HTML**:
+
 - Kontener karty z warunkowym stylowaniem (aktywny/nieaktywny)
 - Sekcja ikony z gradientem (zależnym od typu kuponu)
 - Ikona SVG (ticket dla free_scoop, percent dla percentage, coins dla amount)
@@ -89,6 +96,7 @@ CouponsComponent (Page Container)
 **Obsługiwane zdarzenia**: Brak (komponent tylko do odczytu)
 
 **Warunki walidacji**:
+
 - Kupon aktywny: `status === 'active'` AND `expires_at > now()`
 - Kupon wykorzystany: `status === 'used'`
 - Kupon wygasły: `status === 'active'` AND `expires_at <= now()`
@@ -97,11 +105,13 @@ CouponsComponent (Page Container)
 - Dla typu `amount`: `value > 0`
 
 **Typy**:
+
 - `CouponCardViewModel` - model widoku kuponu
 - `CouponType` - enum typu kuponu
 - `CouponStatus` - enum statusu kuponu
 
 **Propsy**:
+
 ```typescript
 @Input() coupon!: CouponCardViewModel;
 ```
@@ -211,19 +221,19 @@ protected refreshing = signal<boolean>(false);
 protected coupons = signal<CouponCardViewModel[]>([]);
 
 // Computed states
-protected activeCoupons = computed(() => 
+protected activeCoupons = computed(() =>
   this.coupons().filter(c => c.isActive)
 );
 
-protected inactiveCoupons = computed(() => 
+protected inactiveCoupons = computed(() =>
   this.coupons().filter(c => !c.isActive)
 );
 
-protected isEmpty = computed(() => 
+protected isEmpty = computed(() =>
   this.coupons().length === 0
 );
 
-protected activeCouponsCount = computed(() => 
+protected activeCouponsCount = computed(() =>
   this.activeCoupons().length
 );
 ```
@@ -236,11 +246,11 @@ Funkcja pomocnicza do transformacji `CouponDTO` na `CouponCardViewModel`:
 private transformCouponToViewModel(dto: CouponDTO): CouponCardViewModel {
   const now = new Date();
   const expiresAt = new Date(dto.expires_at);
-  
+
   const isExpired = expiresAt <= now;
   const isUsed = dto.status === 'used';
   const isActive = !isExpired && !isUsed;
-  
+
   return {
     id: dto.id,
     type: dto.type,
@@ -281,7 +291,6 @@ export class CouponService {
    */
   getUserCoupons(params?: CouponQueryParams): Observable<CouponsListDTO> {
     // Implementacja z użyciem Supabase client
-
   }
 }
 ```
@@ -289,14 +298,17 @@ export class CouponService {
 ### Typy żądania i odpowiedzi
 
 **Żądanie**:
+
 - Metoda: `GET`
 - Endpoint: Supabase query na tabeli `coupons`
 - Parametry: `CouponQueryParams` (opcjonalne filtry)
 - Headers: Authorization (automatycznie przez Supabase client)
 
 **Odpowiedź**:
+
 - Typ: `CouponsListDTO`
 - Struktura:
+
 ```typescript
 {
   coupons: CouponDTO[],
@@ -322,7 +334,7 @@ private loadCoupons(): void {
       const viewModels = response.coupons
         .map(dto => this.transformCouponToViewModel(dto))
         .sort(this.sortCoupons);
-      
+
       this.coupons.set(viewModels);
       this.isLoading.set(false);
     },
@@ -341,6 +353,7 @@ private loadCoupons(): void {
 **Akcja**: Użytkownik wchodzi na stronę `/coupons`
 
 **Przepływ**:
+
 1. Guard `authGuard` weryfikuje autentykację
 2. Komponent ładuje się i wyświetla stan ładowania
 3. Wywołanie API do pobrania kuponów
@@ -355,6 +368,7 @@ private loadCoupons(): void {
 **Akcja**: Użytkownik klika przycisk "Odśwież"
 
 **Przepływ**:
+
 1. Ustawienie flagi `refreshing = true`
 2. Wywołanie API
 3. Aktualizacja stanu `coupons`
@@ -367,6 +381,7 @@ private loadCoupons(): void {
 **Akcja**: Użytkownik klika "Spróbuj ponownie" po błędzie
 
 **Przepływ**:
+
 1. Wywołanie `onRetry()`
 2. Ponowne wywołanie `loadCoupons()`
 3. Wyświetlenie stanu ładowania
@@ -379,6 +394,7 @@ private loadCoupons(): void {
 **Akcja**: Użytkownik informuje sprzedawcę o chęci wykorzystania kuponu
 
 **Przepływ** (poza aplikacją klienta):
+
 1. Klient pokazuje kupon sprzedawcy
 2. Sprzedawca weryfikuje kupon w panelu administracyjnym po `user_id`
 3. Sprzedawca ręcznie nalicza rabat
@@ -403,7 +419,7 @@ private loadCoupons(): void {
   - Aktywny: `status === 'active'` AND `expires_at > now()`
   - Wykorzystany: `status === 'used'`
   - Wygasły: `status === 'active'` AND `expires_at <= now()`
-- **Wpływ na UI**: 
+- **Wpływ na UI**:
   - Aktywny: pełne kolory, brak wyszarzenia, badge "Aktywny"
   - Wykorzystany: wyszarzenie, badge "Wykorzystany"
   - Wygasły: wyszarzenie, badge "Wygasły"
@@ -438,11 +454,13 @@ private loadCoupons(): void {
 **Scenariusz**: Brak połączenia z internetem lub serwer niedostępny
 
 **Obsługa**:
+
 - Wyświetlenie stanu błędu z ikoną
 - Komunikat: "Nie udało się połączyć z serwerem. Sprawdź połączenie internetowe."
 - Przycisk "Spróbuj ponownie"
 
 **Kod**:
+
 ```typescript
 if (message.includes('network') || message.includes('fetch')) {
   return 'Nie udało się połączyć z serwerem. Sprawdź połączenie internetowe.';
@@ -454,10 +472,12 @@ if (message.includes('network') || message.includes('fetch')) {
 **Scenariusz**: Sesja użytkownika wygasła
 
 **Obsługa**:
+
 - Wyświetlenie komunikatu: "Sesja wygasła. Zaloguj się ponownie."
 - Automatyczne przekierowanie do `/login` (przez guard)
 
 **Kod**:
+
 ```typescript
 if (message.includes('not authenticated') || message.includes('unauthorized')) {
   this.router.navigate(['/login']);
@@ -470,18 +490,20 @@ if (message.includes('not authenticated') || message.includes('unauthorized')) {
 **Scenariusz**: Błąd API podczas pobierania kuponów
 
 **Obsługa**:
+
 - Wyświetlenie stanu błędu
 - Komunikat: "Wystąpił błąd podczas ładowania kuponów. Spróbuj ponownie później."
 - Przycisk "Spróbuj ponownie"
 - Logowanie błędu do konsoli
 
 **Kod**:
+
 ```typescript
 error: (err) => {
   this.error.set(err);
   this.isLoading.set(false);
   console.error('Failed to load coupons:', err);
-}
+};
 ```
 
 ### Pusta lista kuponów
@@ -489,12 +511,14 @@ error: (err) => {
 **Scenariusz**: Użytkownik nie ma żadnych kuponów
 
 **Obsługa**:
+
 - Wyświetlenie przyjaznego stanu pustego
 - Ikona kuponu
 - Komunikat: "Nie masz jeszcze żadnych kuponów"
 - Podpowiedź: "Zbieraj pieczątki, aby otrzymać darmową gałkę!"
 
 **Kod**:
+
 ```typescript
 @if (isEmpty()) {
   <div class="empty-state">
@@ -508,11 +532,13 @@ error: (err) => {
 **Scenariusz**: Nieprawidłowy format daty w `expires_at`
 
 **Obsługa**:
+
 - Fallback do wyświetlenia surowej daty
 - Logowanie ostrzeżenia do konsoli
 - Nie blokowanie renderowania komponentu
 
 **Kod**:
+
 ```typescript
 private formatExpiryDate(dateString: string): string {
   try {
@@ -531,84 +557,96 @@ private formatExpiryDate(dateString: string): string {
 ### Krok 1: Przygotowanie typów
 
 1.1. Dodać nowe typy view models do `src/app/types/view-models.ts`:
-   - `CouponCardViewModel`
-   - `CouponsViewModel`
+
+- `CouponCardViewModel`
+- `CouponsViewModel`
 
 ### Krok 2: Stworzenie serwisu CouponService
 
 2.1. Utworzyć plik `src/app/services/coupon.service.ts`
 
 2.2. Zaimplementować metodę `getUserCoupons()`:
-   - Użyć Supabase client do query tabeli `coupons`
-   - Filtrować po `user_id` zalogowanego użytkownika
-   - Zwrócić Observable z `CouponsListDTO`
 
-2.3. Dodać obsługę błędów i retry logic
+- Użyć Supabase client do query tabeli `coupons`
+- Filtrować po `user_id` zalogowanego użytkownika
+- Zwrócić Observable z `CouponsListDTO`
 
-2.4. Napisać testy jednostkowe dla serwisu
+  2.3. Dodać obsługę błędów i retry logic
+
+  2.4. Napisać testy jednostkowe dla serwisu
 
 ### Krok 3: Implementacja CouponCardComponent
 
 3.1. Utworzyć plik `src/app/components/coupons/coupon-card.component.ts`
 
 3.2. Zdefiniować interfejs komponentu:
-   - Input: `coupon: CouponCardViewModel`
-   - Standalone component z CommonModule
 
-3.3. Zaimplementować template:
-   - Kontener karty z warunkowym stylowaniem
-   - Sekcja ikony z gradientem
-   - Ikony SVG dla każdego typu (ticket, percent, coins)
-   - Sekcja treści (tytuł, opis, data)
-   - Badge statusu
+- Input: `coupon: CouponCardViewModel`
+- Standalone component z CommonModule
 
-3.4. Zaimplementować style:
-   - Responsywny design (mobile-first)
-   - Różne gradienty dla typów kuponów
-   - Wyszarzenie dla nieaktywnych kuponów
-   - Animacje hover (tylko dla aktywnych)
+  3.3. Zaimplementować template:
 
-3.5. Dodać accessibility:
-   - Odpowiednie aria-labels
-   - Semantyczny HTML
-   - Kontrast kolorów (WCAG AA)
+- Kontener karty z warunkowym stylowaniem
+- Sekcja ikony z gradientem
+- Ikony SVG dla każdego typu (ticket, percent, coins)
+- Sekcja treści (tytuł, opis, data)
+- Badge statusu
+
+  3.4. Zaimplementować style:
+
+- Responsywny design (mobile-first)
+- Różne gradienty dla typów kuponów
+- Wyszarzenie dla nieaktywnych kuponów
+- Animacje hover (tylko dla aktywnych)
+
+  3.5. Dodać accessibility:
+
+- Odpowiednie aria-labels
+- Semantyczny HTML
+- Kontrast kolorów (WCAG AA)
 
 ### Krok 4: Implementacja CouponsComponent (Page)
 
 4.1. Utworzyć plik `src/app/pages/coupons/coupons.component.ts`
 
 4.2. Zdefiniować stan komponentu:
-   - Signals dla loading, error, coupons
-   - Computed signals dla aktywnych/nieaktywnych kuponów
 
-4.3. Zaimplementować lifecycle hooks:
-   - `ngOnInit()`: załadowanie kuponów
-   - `ngOnDestroy()`: cleanup subskrypcji
+- Signals dla loading, error, coupons
+- Computed signals dla aktywnych/nieaktywnych kuponów
 
-4.4. Zaimplementować funkcje pomocnicze:
-   - `transformCouponToViewModel()`
-   - `sortCoupons()`
-   - `getCouponTitle()`
-   - `getCouponDescription()`
-   - `formatExpiryDate()`
-   - `getIconGradient()`
-   - `getIconName()`
+  4.3. Zaimplementować lifecycle hooks:
 
-4.5. Zaimplementować template:
-   - Stan ładowania (spinner)
-   - Stan błędu (ikona + komunikat + retry)
-   - Stan pusty (gdy brak kuponów)
-   - Lista kuponów (grid layout)
-   - Przycisk odświeżania
+- `ngOnInit()`: załadowanie kuponów
+- `ngOnDestroy()`: cleanup subskrypcji
 
-4.6. Zaimplementować style:
-   - Gradientowe tło
-   - Responsywny grid dla kart
-   - Style dla stanów (loading, error, empty)
+  4.4. Zaimplementować funkcje pomocnicze:
+
+- `transformCouponToViewModel()`
+- `sortCoupons()`
+- `getCouponTitle()`
+- `getCouponDescription()`
+- `formatExpiryDate()`
+- `getIconGradient()`
+- `getIconName()`
+
+  4.5. Zaimplementować template:
+
+- Stan ładowania (spinner)
+- Stan błędu (ikona + komunikat + retry)
+- Stan pusty (gdy brak kuponów)
+- Lista kuponów (grid layout)
+- Przycisk odświeżania
+
+  4.6. Zaimplementować style:
+
+- Gradientowe tło
+- Responsywny grid dla kart
+- Style dla stanów (loading, error, empty)
 
 ### Krok 5: Konfiguracja routingu
 
 5.1. Dodać route do `src/app/app.routes.ts`:
+
 ```typescript
 {
   path: 'coupons',
@@ -620,30 +658,34 @@ private formatExpiryDate(dateString: string): string {
 ### Krok 6: Integracja z Dashboard
 
 6.1. Zaktualizować `DashboardComponent`:
-   - Pobrać liczbę aktywnych kuponów z API
-   - Przekazać `activeCouponsCount` do `CouponNavigationCardComponent`
 
-6.2. Opcjonalnie: dodać realtime subscription dla kuponów
+- Pobrać liczbę aktywnych kuponów z API
+- Przekazać `activeCouponsCount` do `CouponNavigationCardComponent`
+
+  6.2. Opcjonalnie: dodać realtime subscription dla kuponów
 
 ### Krok 7: Testowanie
 
 7.1. Testy jednostkowe:
-   - `CouponService.spec.ts`
-   - `CouponCardComponent.spec.ts`
-   - `CouponsComponent.spec.ts`
 
-7.2. Testy integracyjne:
-   - Routing do `/coupons`
-   - Ochrona przez `authGuard`
-   - Ładowanie i wyświetlanie kuponów
+- `CouponService.spec.ts`
+- `CouponCardComponent.spec.ts`
+- `CouponsComponent.spec.ts`
 
-7.3. Testy manualne:
-   - Różne typy kuponów (free_scoop, percentage, amount)
-   - Różne statusy (active, used, expired)
-   - Pusta lista kuponów
-   - Błędy sieciowe
-   - Responsywność (mobile, tablet, desktop)
-   - Accessibility (screen reader, keyboard navigation)
+  7.2. Testy integracyjne:
+
+- Routing do `/coupons`
+- Ochrona przez `authGuard`
+- Ładowanie i wyświetlanie kuponów
+
+  7.3. Testy manualne:
+
+- Różne typy kuponów (free_scoop, percentage, amount)
+- Różne statusy (active, used, expired)
+- Pusta lista kuponów
+- Błędy sieciowe
+- Responsywność (mobile, tablet, desktop)
+- Accessibility (screen reader, keyboard navigation)
 
 ### Krok 8: Optymalizacje
 

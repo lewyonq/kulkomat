@@ -11,6 +11,7 @@ Dashboard powinien być dostępny pod główną ścieżką aplikacji:
 **Ścieżka**: `/` lub `/dashboard`
 
 **Konfiguracja w app.routes.ts**:
+
 ```typescript
 {
   path: '',
@@ -46,6 +47,7 @@ DashboardComponent (Page Container)
 **Opis komponentu**: Główny kontener widoku Dashboard. Odpowiada za pobranie danych użytkownika z Supabase, zarządzanie stanem (loading, error), subskrypcję na realtime updates oraz orkiestrację komponentów potomnych.
 
 **Główne elementy HTML i komponenty dzieci**:
+
 - Loading spinner (podczas ładowania danych)
 - Error message z przyciskiem "Spróbuj ponownie" (w przypadku błędu)
 - Header z powitaniem użytkownika
@@ -55,18 +57,21 @@ DashboardComponent (Page Container)
 - Opcjonalnie: Floating Action Button (FAB) do ręcznego odświeżenia
 
 **Obsługiwane zdarzenia**:
+
 - `ngOnInit()`: Inicjalizacja komponentu, pobranie profilu użytkownika, subskrypcja Realtime
 - `ngOnDestroy()`: Cleanup - anulowanie subskrypcji Realtime
 - `onRetry()`: Ponowna próba pobrania danych po błędzie
 - `onRefresh()`: Ręczne odświeżenie danych (opcjonalnie)
 
 **Warunki walidacji**:
+
 - Użytkownik musi być zalogowany (weryfikowane przez AuthGuard)
 - Profil użytkownika musi istnieć w bazie danych
 - `short_id` nie może być null/undefined
 - `stamp_count` musi być liczbą od 0 do 10
 
 **Typy (DTO i ViewModel)**:
+
 - `ProfileDTO` (input z Supabase)
 - `DashboardViewModel` (wewnętrzny stan komponentu)
 - `StampProgressViewModel` (computed state)
@@ -80,6 +85,7 @@ DashboardComponent (Page Container)
 **Opis komponentu**: Komponent prezentacyjny odpowiedzialny za wyświetlenie unikalnego identyfikatora użytkownika (short_id) w dużej, czytelnej czcionce oraz wygenerowanie kodu QR. Kod QR umożliwi w przyszłości szybkie skanowanie przez sprzedawcę. Short_id jest wyświetlany w sposób łatwo czytelny z ekranu telefonu.
 
 **Główne elementy HTML i komponenty dzieci**:
+
 - Container z Material Design elevation/border
 - Label "Twój identyfikator" lub "Pokaż sprzedawcy"
 - Short_id w dużej czcionce (np. text-4xl, font-mono, letter-spacing)
@@ -87,13 +93,16 @@ DashboardComponent (Page Container)
 - Opcjonalnie: Przycisk "Kopiuj" do schowka
 
 **Obsługiwane zdarzenia**:
+
 - `onCopyToClipboard()`: Kopiowanie short_id do schowka (opcjonalnie)
 
 **Warunki walidacji**:
+
 - `shortId` nie może być pusty lub null
 - Jeśli `shortId` jest nieprawidłowy, wyświetl placeholder "Ładowanie..." lub komunikat błędu
 
 **Typy (DTO i ViewModel)**:
+
 ```typescript
 interface UserIdDisplayProps {
   shortId: string;
@@ -102,6 +111,7 @@ interface UserIdDisplayProps {
 ```
 
 **Propsy (Input)**:
+
 - `@Input() shortId: string` - wymagany, unikalny identyfikator użytkownika
 - `@Input() showQRCode: boolean = true` - opcjonalny, czy wyświetlać kod QR
 
@@ -112,6 +122,7 @@ interface UserIdDisplayProps {
 **Opis komponentu**: Komponent prezentacyjny wizualizujący postęp w zbieraniu pieczątek. Wyświetla aktualną liczbę zebranych pieczątek oraz liczbę potrzebną do otrzymania nagrody (10). Wizualizacja może być wykonana za pomocą ikon lodów, kółek lub progress bar.
 
 **Główne elementy HTML i komponenty dzieci**:
+
 - Container z tytułem "Twoje pieczątki" lub "Postęp"
 - Tekstowa reprezentacja: "X / 10 pieczątek"
 - Wizualna reprezentacja:
@@ -121,14 +132,17 @@ interface UserIdDisplayProps {
 - Tekst informacyjny: "Brakuje ci X pieczątek do darmowej gałki!"
 
 **Obsługiwane zdarzenia**:
+
 - Brak (komponent tylko do wyświetlania, brak interakcji użytkownika)
 
 **Warunki walidacji**:
+
 - `stampCount` musi być liczbą >= 0 i <= 10
 - Jeśli `stampCount` przekracza `maxStamps`, wyświetl błąd lub obetnij wartość do max
 - Jeśli `stampCount` === 10, wyświetl specjalny komunikat "Masz komplet! Wykorzystaj kupon."
 
 **Typy (DTO i ViewModel)**:
+
 ```typescript
 interface StampProgressProps {
   stampCount: number;
@@ -145,6 +159,7 @@ interface StampProgressViewModel {
 ```
 
 **Propsy (Input)**:
+
 - `@Input() stampCount: number` - wymagany, aktualna liczba pieczątek
 - `@Input() maxStamps: number = 10` - opcjonalny, maksymalna liczba pieczątek
 
@@ -155,6 +170,7 @@ interface StampProgressViewModel {
 **Opis komponentu**: Karta nawigacyjna prowadząca użytkownika do widoku z kuponami (`/coupons`). Wyświetla ikonę, tytuł oraz opcjonalnie badge z liczbą aktywnych kuponów. Karta jest interaktywna i reaguje na kliknięcie.
 
 **Główne elementy HTML i komponenty dzieci**:
+
 - Material Card (`mat-card` lub custom card zgodny z MD3)
 - Ikona kuponów (np. Material Icon `local_offer` lub `confirmation_number`)
 - Tytuł: "Moje kupony"
@@ -164,13 +180,16 @@ interface StampProgressViewModel {
 - Arrow icon sugerujący nawigację
 
 **Obsługiwane zdarzenia**:
+
 - `onClick()`: Nawigacja do `/coupons` za pomocą `Router.navigate()`
 
 **Warunki walidacji**:
+
 - Brak szczególnych warunków, komponent zawsze jest widoczny
 - Jeśli `activeCouponsCount` === 0 lub undefined, nie wyświetlaj badge
 
 **Typy (DTO i ViewModel)**:
+
 ```typescript
 interface CouponNavigationCardProps {
   activeCouponsCount?: number;
@@ -178,6 +197,7 @@ interface CouponNavigationCardProps {
 ```
 
 **Propsy (Input)**:
+
 - `@Input() activeCouponsCount?: number` - opcjonalny, liczba aktywnych kuponów do wyświetlenia w badge
 
 ---
@@ -187,38 +207,42 @@ interface CouponNavigationCardProps {
 ### 5.1. Istniejące DTO (z `src/app/types/index.ts`)
 
 **ProfileDTO**:
+
 ```typescript
 type ProfileDTO = {
-  id: string;              // UUID użytkownika z Supabase Auth
-  short_id: string;        // 6-8 znakowy alfanumeryczny identyfikator (np. "A1B2C3D")
-  stamp_count: number;     // Liczba zebranych pieczątek (0-10)
-  created_at: string;      // ISO timestamp utworzenia profilu
-}
+  id: string; // UUID użytkownika z Supabase Auth
+  short_id: string; // 6-8 znakowy alfanumeryczny identyfikator (np. "A1B2C3D")
+  stamp_count: number; // Liczba zebranych pieczątek (0-10)
+  created_at: string; // ISO timestamp utworzenia profilu
+};
 ```
 
 ### 5.2. Nowe typy ViewModel (do stworzenia)
 
 **DashboardViewModel** - główny model widoku Dashboard:
+
 ```typescript
 interface DashboardViewModel {
   profile: ProfileDTO;
   stampProgress: StampProgressViewModel;
-  activeCouponsCount?: number;  // Opcjonalnie na przyszłość
+  activeCouponsCount?: number; // Opcjonalnie na przyszłość
 }
 ```
 
 **StampProgressViewModel** - computed state dla postępu pieczątek:
+
 ```typescript
 interface StampProgressViewModel {
-  current: number;        // Aktualna liczba pieczątek (z profile.stamp_count)
-  total: number;          // Maksymalna liczba pieczątek (zawsze 10)
-  percentage: number;     // Procentowy postęp: (current / total) * 100
+  current: number; // Aktualna liczba pieczątek (z profile.stamp_count)
+  total: number; // Maksymalna liczba pieczątek (zawsze 10)
+  percentage: number; // Procentowy postęp: (current / total) * 100
   stampsToReward: number; // Pozostałe pieczątki do nagrody: total - current
-  isComplete: boolean;    // Czy zebrano wszystkie pieczątki: current === total
+  isComplete: boolean; // Czy zebrano wszystkie pieczątki: current === total
 }
 ```
 
 **UserIdDisplayViewModel** (opcjonalnie):
+
 ```typescript
 interface UserIdDisplayViewModel {
   shortId: string;
@@ -229,6 +253,7 @@ interface UserIdDisplayViewModel {
 ### 5.3. Typy Props dla komponentów
 
 **UserIdDisplayProps**:
+
 ```typescript
 interface UserIdDisplayProps {
   shortId: string;
@@ -237,6 +262,7 @@ interface UserIdDisplayProps {
 ```
 
 **StampProgressProps**:
+
 ```typescript
 interface StampProgressProps {
   stampCount: number;
@@ -245,6 +271,7 @@ interface StampProgressProps {
 ```
 
 **CouponNavigationCardProps**:
+
 ```typescript
 interface CouponNavigationCardProps {
   activeCouponsCount?: number;
@@ -260,6 +287,7 @@ Dashboard wykorzystuje **Angular Signals** do reaktywnego zarządzania stanem. N
 ### 6.2. State w DashboardComponent
 
 **Loading states**:
+
 ```typescript
 protected isLoading = signal<boolean>(true);
 protected error = signal<Error | null>(null);
@@ -267,11 +295,13 @@ protected refreshing = signal<boolean>(false); // dla pull-to-refresh
 ```
 
 **Data states**:
+
 ```typescript
 protected profile = signal<ProfileDTO | null>(null);
 ```
 
 **Computed states** (automatycznie przeliczane na podstawie `profile`):
+
 ```typescript
 protected stampProgress = computed<StampProgressViewModel | null>(() => {
   const currentProfile = this.profile();
@@ -297,13 +327,16 @@ protected shortId = computed<string | null>(() => {
 ### 6.3. Lifecycle i Realtime Updates
 
 **ngOnInit**:
+
 1. Wywołanie `loadProfile()` do pobrania danych użytkownika
 2. Subskrypcja na Realtime updates z Supabase dla tabeli `profiles`
 
 **ngOnDestroy**:
+
 1. Cleanup subskrypcji Realtime
 
 **Realtime subscription**:
+
 ```typescript
 private setupRealtimeSubscription(): void {
   const userId = this.supabase.user()?.id;
@@ -343,6 +376,7 @@ Dla widoku Dashboard wystarczy lokalny state w komponencie. Jeśli w przyszłoś
 **Typ odpowiedzi**: `Observable<ProfileDTO>`
 
 **Przykład użycia w DashboardComponent**:
+
 ```typescript
 private loadProfile(): void {
   this.isLoading.set(true);
@@ -364,6 +398,7 @@ private loadProfile(): void {
 ```
 
 **Obsługa błędów**:
+
 - Network error: Wyświetlenie komunikatu "Nie udało się połączyć z serwerem. Sprawdź połączenie internetowe."
 - User not authenticated: Przekierowanie do `/login` (obsługiwane przez AuthGuard)
 - Profile not found: Wyświetlenie komunikatu "Profil nie został znaleziony. Spróbuj wylogować się i zalogować ponownie."
@@ -385,10 +420,12 @@ private loadProfile(): void {
 ### 7.3. Przyszłe API (poza zakresem MVP)
 
 **getFlavors()**: Pobieranie listy smaków lodów
+
 - Typ odpowiedzi: `Observable<FlavorDTO[]>`
 - Status: Brak implementacji w bazie danych i API
 
 **getActiveCouponsCount()**: Pobieranie liczby aktywnych kuponów
+
 - Typ odpowiedzi: `Observable<number>`
 - Status: Do implementacji w przyszłości dla badge w CouponNavigationCard
 
@@ -399,6 +436,7 @@ private loadProfile(): void {
 **Akcja**: Użytkownik nawiguje do `/` lub `/dashboard` po zalogowaniu
 
 **Przebieg**:
+
 1. AuthGuard weryfikuje czy użytkownik jest zalogowany
 2. Jeśli nie - przekierowanie do `/login`
 3. Jeśli tak - DashboardComponent się ładuje
@@ -416,6 +454,7 @@ private loadProfile(): void {
 **Akcja**: Użytkownik klika na `CouponNavigationCardComponent`
 
 **Przebieg**:
+
 1. Event handler `onClick()` w komponencie
 2. Wywołanie `this.router.navigate(['/coupons'])`
 3. Angular Router przechodzi do widoku Coupons
@@ -427,6 +466,7 @@ private loadProfile(): void {
 **Akcja**: Użytkownik klika przycisk "Kopiuj" w `UserIdDisplayComponent`
 
 **Przebieg**:
+
 1. Event handler `onCopyToClipboard()`
 2. Użycie `navigator.clipboard.writeText(this.shortId)`
 3. Wyświetlenie toast notification "Skopiowano ID do schowka"
@@ -438,6 +478,7 @@ private loadProfile(): void {
 **Akcja**: Sprzedawca dodaje pieczątkę w panelu administracyjnym
 
 **Przebieg**:
+
 1. Sprzedawca dodaje pieczątkę w `/admin`
 2. Supabase aktualizuje rekord w tabeli `profiles` (stamp_count++)
 3. Realtime event jest wysyłany do klienta
@@ -453,12 +494,14 @@ private loadProfile(): void {
 **Akcja**: Użytkownik klika "Spróbuj ponownie" po błędzie ładowania
 
 **Przebieg**:
+
 1. Event handler `onRetry()` w DashboardComponent
 2. Ponowne wywołanie `loadProfile()`
 3. Wyświetlenie loading spinnera
 4. Próba pobrania danych
 
 **Wynik**:
+
 - Sukces: Dane są wyświetlone
 - Błąd: Ponowne wyświetlenie komunikatu o błędzie
 
@@ -467,6 +510,7 @@ private loadProfile(): void {
 **Akcja**: Użytkownik wykonuje gest pull-to-refresh (przeciągnięcie w dół)
 
 **Przebieg**:
+
 1. Detekcja gestu (np. za pomocą biblioteki lub touch events)
 2. Ustawienie `refreshing` signal na true
 3. Wywołanie `loadProfile()`
@@ -483,6 +527,7 @@ private loadProfile(): void {
 **Warunek**: Użytkownik musi być zalogowany (`isAuthenticated === true`)
 
 **Weryfikacja**:
+
 ```typescript
 canActivate(): boolean {
   const isAuth = this.supabase.isAuthenticated();
@@ -503,12 +548,14 @@ canActivate(): boolean {
 **Weryfikacja**: Sprawdzenie czy `getCurrentUserProfile()` zwraca dane
 
 **Wpływ na UI**:
+
 - Jeśli profil istnieje: Normalne wyświetlenie widoku
 - Jeśli profil nie istnieje: Wyświetlenie error message "Profil nie został znaleziony"
 
 **Warunek 2**: `short_id` nie może być null/undefined
 
 **Weryfikacja**:
+
 ```typescript
 const shortId = this.shortId();
 if (!shortId) {
@@ -517,12 +564,14 @@ if (!shortId) {
 ```
 
 **Wpływ na UI**:
+
 - Jeśli `short_id` jest dostępny: Wyświetlenie w UserIdDisplayComponent
 - Jeśli nie: Placeholder "Ładowanie..." lub error message
 
 **Warunek 3**: `stamp_count` musi być w zakresie 0-10
 
 **Weryfikacja**:
+
 ```typescript
 const stampCount = this.profile()?.stamp_count ?? 0;
 if (stampCount < 0 || stampCount > 10) {
@@ -532,6 +581,7 @@ if (stampCount < 0 || stampCount > 10) {
 ```
 
 **Wpływ na UI**:
+
 - Prawidłowy `stamp_count`: Normalne wyświetlenie postępu
 - Nieprawidłowy: Obcięcie wartości do 0 lub 10, logowanie błędu
 
@@ -540,6 +590,7 @@ if (stampCount < 0 || stampCount > 10) {
 **Warunek**: `shortId` prop nie może być pusty
 
 **Weryfikacja**:
+
 ```typescript
 @Input() shortId!: string;
 
@@ -551,6 +602,7 @@ ngOnInit() {
 ```
 
 **Wpływ na UI**:
+
 - Prawidłowy `shortId`: Wyświetlenie ID i QR kodu
 - Nieprawidłowy: Placeholder "---" lub error state
 
@@ -559,6 +611,7 @@ ngOnInit() {
 **Warunek 1**: `stampCount` >= 0
 
 **Weryfikacja**:
+
 ```typescript
 @Input() stampCount!: number;
 
@@ -572,6 +625,7 @@ get normalizedStampCount(): number {
 **Warunek 2**: Jeśli `stampCount === 10`, wyświetl specjalny komunikat
 
 **Weryfikacja**:
+
 ```typescript
 get isComplete(): boolean {
   return this.stampCount >= this.maxStamps;
@@ -579,6 +633,7 @@ get isComplete(): boolean {
 ```
 
 **Wpływ na UI**:
+
 - Jeśli complete: Komunikat "Masz komplet! Wykorzystaj kupon na darmową gałkę."
 - Jeśli nie: Standardowy komunikat "Brakuje ci X pieczątek"
 
@@ -591,13 +646,12 @@ get isComplete(): boolean {
 **Komunikat**: "Nie udało się pobrać danych. Sprawdź połączenie internetowe."
 
 **UI**:
+
 ```html
 <div class="error-container">
   <mat-icon>error_outline</mat-icon>
   <p class="error-message">{{ error() }}</p>
-  <button mat-raised-button color="primary" (click)="onRetry()">
-    Spróbuj ponownie
-  </button>
+  <button mat-raised-button color="primary" (click)="onRetry()">Spróbuj ponownie</button>
 </div>
 ```
 
@@ -664,6 +718,7 @@ get isComplete(): boolean {
 **Plik**: `src/app/guards/auth.guard.ts`
 
 **Zadania**:
+
 - Stworzenie functional guard za pomocą `canActivateFn`
 - Sprawdzenie `isAuthenticated` signal z Supabase service
 - Jeśli nie zalogowany: przekierowanie do `/login`
@@ -678,11 +733,13 @@ get isComplete(): boolean {
 **Plik**: `src/app/app.routes.ts`
 
 **Zadania**:
+
 - Dodanie route dla Dashboard (`''` lub `'dashboard'`)
 - Dodanie `canActivate: [authGuard]`
 - Konfiguracja lazy loading
 
 **Przykład**:
+
 ```typescript
 {
   path: '',
@@ -698,6 +755,7 @@ get isComplete(): boolean {
 **Plik**: `src/app/types/view-models.ts` (nowy plik)
 
 **Zadania**:
+
 - Zdefiniowanie `DashboardViewModel`
 - Zdefiniowanie `StampProgressViewModel`
 - Zdefiniowanie props interfaces dla komponentów dzieci
@@ -710,6 +768,7 @@ get isComplete(): boolean {
 **Plik**: `src/app/components/dashboard/user-id-display.component.ts`
 
 **Zadania**:
+
 - Komponent standalone z inline template
 - Input prop: `shortId`
 - Input prop: `showQRCode` (default: true)
@@ -730,6 +789,7 @@ get isComplete(): boolean {
 **Plik**: `src/app/components/dashboard/stamp-progress.component.ts`
 
 **Zadania**:
+
 - Komponent standalone z inline template
 - Input prop: `stampCount`
 - Input prop: `maxStamps` (default: 10)
@@ -752,6 +812,7 @@ get isComplete(): boolean {
 **Plik**: `src/app/components/dashboard/coupon-navigation-card.component.ts`
 
 **Zadania**:
+
 - Komponent standalone z inline template
 - Input prop: `activeCouponsCount` (opcjonalny)
 - Material Card lub custom card (zgodny z MD3)
@@ -773,6 +834,7 @@ get isComplete(): boolean {
 **Plik**: `src/app/pages/dashboard/dashboard.component.ts`
 
 **Zadania**:
+
 - Komponent standalone page-level
 - Importy: `UserIdDisplayComponent`, `StampProgressComponent`, `CouponNavigationCardComponent`
 - Dependency Injection: `Supabase` service, `Router`
@@ -803,6 +865,7 @@ get isComplete(): boolean {
 ### Krok 8: Implementacja Realtime subscription
 
 **Zadania** (w DashboardComponent):
+
 - Stworzenie prywatnej zmiennej: `realtimeSubscription: RealtimeChannel | null`
 - Metoda `setupRealtimeSubscription()`:
   - Pobranie `userId` z `supabase.user()`
@@ -813,6 +876,7 @@ get isComplete(): boolean {
 - Graceful error handling: Jeśli subscription fail, log warning
 
 **Testowanie**:
+
 - Otworzyć Dashboard w przeglądarce
 - W innej zakładce/oknie otworzyć panel admin (lub Supabase Dashboard)
 - Zaktualizować `stamp_count` w bazie
@@ -823,6 +887,7 @@ get isComplete(): boolean {
 ### Krok 9: Stylowanie i responsive design
 
 **Zadania**:
+
 - Dashboard layout:
   - Mobile: Vertical stack (flex-col)
   - Desktop: Możliwy grid 2-kolumnowy dla większych ekranów
@@ -837,16 +902,19 @@ get isComplete(): boolean {
 ### Krok 10: Dodanie opcjonalnych features
 
 **Pull-to-refresh** (opcjonalnie):
+
 - Instalacja biblioteki: `npm install @angular/cdk` (jeśli nie ma)
 - Użycie touch events lub biblioteki jak `ionic` refresh component
 - Event handler: `onPullRefresh()` → `loadProfile()`
 
 **Toast notifications** (opcjonalnie):
+
 - Instalacja Angular Material Snackbar: już dostępne w Material
 - Wyświetlenie toast po realtime update: "Otrzymałeś pieczątkę!"
 - Service: `MatSnackBar.open()`
 
 **Copy to clipboard** (opcjonalnie):
+
 - W UserIdDisplayComponent: Przycisk "Kopiuj"
 - Użycie `navigator.clipboard.writeText()`
 - Toast po skopiowaniu: "Skopiowano ID do schowka"
@@ -856,16 +924,19 @@ get isComplete(): boolean {
 ### Krok 11: Testowanie i walidacja
 
 **Unit testy**:
+
 - DashboardComponent: Testowanie `loadProfile()`, computed signals
 - UserIdDisplayComponent: Testowanie generowania QR
 - StampProgressComponent: Testowanie obliczeń procentowych
 - CouponNavigationCardComponent: Testowanie nawigacji
 
 **Integration testy**:
+
 - Testowanie AuthGuard: Czy przekierowuje niezalogowanych
 - Testowanie Realtime: Czy aktualizuje dane po zmianie w bazie
 
 **Manual testing**:
+
 - Scenariusz 1: Zalogowanie i wejście na Dashboard
 - Scenariusz 2: Wyświetlenie short_id i QR kodu
 - Scenariusz 3: Realtime update pieczątek
@@ -874,6 +945,7 @@ get isComplete(): boolean {
 - Scenariusz 6: Responsive design (mobile, desktop)
 
 **Accessibility testing**:
+
 - Sprawdzenie czy wszystkie interaktywne elementy mają proper ARIA labels
 - Keyboard navigation
 - Screen reader compatibility
@@ -883,20 +955,24 @@ get isComplete(): boolean {
 ### Krok 12: Optymalizacja i finalizacja
 
 **Performance**:
+
 - Sprawdzenie czy nie ma memory leaks (cleanup subscriptions)
 - Lazy loading komponentów
 - OnPush change detection strategy (jeśli możliwe)
 
 **Code quality**:
+
 - Linting: `ng lint`
 - Formatting: Prettier
 - Code review
 
 **Dokumentacja**:
+
 - Dodanie JSDoc comments do komponentów i metod
 - README update (jeśli potrzebne)
 
 **Deployment**:
+
 - Build: `ng build`
 - Testowanie production build
 - Deploy do DigitalOcean

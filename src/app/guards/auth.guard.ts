@@ -15,17 +15,17 @@ import { Supabase } from '../services/supabase';
  *   canActivate: [authGuard]
  * }
  */
-export const authGuard: CanActivateFn = async (route, state) => {
+export const authGuard: CanActivateFn = async () => {
   const supabase = inject(Supabase);
   const router = inject(Router);
 
   // Wait for auth initialization to complete
   while (supabase.isLoading()) {
-    await new Promise(resolve => setTimeout(resolve, 50));
+    await new Promise((resolve) => setTimeout(resolve, 50));
   }
 
   const isAuth = supabase.isAuthenticated();
-  
+
   if (!isAuth) {
     router.navigate(['/login']);
     return false;
