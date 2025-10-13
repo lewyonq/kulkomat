@@ -73,16 +73,15 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
 
           <!-- Main Content -->
           <main class="dashboard-content">
-            <!-- Stamp Progress -->
-            <section class="section">
-              <app-stamp-progress [stampCount]="profile()!.stamp_count" [maxStamps]="10">
-              </app-stamp-progress>
-            </section>
-
             <!-- Coupon Navigation -->
             <section class="section">
               <app-coupon-navigation-card [activeCouponsCount]="activeCouponsCount()">
               </app-coupon-navigation-card>
+            </section>
+            <!-- Stamp Progress -->
+            <section class="section">
+              <app-stamp-progress [stampCount]="profile()!.stamp_count" [maxStamps]="10">
+              </app-stamp-progress>
             </section>
           </main>
 
@@ -123,7 +122,6 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
     `
       .dashboard-container {
         min-height: 100vh;
-        background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
         padding: 1rem;
       }
 
@@ -246,9 +244,7 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
       }
 
       .dashboard-content {
-        display: flex;
         flex-direction: column;
-        gap: 1rem;
       }
 
       .section {
@@ -268,8 +264,8 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
         gap: 0.5rem;
         padding: 0.75rem 1.5rem;
         background: white;
-        color: #6750a4;
-        border: 2px solid #6750a4;
+        color: rgba(219, 39, 119, 1);
+        border: 2px solid rgba(219, 39, 119, 1);
         border-radius: 8px;
         font-size: 0.875rem;
         font-weight: 600;
@@ -278,7 +274,7 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
       }
 
       .refresh-button:hover:not(:disabled) {
-        background: #f5f3ff;
+        background: rgba(236, 72, 153, 0.1);
         transform: translateY(-1px);
       }
 
@@ -294,35 +290,6 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
 
       .refresh-icon.spinning {
         animation: spin 1s linear infinite;
-      }
-
-      /* Responsive Design */
-      @media (max-width: 640px) {
-        .dashboard-container {
-          padding: 0.5rem;
-        }
-
-        .dashboard-header {
-          padding: 1.5rem 0.5rem;
-        }
-
-        .welcome-title {
-          font-size: 1.5rem;
-        }
-
-        .welcome-subtitle {
-          font-size: 0.875rem;
-        }
-      }
-
-      @media (min-width: 768px) {
-        .dashboard-content {
-          gap: 1.5rem;
-        }
-
-        .welcome-title {
-          font-size: 2rem;
-        }
       }
     `,
   ],

@@ -343,7 +343,7 @@ import { UserIdDisplayComponent } from '../../components/profile/user-id-display
       .info-icon {
         width: 24px;
         height: 24px;
-        color: #6750a4;
+        color: rgba(219, 39, 119, 1);
         flex-shrink: 0;
         margin-top: 0.25rem;
       }
@@ -404,20 +404,26 @@ import { UserIdDisplayComponent } from '../../components/profile/user-id-display
       }
 
       .action-button.primary {
-        background: #6750a4;
+        background: linear-gradient(
+          135deg,
+          rgba(219, 39, 119, 1) 0%,
+          rgba(236, 72, 153, 1) 50%,
+          rgba(244, 114, 182, 1) 100%
+        );
         color: white;
       }
 
       .action-button.primary:hover {
-        background: #5842a0;
+        filter: brightness(1.1);
         transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(103, 80, 164, 0.3);
+        box-shadow: 0 4px 12px rgba(219, 39, 119, 0.4);
       }
 
       .action-button.secondary {
         background: white;
         color: #d32f2f;
         border: 2px solid #d32f2f;
+        margin-bottom: 2rem;
       }
 
       .action-button.secondary:hover {

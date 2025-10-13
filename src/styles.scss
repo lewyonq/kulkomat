@@ -1,67 +1,175 @@
 @use '@angular/material' as mat;
 @use './tailwind.css';
 
+/**
+ * Global CSS Variables - Pink Theme
+
+ * Usage:
+ * - Use semantic names (e.g., --color-primary) instead of specific shades
+ * - Prefer CSS variables over hardcoded colors
+ * - Use rgba() for colors that need opacity variations
+ */
+
 :root {
-  --md-sys-color-primary: rgb(154 63 96);
-  --md-sys-color-surface-tint: rgb(154 63 96);
-  --md-sys-color-on-primary: rgb(255 255 255);
-  --md-sys-color-primary-container: rgb(234 128 163);
-  --md-sys-color-on-primary-container: rgb(104 24 57);
-  --md-sys-color-secondary: rgb(0 107 88);
-  --md-sys-color-on-secondary: rgb(255 255 255);
-  --md-sys-color-secondary-container: rgb(69 223 189);
-  --md-sys-color-on-secondary-container: rgb(0 95 78);
-  --md-sys-color-tertiary: rgb(106 95 17);
-  --md-sys-color-on-tertiary: rgb(255 255 255);
-  --md-sys-color-tertiary-container: rgb(236 220 130);
-  --md-sys-color-on-tertiary-container: rgb(107 96 18);
-  --md-sys-color-error: rgb(178 33 31);
-  --md-sys-color-on-error: rgb(255 255 255);
-  --md-sys-color-error-container: rgb(213 59 52);
-  --md-sys-color-on-error-container: rgb(255 251 255);
-  --md-sys-color-background: rgb(255 248 248);
-  --md-sys-color-on-background: rgb(34 25 27);
-  --md-sys-color-surface: rgb(255 248 248);
-  --md-sys-color-on-surface: rgb(34 25 27);
-  --md-sys-color-surface-variant: rgb(246 220 225);
-  --md-sys-color-on-surface-variant: rgb(84 66 71);
-  --md-sys-color-outline: rgb(134 114 119);
-  --md-sys-color-outline-variant: rgb(217 192 198);
-  --md-sys-color-shadow: rgb(0 0 0);
-  --md-sys-color-scrim: rgb(0 0 0);
-  --md-sys-color-inverse-surface: rgb(56 46 48);
-  --md-sys-color-inverse-on-surface: rgb(254 237 239);
-  --md-sys-color-inverse-primary: rgb(255 177 199);
-  --md-sys-color-primary-fixed: rgb(255 217 226);
-  --md-sys-color-on-primary-fixed: rgb(62 0 29);
-  --md-sys-color-primary-fixed-dim: rgb(255 177 199);
-  --md-sys-color-on-primary-fixed-variant: rgb(124 40 73);
-  --md-sys-color-secondary-fixed: rgb(103 250 215);
-  --md-sys-color-on-secondary-fixed: rgb(0 32 25);
-  --md-sys-color-secondary-fixed-dim: rgb(67 221 187);
-  --md-sys-color-on-secondary-fixed-variant: rgb(0 81 66);
-  --md-sys-color-tertiary-fixed: rgb(244 228 137);
-  --md-sys-color-on-tertiary-fixed: rgb(32 28 0);
-  --md-sys-color-tertiary-fixed-dim: rgb(215 200 112);
-  --md-sys-color-on-tertiary-fixed-variant: rgb(81 71 0);
-  --md-sys-color-surface-dim: rgb(230 214 217);
-  --md-sys-color-surface-bright: rgb(255 248 248);
-  --md-sys-color-surface-container-lowest: rgb(255 255 255);
-  --md-sys-color-surface-container-low: rgb(255 240 242);
-  --md-sys-color-surface-container: rgb(251 234 237);
-  --md-sys-color-surface-container-high: rgb(245 228 231);
-  --md-sys-color-surface-container-highest: rgb(239 222 225);
+  /* ========================================
+     PRIMARY COLORS - Pink Theme
+     ======================================== */
+  
+  /* Main brand colors */
+  --color-primary: 219 39 119; /* rgb(219, 39, 119) - Pink 600 */
+  --color-primary-light: 236 72 153; /* rgb(236, 72, 153) - Pink 500 */
+  --color-primary-lighter: 244 114 182; /* rgb(244, 114, 182) - Pink 400 */
+  --color-primary-dark: 190 24 93; /* rgb(190, 24, 93) - Pink 700 */
+  --color-primary-darker: 154 63 96; /* rgb(154, 63, 96) - Pink 800 */
+  
+  /* Primary with alpha channel for overlays */
+  --color-primary-alpha-10: rgba(219, 39, 119, 0.1);
+  --color-primary-alpha-20: rgba(219, 39, 119, 0.2);
+  --color-primary-alpha-30: rgba(219, 39, 119, 0.3);
+  --color-primary-alpha-95: rgba(219, 39, 119, 0.95);
+  
+  /* ========================================
+     SURFACE & BACKGROUND COLORS
+     ======================================== */
+  
+  --color-surface: 255 255 255; /* White */
+  --color-surface-variant: 246 220 225; /* Light pink tint */
+  --color-background: 255 248 248; /* Very light pink */
+  --color-background-gradient-start: 245 245 245; /* #f5f5f5 */
+  --color-background-gradient-mid: 232 232 232; /* #e8e8e8 */
+  
+  /* ========================================
+     TEXT COLORS
+     ======================================== */
+  
+  --color-text-primary: 26 26 26; /* Near black */
+  --color-text-secondary: 102 102 102; /* Gray 600 */
+  --color-text-tertiary: 158 158 158; /* Gray 400 */
+  --color-text-on-primary: 255 255 255; /* White */
+  --color-text-on-surface: 34 25 27; /* Dark brown-gray */
+  
+  /* ========================================
+     STATE COLORS
+     ======================================== */
+  
+  /* Success */
+  --color-success: 46 125 50; /* Green 700 */
+  --color-success-light: 76 175 80; /* Green 500 */
+  
+  /* Error */
+  --color-error: 211 47 47; /* Red 700 */
+  --color-error-light: 244 67 54; /* Red 500 */
+  
+  /* Warning */
+  --color-warning: 245 124 0; /* Orange 700 */
+  
+  /* Info */
+  --color-info: 2 136 209; /* Light Blue 700 */
+  
+  /* ========================================
+     INTERACTIVE STATES
+     ======================================== */
+  
+  --color-hover-overlay: rgba(0, 0, 0, 0.04);
+  --color-active-overlay: rgba(0, 0, 0, 0.08);
+  --color-disabled-bg: 224 224 224; /* Gray 300 */
+  --color-disabled-text: 158 158 158; /* Gray 400 */
+  
+  /* ========================================
+     BORDERS & OUTLINES
+     ======================================== */
+  
+  --color-border: 224 224 224; /* Gray 300 */
+  --color-border-light: 238 238 238; /* Gray 200 */
+  --color-outline: 134 114 119; /* Brown-gray */
+  --color-outline-variant: 217 192 198; /* Light brown-gray */
+  
+  /* ========================================
+     SHADOWS & EFFECTS
+     ======================================== */
+  
+  --color-shadow: 0 0 0; /* Black */
+  --color-scrim: 0 0 0; /* Black */
+  
+  /* Shadow presets */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+  --shadow-pink: 0 8px 32px rgba(219, 39, 119, 0.3);
+  --shadow-pink-glow: 0 0 60px rgba(236, 72, 153, 0.2);
 }
+
+/**
+ * Global HTML & Body Styles
+ */
 
 html {
   background: linear-gradient(
     135deg,
-    var(--md-sys-color-primary-container) 20%,
-    var(--md-sys-color-secondary-container) 290%
+    rgb(var(--color-background-gradient-start)) 0%,
+    rgb(var(--color-background-gradient-mid)) 50%,
+    rgb(var(--color-background-gradient-start)) 100%
   );
+  background-attachment: fixed;
+  min-height: 100vh;
+  position: relative;
 }
 
 body {
   margin: 0;
   font-family: Adamina, 'Helvetica Neue', sans-serif;
+  color: rgb(var(--color-text-primary));
+  position: relative;
+  z-index: 1;
+}
+
+/**
+ * Utility Classes
+ * 
+ * Reusable classes for common styling patterns
+ */
+
+/* Text colors */
+.text-primary {
+  color: rgb(var(--color-primary));
+}
+
+.text-secondary {
+  color: rgb(var(--color-text-secondary));
+}
+
+.text-on-primary {
+  color: rgb(var(--color-text-on-primary));
+}
+
+/* Background colors */
+.bg-primary {
+  background-color: rgb(var(--color-primary));
+}
+
+.bg-primary-light {
+  background-color: rgb(var(--color-primary-light));
+}
+
+.bg-surface {
+  background-color: rgb(var(--color-surface));
+}
+
+/* Borders */
+.border-primary {
+  border-color: rgb(var(--color-primary));
+}
+
+.border-light {
+  border-color: rgb(var(--color-border-light));
+}
+
+/* Shadows */
+.shadow-pink {
+  box-shadow: var(--shadow-pink);
+}
+
+.shadow-pink-glow {
+  box-shadow: var(--shadow-pink-glow);
 }

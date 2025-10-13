@@ -320,8 +320,8 @@ import { CouponCardViewModel } from '../../types/view-models';
         gap: 0.5rem;
         padding: 0.75rem 1.5rem;
         background: white;
-        color: #6750a4;
-        border: 2px solid #6750a4;
+        color: rgba(219, 39, 119, 1);
+        border: 2px solid rgba(219, 39, 119, 1);
         border-radius: 8px;
         font-size: 0.875rem;
         font-weight: 600;
@@ -330,7 +330,7 @@ import { CouponCardViewModel } from '../../types/view-models';
       }
 
       .refresh-button:hover:not(:disabled) {
-        background: #f5f3ff;
+        background: rgba(236, 72, 153, 0.1);
         transform: translateY(-1px);
       }
 

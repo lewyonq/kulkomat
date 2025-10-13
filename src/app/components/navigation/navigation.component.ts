@@ -93,8 +93,18 @@ interface NavLink {
         bottom: 0;
         left: 0;
         right: 0;
-        background: white;
-        box-shadow: 0 -4px 12px rgba(0, 0, 0, 0.1);
+        background: linear-gradient(
+          135deg,
+          rgba(219, 39, 119, 0.95) 0%,
+          rgba(236, 72, 153, 0.95) 50%,
+          rgba(219, 39, 119, 0.95) 100%
+        );
+        backdrop-filter: blur(20px);
+        box-shadow:
+          0 -8px 32px rgba(219, 39, 119, 0.3),
+          0 0 60px rgba(236, 72, 153, 0.2),
+          inset 0 -1px 0 rgba(255, 255, 255, 0.2);
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
         z-index: 100;
       }
 
@@ -112,27 +122,30 @@ interface NavLink {
         align-items: center;
         gap: 0.25rem;
         padding: 0.5rem 1rem;
-        color: #757575;
+        color: rgba(255, 255, 255, 0.7);
         text-decoration: none;
         border-radius: 12px;
-        transition: all 0.2s ease;
+        transition: all 0.3s ease;
         position: relative;
         min-width: 64px;
       }
 
       .nav-link:hover {
-        color: #6750a4;
-        background: #f5f3ff;
+        color: #ffffff;
+        background: rgba(255, 255, 255, 0.15);
+        transform: translateY(-2px);
       }
 
       .nav-link:focus-visible {
-        outline: 2px solid #6750a4;
+        outline: 2px solid rgba(255, 255, 255, 0.8);
         outline-offset: 2px;
       }
 
       .nav-link.active {
-        color: #6750a4;
+        color: #ffffff;
         font-weight: 600;
+        background: rgba(255, 255, 255, 0.2);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
       }
 
       .nav-link.active::before {
@@ -143,8 +156,9 @@ interface NavLink {
         transform: translateX(-50%);
         width: 32px;
         height: 3px;
-        background: linear-gradient(90deg, #6750a4 0%, #7c5cbe 100%);
+        background: linear-gradient(90deg, #ffffff 0%, rgba(255, 255, 255, 0.8) 100%);
         border-radius: 0 0 4px 4px;
+        box-shadow: 0 0 8px rgba(255, 255, 255, 0.6);
       }
 
       .icon-wrapper {
@@ -166,7 +180,7 @@ interface NavLink {
       }
 
       .nav-link.active .nav-icon {
-        filter: drop-shadow(0 2px 4px rgba(103, 80, 164, 0.3));
+        filter: drop-shadow(0 2px 8px rgba(255, 255, 255, 0.5));
       }
 
       .nav-label {
@@ -182,6 +196,7 @@ interface NavLink {
           position: relative;
           box-shadow: none;
           background: transparent;
+          border-top: none;
         }
 
         .nav-content {
@@ -195,6 +210,13 @@ interface NavLink {
           gap: 0.5rem;
           padding: 0.625rem 1.25rem;
           min-width: auto;
+          color: rgba(255, 255, 255, 0.85);
+        }
+
+        .nav-link:hover {
+          color: #ffffff;
+          background: rgba(255, 255, 255, 0.2);
+          transform: translateY(0);
         }
 
         .nav-link.active::before {
@@ -202,7 +224,8 @@ interface NavLink {
         }
 
         .nav-link.active {
-          background: rgba(103, 80, 164, 0.1);
+          background: rgba(255, 255, 255, 0.25);
+          box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
         }
 
         .icon-wrapper {

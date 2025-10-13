@@ -183,9 +183,13 @@ import { CommonModule } from '@angular/common';
         color: #1a1a1a;
         margin: 0;
         padding: 0.5rem 1.5rem;
-        background: #f5f5f5;
+        background: linear-gradient(
+          135deg,
+          rgba(244, 114, 182, 0.15) 0%,
+          rgba(236, 72, 153, 0.15) 100%
+        );
         border-radius: 12px;
-        border: 2px dashed #d0d0d0;
+        border: 2px dashed rgba(236, 72, 153, 0.4);
       }
 
       .copy-button {
@@ -193,7 +197,12 @@ import { CommonModule } from '@angular/common';
         align-items: center;
         gap: 0.5rem;
         padding: 0.75rem 1.5rem;
-        background: #6750a4;
+        background: linear-gradient(
+          135deg,
+          rgba(219, 39, 119, 1) 0%,
+          rgba(236, 72, 153, 1) 50%,
+          rgba(244, 114, 182, 1) 100%
+        );
         color: white;
         border: none;
         border-radius: 8px;
@@ -201,18 +210,18 @@ import { CommonModule } from '@angular/common';
         font-weight: 600;
         cursor: pointer;
         transition: all 0.2s ease;
-        box-shadow: 0 2px 4px rgba(103, 80, 164, 0.2);
+        box-shadow: 0 2px 8px rgba(219, 39, 119, 0.4);
       }
 
       .copy-button:hover {
-        background: #5842a0;
+        filter: brightness(1.1);
         transform: translateY(-1px);
-        box-shadow: 0 4px 8px rgba(103, 80, 164, 0.3);
+        box-shadow: 0 4px 12px rgba(219, 39, 119, 0.5);
       }
 
       .copy-button:active {
         transform: translateY(0);
-        box-shadow: 0 2px 4px rgba(103, 80, 164, 0.2);
+        box-shadow: 0 2px 8px rgba(219, 39, 119, 0.4);
       }
 
       .copied-message {

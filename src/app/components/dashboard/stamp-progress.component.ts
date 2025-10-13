@@ -20,52 +20,11 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="stamp-progress-container">
       <div class="stamp-progress-card">
-        <h2 class="title">Twoje pieczątki</h2>
-
         <!-- Ice cream icons grid -->
         <div class="icons-grid">
           @for (stamp of stamps(); track $index) {
             <div class="icon-wrapper" [class.collected]="stamp.collected">
-              <!-- Ice cream cone SVG icon -->
-              <svg
-                class="ice-cream-icon"
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <!-- Cone -->
-                <path
-                  d="M9 13L12 21L15 13H9Z"
-                  [attr.fill]="stamp.collected ? '#D4A574' : '#E0E0E0'"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                />
-                <!-- Ice cream scoops -->
-                <circle
-                  cx="12"
-                  cy="10"
-                  r="3"
-                  [attr.fill]="stamp.collected ? '#FFB6C1' : '#F5F5F5'"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                />
-                <circle
-                  cx="9.5"
-                  cy="8"
-                  r="2.5"
-                  [attr.fill]="stamp.collected ? '#FF69B4' : '#F5F5F5'"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                />
-                <circle
-                  cx="14.5"
-                  cy="8"
-                  r="2.5"
-                  [attr.fill]="stamp.collected ? '#FFD700' : '#F5F5F5'"
-                  stroke="currentColor"
-                  stroke-width="1.5"
-                />
-              </svg>
+              <img src="./assets/icons/icecream_material.svg" alt="Ice Cream" class="w-8 h-8 ice-cream-icon"/>
             </div>
           }
         </div>
@@ -86,17 +45,7 @@ import { CommonModule } from '@angular/common';
           </p>
         </div>
 
-        <!-- Status message -->
-        <div class="message-container">
-          @if (isComplete()) {
-            <p class="message complete">🎉 Masz komplet! Wykorzystaj kupon na darmową gałkę.</p>
-          } @else {
-            <p class="message">
-              Brakuje ci <strong>{{ stampsToReward() }}</strong>
-              {{ stampsToReward() === 1 ? 'pieczątki' : 'pieczątek' }} do darmowej gałki!
-            </p>
-          }
-        </div>
+        
       </div>
     </div>
   `,
@@ -114,7 +63,7 @@ import { CommonModule } from '@angular/common';
         box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
         display: flex;
         flex-direction: column;
-        gap: 1.5rem;
+        gap: 1rem;
       }
 
       .title {
@@ -129,8 +78,7 @@ import { CommonModule } from '@angular/common';
       .icons-grid {
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        gap: 1rem;
-        padding: 1rem 0;
+        gap: 0.5rem;
         justify-items: center;
       }
 
@@ -142,13 +90,19 @@ import { CommonModule } from '@angular/common';
         align-items: center;
         justify-content: center;
         border-radius: 12px;
-        background: #f5f5f5;
+        background:rgba(245, 245, 245, 0.53);
         transition: all 0.3s ease;
       }
 
       .icon-wrapper.collected {
-        background: #fff3f0;
+        background: linear-gradient(
+          135deg,
+          rgba(219, 39, 119, 1) 0%,
+          rgba(236, 72, 153, 1) 50%,
+          rgba(244, 114, 182, 1) 100%
+        );
         transform: scale(1.05);
+        box-shadow: 0 4px 12px rgba(219, 39, 119, 0.4);
       }
 
       .ice-cream-icon {
@@ -157,13 +111,12 @@ import { CommonModule } from '@angular/common';
         transition: all 0.3s ease;
       }
 
-      .icon-wrapper.collected .ice-cream-icon {
-        filter: drop-shadow(0 2px 4px rgba(255, 105, 180, 0.3));
+      .icon-wrapper:not(.collected) .ice-cream-icon {
+        filter: grayscale(100%) brightness(0.7);
       }
 
-      .icon-wrapper:not(.collected) .ice-cream-icon {
-        opacity: 0.5;
-        stroke: #bdbdbd;
+      .icon-wrapper.collected .ice-cream-icon {
+        filter: sepia(1) hue-rotate(250deg) saturate(1);
       }
 
       /* Progress Bar */
@@ -188,10 +141,15 @@ import { CommonModule } from '@angular/common';
 
       .progress-bar-fill {
         height: 100%;
-        background: linear-gradient(90deg, #ff69b4, #ffd700);
+        background: linear-gradient(
+          90deg,
+          rgba(219, 39, 119, 1) 0%,
+          rgba(236, 72, 153, 1) 50%,
+          rgba(244, 114, 182, 1) 100%
+        );
         border-radius: 6px;
         transition: width 0.6s ease;
-        box-shadow: 0 2px 4px rgba(255, 105, 180, 0.3);
+        box-shadow: 0 2px 8px rgba(219, 39, 119, 0.4);
       }
 
       .progress-text {

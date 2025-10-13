@@ -185,9 +185,15 @@ import { Router } from '@angular/router';
         display: flex;
         align-items: center;
         justify-content: center;
-        background: linear-gradient(135deg, #6750a4, #7e57c2);
+        background: linear-gradient(
+          135deg,
+          rgba(219, 39, 119, 1) 0%,
+          rgba(236, 72, 153, 1) 50%,
+          rgba(244, 114, 182, 1) 100%
+        );
         border-radius: 12px;
         color: white;
+        box-shadow: 0 4px 12px rgba(219, 39, 119, 0.3);
       }
 
       .coupon-icon {
@@ -255,7 +261,7 @@ import { Router } from '@angular/router';
       .arrow-icon {
         width: 24px;
         height: 24px;
-        color: #6750a4;
+        color: rgb(var(--color-primary));
         transition: transform 0.3s ease;
       }
 
