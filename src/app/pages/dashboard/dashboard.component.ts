@@ -468,15 +468,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
         )
         .subscribe((status) => {
           if (status === 'SUBSCRIBED') {
-            console.log('Realtime subscription active');
             this.showRefreshButton.set(true);
           } else if (status === 'CHANNEL_ERROR') {
-            console.warn('Realtime subscription error, falling back to manual refresh');
             this.showRefreshButton.set(false);
           }
         });
     } catch (err) {
-      console.error('Failed to setup realtime subscription:', err);
       this.showRefreshButton.set(true);
     }
   }
@@ -488,7 +485,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.realtimeSubscription) {
       this.supabase.client.removeChannel(this.realtimeSubscription);
       this.realtimeSubscription = null;
-      console.log('Realtime subscription cleaned up');
     }
   }
 
