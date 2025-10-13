@@ -13,6 +13,11 @@ export const routes: Routes = [
     pathMatch: 'full'
   },
   {
+    path: 'coupons',
+    loadComponent: () => import('./pages/coupons/coupons.component').then(m => m.CouponsComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'login',
     loadComponent: () => import('./pages/login/login.component').then(m => m.LoginComponent)
   }

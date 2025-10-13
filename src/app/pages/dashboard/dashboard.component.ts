@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { Supabase } from '../../services/supabase';
+import { CouponService } from '../../services/coupon.service';
 import { ProfileDTO } from '../../types';
 import { StampProgressViewModel } from '../../types/view-models';
 import { UserIdDisplayComponent } from '../../components/dashboard/user-id-display.component';
@@ -344,6 +345,7 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
 })
 export class DashboardComponent implements OnInit, OnDestroy {
   private supabase = inject(Supabase);
+  private couponService = inject(CouponService);
   private router = inject(Router);
   private realtimeSubscription: RealtimeChannel | null = null;
 
@@ -384,6 +386,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadProfile();
+    this.loadActiveCouponsCount();
     this.setupRealtimeSubscription();
   }
 
@@ -402,12 +405,33 @@ export class DashboardComponent implements OnInit, OnDestroy {
       next: (profile) => {
         this.profile.set(profile);
         this.isLoading.set(false);
-        console.log('Profile loaded successfully:', profile);
       },
       error: (err) => {
         this.error.set(err);
         this.isLoading.set(false);
-        console.error('Failed to load profile:', err);
+      }
+    });
+  }
+
+  /**
+   * Load active coupons count
+   */
+  private loadActiveCouponsCount(): void {
+    this.couponService.getUserCoupons({ status: 'active' }).subscribe({
+      next: (response) => {
+        // Count only non-expired active coupons
+        const now = new Date();
+        const activeCount = response.coupons.filter(coupon => {
+          const expiresAt = new Date(coupon.expires_at);
+          return coupon.status === 'active' && expiresAt > now;
+        }).length;
+
+        this.activeCouponsCount.set(activeCount);
+      },
+      error: (err) => {
+        console.error('Failed to load active coupons count:', err);
+        // Don't set error state, just log it
+        // We don't want to block the dashboard if coupons fail to load
       }
     });
   }
@@ -486,11 +510,10 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.supabase.getCurrentUserProfile().subscribe({
       next: (profile) => {
         this.profile.set(profile);
+        this.loadActiveCouponsCount();
         this.refreshing.set(false);
-        console.log('Profile refreshed successfully');
       },
       error: (err) => {
-        console.error('Failed to refresh profile:', err);
         this.refreshing.set(false);
       }
     });

@@ -80,3 +80,58 @@ export interface CouponNavigationCardProps {
   /** Optional: Number of active coupons to display in badge */
   activeCouponsCount?: number;
 }
+
+// ============================================================================
+// Coupons View Models
+// ============================================================================
+
+import { CouponType, CouponStatus } from './index';
+
+/**
+ * Coupon Card View Model - Model widoku dla pojedynczego kuponu
+ * Rozszerza CouponDTO o computed properties dla UI
+ */
+export interface CouponCardViewModel {
+  /** ID kuponu */
+  id: number;
+  /** Typ kuponu */
+  type: CouponType;
+  /** Wartość rabatu (null dla free_scoop) */
+  value: number | null;
+  /** Status kuponu */
+  status: CouponStatus;
+  /** Data utworzenia (ISO string) */
+  createdAt: string;
+  /** Data wygaśnięcia (ISO string) */
+  expiresAt: string;
+  /** Czy kupon jest aktywny (computed) */
+  isActive: boolean;
+  /** Czy kupon wygasł (computed) */
+  isExpired: boolean;
+  /** Czy kupon został wykorzystany (computed) */
+  isUsed: boolean;
+  /** Sformatowany tytuł kuponu (np. "Darmowa gałka", "Rabat 15%") */
+  title: string;
+  /** Opis kuponu */
+  description: string;
+  /** Sformatowana data wygaśnięcia (np. "Ważny do 31.12.2024") */
+  formattedExpiryDate: string;
+  /** Kolor gradientu dla ikony (zależny od typu) */
+  iconGradient: string;
+  /** Nazwa ikony SVG (zależna od typu) */
+  iconName: 'ticket' | 'percent' | 'coins';
+}
+
+/**
+ * Coupons View Model - Model widoku dla strony kuponów
+ */
+export interface CouponsViewModel {
+  /** Lista kuponów (posortowana) */
+  coupons: CouponCardViewModel[];
+  /** Liczba aktywnych kuponów */
+  activeCouponsCount: number;
+  /** Liczba wykorzystanych kuponów */
+  usedCouponsCount: number;
+  /** Czy lista jest pusta */
+  isEmpty: boolean;
+}
