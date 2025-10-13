@@ -2,7 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { from, Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { Supabase } from './supabase';
-import { CouponDTO, CouponsListDTO, CouponQueryParams } from '../types';
+import { CouponDTO, CouponsListDTO, CouponQueryParams, UseCouponCommand } from '../types';
 
 /**
  * Coupon Service
@@ -45,7 +45,6 @@ export class CouponService {
     ).pipe(
       map(({ data, error, count }) => {
         if (error) {
-          console.error('❌ Supabase error:', error);
           throw error;
         }
 
@@ -96,6 +95,57 @@ export class CouponService {
       }),
       catchError((err) => {
         const errorMessage = err?.message || 'Failed to fetch coupon';
+        this.error.set(new Error(errorMessage));
+        this.isLoading.set(false);
+        return throwError(() => new Error(errorMessage));
+      }),
+    );
+  }
+
+  /**
+   * Use Coupon
+   * Marks a coupon as used by the authenticated user
+   *
+   * @param couponId - The coupon ID to use
+   * @returns Observable<CouponDTO> - The updated coupon data
+   */
+  useCoupon(couponId: number): Observable<CouponDTO> {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    const currentUser = this.supabase.user();
+
+    if (!currentUser) {
+      this.isLoading.set(false);
+      return throwError(() => new Error('User not authenticated'));
+    }
+
+    return from(
+      this.supabase.client
+        .from('coupons')
+        .update({ status: 'used', used_at: new Date().toISOString() })
+        .eq('id', couponId)
+        .eq('user_id', currentUser.id)
+        .eq('status', 'active')
+        .select()
+        .single(),
+    ).pipe(
+      map(({ data, error }) => {
+        if (error) {
+          throw error;
+        }
+
+        if (!data) {
+          throw new Error('Coupon not found or already used');
+        }
+
+        return data as CouponDTO;
+      }),
+      tap(() => {
+        this.isLoading.set(false);
+      }),
+      catchError((err) => {
+        const errorMessage = err?.message || 'Failed to use coupon';
         this.error.set(new Error(errorMessage));
         this.isLoading.set(false);
         return throwError(() => new Error(errorMessage));

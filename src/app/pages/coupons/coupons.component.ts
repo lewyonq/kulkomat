@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { CouponService } from '../../services/coupon.service';
 import { CouponCardComponent } from '../../components/coupons/coupon-card.component';
+import { ConfirmationDialogComponent } from '../../components/shared/confirmation-dialog.component';
 import { CouponDTO, CouponType } from '../../types';
 import { CouponCardViewModel } from '../../types/view-models';
 
@@ -22,7 +23,7 @@ import { CouponCardViewModel } from '../../types/view-models';
 @Component({
   selector: 'app-coupons',
   standalone: true,
-  imports: [CommonModule, CouponCardComponent],
+  imports: [CommonModule, CouponCardComponent, ConfirmationDialogComponent],
   template: `
     <div class="coupons-container">
       <!-- Loading State -->
@@ -92,7 +93,7 @@ import { CouponCardViewModel } from '../../types/view-models';
           <!-- Coupons Grid -->
           <main class="coupons-content">
             @for (coupon of sortedCoupons(); track coupon.id) {
-              <app-coupon-card [coupon]="coupon"></app-coupon-card>
+              <app-coupon-card [coupon]="coupon" (couponClick)="onCouponClick($event)"></app-coupon-card>
             }
           </main>
 
@@ -122,6 +123,44 @@ import { CouponCardViewModel } from '../../types/view-models';
               </svg>
               {{ refreshing() ? 'Odświeżanie...' : 'Odśwież' }}
             </button>
+          </div>
+        </div>
+      }
+
+      <!-- Confirmation Dialog -->
+      <app-confirmation-dialog
+        [isOpen]="showConfirmDialog()"
+        [title]="'Czy na pewno chcesz wykorzystać kupon?'"
+        [message]="'Pamiętaj, że sprzedawca musi widzieć wykorzystanie kuponu'"
+        [confirmLabel]="'Tak'"
+        [cancelLabel]="'Nie'"
+        (confirm)="onConfirmUseCoupon()"
+        (cancel)="onCancelUseCoupon()"
+      ></app-confirmation-dialog>
+
+      <!-- Success Message -->
+      @if (showSuccessMessage()) {
+        <div class="success-toast" role="alert" aria-live="polite">
+          <div class="success-content">
+            <svg class="success-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+              <path d="M8 12L11 15L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+            </svg>
+            <span>Kupon został wykorzystany!</span>
+          </div>
+        </div>
+      }
+
+      <!-- Error Message -->
+      @if (useCouponError()) {
+        <div class="error-toast" role="alert" aria-live="assertive">
+          <div class="error-content">
+            <svg class="error-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
+              <path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <circle cx="12" cy="16" r="1" fill="currentColor" />
+            </svg>
+            <span>{{ useCouponError() }}</span>
           </div>
         </div>
       }
@@ -376,6 +415,71 @@ import { CouponCardViewModel } from '../../types/view-models';
           font-size: 2rem;
         }
       }
+
+      /* Toast Messages */
+      .success-toast,
+      .error-toast {
+        position: fixed;
+        bottom: 2rem;
+        left: 50%;
+        transform: translateX(-50%);
+        padding: 1rem 1.5rem;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        z-index: 1001;
+        animation: slideInUp 0.3s ease-out;
+        max-width: 90%;
+      }
+
+      @keyframes slideInUp {
+        from {
+          transform: translateX(-50%) translateY(100px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(-50%) translateY(0);
+          opacity: 1;
+        }
+      }
+
+      .success-toast {
+        background: #2e7d32;
+        color: white;
+      }
+
+      .error-toast {
+        background: #d32f2f;
+        color: white;
+      }
+
+      .success-content,
+      .error-content {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        font-size: 0.9375rem;
+        font-weight: 600;
+      }
+
+      .success-icon,
+      .error-icon {
+        width: 24px;
+        height: 24px;
+        flex-shrink: 0;
+      }
+
+      @media (max-width: 640px) {
+        .success-toast,
+        .error-toast {
+          bottom: 1rem;
+          padding: 0.875rem 1.25rem;
+        }
+
+        .success-content,
+        .error-content {
+          font-size: 0.875rem;
+        }
+      }
     `,
   ],
 })
@@ -391,6 +495,12 @@ export class CouponsComponent implements OnInit, OnDestroy {
 
   // Data state
   protected coupons = signal<CouponCardViewModel[]>([]);
+
+  // Dialog and usage states
+  protected showConfirmDialog = signal<boolean>(false);
+  protected selectedCoupon = signal<CouponCardViewModel | null>(null);
+  protected showSuccessMessage = signal<boolean>(false);
+  protected useCouponError = signal<string | null>(null);
 
   // Computed states
   protected sortedCoupons = computed(() => {
@@ -436,7 +546,6 @@ export class CouponsComponent implements OnInit, OnDestroy {
       error: (err) => {
         this.error.set(err);
         this.isLoading.set(false);
-        console.error('Failed to load coupons:', err);
       },
     });
   }
@@ -517,7 +626,6 @@ export class CouponsComponent implements OnInit, OnDestroy {
         year: 'numeric',
       })}`;
     } catch (err) {
-      console.warn('Failed to format date:', dateString, err);
       return `Ważny do ${dateString}`;
     }
   }
@@ -573,10 +681,8 @@ export class CouponsComponent implements OnInit, OnDestroy {
         const viewModels = response.coupons.map((dto) => this.transformCouponToViewModel(dto));
         this.coupons.set(viewModels);
         this.refreshing.set(false);
-        console.log('Coupons refreshed successfully');
       },
       error: (err) => {
-        console.error('Failed to refresh coupons:', err);
         this.refreshing.set(false);
       },
     });
@@ -600,5 +706,91 @@ export class CouponsComponent implements OnInit, OnDestroy {
     }
 
     return 'Wystąpił błąd podczas ładowania kuponów. Spróbuj ponownie później.';
+  }
+
+  /**
+   * Handle coupon click - show confirmation dialog
+   */
+  protected onCouponClick(coupon: CouponCardViewModel): void {
+    this.selectedCoupon.set(coupon);
+    this.showConfirmDialog.set(true);
+    this.useCouponError.set(null);
+  }
+
+  /**
+   * Handle confirmation - use the coupon
+   */
+  protected onConfirmUseCoupon(): void {
+    const coupon = this.selectedCoupon();
+    if (!coupon) return;
+
+    this.showConfirmDialog.set(false);
+
+    this.couponService.useCoupon(coupon.id).subscribe({
+      next: (updatedCoupon) => {
+        // Update the coupon in the list
+        const updatedViewModel = this.transformCouponToViewModel(updatedCoupon);
+        const currentCoupons = this.coupons();
+        const updatedCoupons = currentCoupons.map((c) => (c.id === updatedCoupon.id ? updatedViewModel : c));
+        this.coupons.set(updatedCoupons);
+
+        // Show success message
+        this.showSuccessMessage.set(true);
+        setTimeout(() => {
+          this.showSuccessMessage.set(false);
+        }, 3000);
+
+        // Clear selected coupon
+        this.selectedCoupon.set(null);
+      },
+      error: (err) => {
+        const errorMessage = this.getUseCouponErrorMessage(err);
+        this.useCouponError.set(errorMessage);
+
+        // Auto-hide error after 5 seconds
+        setTimeout(() => {
+          this.useCouponError.set(null);
+        }, 5000);
+
+        this.selectedCoupon.set(null);
+      },
+    });
+  }
+
+  /**
+   * Handle cancel - close dialog
+   */
+  protected onCancelUseCoupon(): void {
+    this.showConfirmDialog.set(false);
+    this.selectedCoupon.set(null);
+  }
+
+  /**
+   * Get user-friendly error message for coupon usage
+   */
+  private getUseCouponErrorMessage(err: Error): string {
+    const message = err.message.toLowerCase();
+
+    if (message.includes('already used')) {
+      return 'Ten kupon został już wykorzystany.';
+    }
+
+    if (message.includes('not found')) {
+      return 'Kupon nie został znaleziony.';
+    }
+
+    if (message.includes('expired')) {
+      return 'Ten kupon wygasł.';
+    }
+
+    if (message.includes('network') || message.includes('fetch')) {
+      return 'Nie udało się połączyć z serwerem. Sprawdź połączenie internetowe.';
+    }
+
+    if (message.includes('not authenticated') || message.includes('unauthorized')) {
+      return 'Sesja wygasła. Zaloguj się ponownie.';
+    }
+
+    return 'Nie udało się wykorzystać kuponu. Spróbuj ponownie.';
   }
 }

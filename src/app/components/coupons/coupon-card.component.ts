@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, Input, Output, EventEmitter } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CouponCardViewModel } from '../../types/view-models';
 
@@ -17,6 +17,7 @@ import { CouponCardViewModel } from '../../types/view-models';
  * - amount: Green gradient, coins icon
  *
  * @Input coupon - Coupon view model with computed properties
+ * @Output couponClick - Emitted when active coupon is clicked
  */
 @Component({
   selector: 'app-coupon-card',
@@ -26,8 +27,14 @@ import { CouponCardViewModel } from '../../types/view-models';
     <div
       class="coupon-card"
       [class.inactive]="!coupon.isActive"
-      role="article"
-      [attr.aria-label]="coupon.title + ', ' + coupon.formattedExpiryDate"
+      [class.clickable]="coupon.isActive"
+      (click)="onCouponClick()"
+      (keydown.enter)="onCouponClick()"
+      (keydown.space)="onCouponClick()"
+      role="button"
+      [attr.tabindex]="coupon.isActive ? 0 : -1"
+      [attr.aria-label]="coupon.title + ', ' + coupon.formattedExpiryDate + (coupon.isActive ? '. Kliknij aby wykorzystać' : '')"
+      [attr.aria-disabled]="!coupon.isActive"
     >
       <!-- Icon Section -->
       <div class="icon-section" [style.background]="coupon.iconGradient">
@@ -154,6 +161,19 @@ import { CouponCardViewModel } from '../../types/view-models';
           rgba(0, 0, 0, 0.02) 20px
         );
         pointer-events: none;
+      }
+
+      .coupon-card.clickable {
+        cursor: pointer;
+      }
+
+      .coupon-card.clickable:focus {
+        outline: 2px solid #6750a4;
+        outline-offset: 2px;
+      }
+
+      .coupon-card.clickable:active {
+        transform: scale(0.98);
       }
 
       /* Icon Section */
@@ -298,4 +318,12 @@ import { CouponCardViewModel } from '../../types/view-models';
 })
 export class CouponCardComponent {
   @Input() coupon!: CouponCardViewModel;
+  @Output() couponClick = new EventEmitter<CouponCardViewModel>();
+
+  protected onCouponClick(): void {
+    if (!this.coupon.isActive) {
+      return;
+    }
+    this.couponClick.emit(this.coupon);
+  }
 }

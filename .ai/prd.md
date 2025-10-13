@@ -131,7 +131,8 @@ Klienci lodziarni często doświadczają niedogodności związanych z programami
   Opis: Jako zalogowany klient chcę wykorzystać kupon, informując o tym sprzedawcę.
   Kryteria akceptacji:
   - Klient informuje sprzedawcę o chęci wykorzystania konkretnego kuponu.
-  - Sprzedawca weryfikuje dostępność kuponu w panelu administracyjnym po wprowadzeniu `user_id`.
+  - Klient wybiera kupon w swojej aplikacji i klika go.
+  - Po kliknieciu kupony pokazuje sie dialog: "Czy na pewno chcesz wykorzystac kupon?" z opisem ponizej "Pamiętaj, ze sprzedawca musi widzieć wykorzystanie kupony" z przyciskami "Tak" i "Nie".
   - Sprzedawca ręcznie nalicza rabat.
   - Kupon zostaje oznaczony jako wykorzystany w systemie.
 
