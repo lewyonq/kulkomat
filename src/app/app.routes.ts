@@ -9,14 +9,15 @@ export const routes: Routes = [
     canActivate: [authGuard],
   },
   {
-    path: 'dashboard',
-    redirectTo: '',
-    pathMatch: 'full',
-  },
-  {
     path: 'coupons',
     loadComponent: () =>
       import('./pages/coupons/coupons.component').then((m) => m.CouponsComponent),
+    canActivate: [authGuard],
+  },
+  {
+    path: 'profile',
+    loadComponent: () =>
+      import('./pages/profile/profile.component').then((m) => m.ProfileComponent),
     canActivate: [authGuard],
   },
   {

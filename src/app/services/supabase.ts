@@ -53,7 +53,7 @@ export class Supabase implements OnDestroy {
         // Ensure profile exists and redirect to dashboard after successful sign in
         if (event === 'SIGNED_IN' && session) {
           await this.ensureProfileExists(session.user.id);
-          this.router.navigate(['/dashboard']);
+          this.router.navigate(['/']);
         }
 
         // Redirect to login after sign out

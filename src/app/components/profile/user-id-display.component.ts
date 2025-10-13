@@ -17,7 +17,7 @@ import { CommonModule } from '@angular/common';
   template: `
     <div class="user-id-container">
       <div class="user-id-card">
-        <p class="label">Pokaż sprzedawcy</p>
+        <h2 class="qr-title">Twój kod QR</h2>
 
         @if (showQRCode) {
           <div class="qr-code-container">
@@ -122,7 +122,7 @@ import { CommonModule } from '@angular/common';
         width: 100%;
         display: flex;
         justify-content: center;
-        padding: 1rem;
+        padding: 0 1rem;
       }
 
       .user-id-card {
@@ -135,7 +135,7 @@ import { CommonModule } from '@angular/common';
         align-items: center;
         gap: 1.5rem;
         width: 100%;
-        max-width: 400px;
+        max-width: 800px;
       }
 
       .label {
@@ -163,19 +163,26 @@ import { CommonModule } from '@angular/common';
         display: block;
       }
 
+      .qr-title {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1a1a1a;
+        text-align: center;
+      }
+
       .short-id-container {
         width: 100%;
+        max-width: 300px;
         text-align: center;
       }
 
       .short-id {
-        font-size: 2.5rem;
-        font-weight: 700;
+        font-size: 2rem;
         font-family: 'Courier New', monospace;
-        letter-spacing: 0.25rem;
+        letter-spacing: 0.1rem;
         color: #1a1a1a;
         margin: 0;
-        padding: 0.75rem 1.5rem;
+        padding: 0.5rem 1.5rem;
         background: #f5f5f5;
         border-radius: 12px;
         border: 2px dashed #d0d0d0;

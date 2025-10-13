@@ -14,7 +14,11 @@ Klienci lodziarni często doświadczają niedogodności związanych z programami
 
 - Użytkownicy mogą założyć konto w aplikacji webowej za pomocą adresu e-mail lub numeru telefonu.
 - Użytkownicy mogą zalogować się na swoje istniejące konto.
-- Użytkownicy mogą przeglądać swój unikalny identyfikator `user_id`.
+- Użytkownicy mogą przeglądać swój profil, który zawiera:
+  - Unikalny kod QR wraz z krótkim identyfikatorem (`short_id`) do szybkiej identyfikacji przez sprzedawcę.
+  - Dane profilu: adres e-mail oraz datę utworzenia konta (`created_at`).
+  - Przycisk nawigacyjny do widoku "Historia".
+  - Przycisk do wylogowania się z aplikacji.
 - Użytkownicy mogą resetować swoje hasło.
 - System przechowuje bezpiecznie dane użytkowników (e-mail/numer telefonu).
 
@@ -68,7 +72,7 @@ Klienci lodziarni często doświadczają niedogodności związanych z programami
 - System pieczątek dotyczy wyłącznie zakupu lodów.
 - Kupony rabatowe są naliczane ręcznie przez sprzedawcę.
 - Panel administracyjny jest przeznaczony dla jednego właściciela/pracownika (brak zaawansowanego systemu ról i uprawnień).
-- Weryfikacja dodania pieczątek odbywa się poprzez wprowadzenie `user_id` (w przyszłości planowane skanowanie kodów QR).
+- Weryfikacja dodania pieczątek odbywa się poprzez wprowadzenie `short_id` klienta. Profil użytkownika wyświetla kod QR z `short_id`, aby ułatwić ten proces, jednak skanowanie kodów QR przez sprzedawcę jest poza zakresem MVP.
 - Jednorazowe kody są przeznaczone tylko do rozdawania nagród, nie do zbierania pieczątek.
 - Prosty formularz kontaktowy jest jedynym kanałem zbierania opinii w ramach aplikacji.
 
@@ -114,11 +118,12 @@ Klienci lodziarni często doświadczają niedogodności związanych z programami
   - Liczba pieczątek jest czytelna i łatwo dostępna.
 
 - ID: US-004
-  Tytuł: Wyświetlanie unikalnego ID użytkownika
-  Opis: Jako zalogowany klient chcę szybko znaleźć i pokazać swój unikalny `user_id` sprzedawcy, aby otrzymać pieczątkę.
+  Tytuł: Wyświetlanie unikalnego kodu QR i ID użytkownika
+  Opis: Jako zalogowany klient chcę w swoim profilu szybko znaleźć i pokazać sprzedawcy mój unikalny kod QR oraz `short_id`, aby otrzymać pieczątkę.
   Kryteria akceptacji:
-  - Na stronie głównej lub w profilu użytkownika wyświetlany jest unikalny `user_id` w czytelny sposób.
-  - Sprzedawca jest w stanie łatwo odczytać `user_id` z ekranu telefonu klienta.
+  - W widoku profilu użytkownika wyświetlany jest unikalny kod QR.
+  - Pod kodem QR widoczny jest krótki, czytelny identyfikator (`short_id`).
+  - Sprzedawca jest w stanie łatwo odczytać `short_id` lub w przyszłości zeskanować kod QR z ekranu telefonu klienta.
 
 - ID: US-005
   Tytuł: Otrzymywanie kuponu na darmową gałkę
@@ -201,8 +206,8 @@ Klienci lodziarni często doświadczają niedogodności związanych z programami
   Kryteria akceptacji:
   - Sprzedawca loguje się do panelu administracyjnego.
   - Sprzedawca przechodzi do zakładki "Stali klienci" lub formularza dodawania pieczątek.
-  - Sprzedawca wprowadza `user_id` klienta.
-  - Sprzedawca wizualnie weryfikuje `user_id` z ekranu klienta.
+  - Sprzedawca wprowadza `short_id` klienta.
+  - Sprzedawca wizualnie weryfikuje `short_id` z ekranu klienta (porównując go z tym, co wyświetla się w profilu klienta na jego telefonie).
   - Sprzedawca wprowadza liczbę pieczątek do dodania (domyślnie 1).
   - System pomyślnie dodaje pieczątki do konta klienta.
   - Klient widzi zaktualizowaną liczbę pieczątek w swojej aplikacji.
@@ -213,31 +218,31 @@ Klienci lodziarni często doświadczają niedogodności związanych z programami
   Kryteria akceptacji:
   - Sprzedawca loguje się do panelu administracyjnego.
   - Sprzedawca przechodzi do zakładki "Stali klienci" lub formularza dodawania kuponów.
-  - Sprzedawca wprowadza `user_id` klienta.
+  - Sprzedawca wprowadza `short_id` klienta.
   - Sprzedawca wybiera rodzaj kuponu (procentowy/kwotowy) i jego wartość.
   - System pomyślnie dodaje kupon do konta klienta.
   - Klient widzi nowy kupon w swojej aplikacji.
 
 - ID: US-016
   Tytuł: Przeglądanie listy stałych klientów
-  Opis: Jako sprzedawca chcę mieć dostęp do listy stałych klientów i ich podstawowych danych (np. `user_id`), aby szybko ich identyfikować.
+  Opis: Jako sprzedawca chcę mieć dostęp do listy stałych klientów i ich podstawowych danych (np. `short_id`), aby szybko ich identyfikować.
   Kryteria akceptacji:
   - W panelu administracyjnym dostępna jest zakładka "Stali klienci".
   - Zakładka wyświetla listę zarejestrowanych klientów.
-  - Dla każdego klienta widoczne są podstawowe informacje (np. `user_id`, liczba pieczątek, dostępne kupony).
+  - Dla każdego klienta widoczne są podstawowe informacje (np. `short_id`, liczba pieczątek, dostępne kupony).
 
 - ID: US-017
   Tytuł: Przeglądanie historii klienta
   Opis: Jako sprzedawca chcę móc zobaczyć historię doładowań pieczątek i kuponów dla konkretnego klienta, aby lepiej zrozumieć jego aktywność.
   Kryteria akceptacji:
-  - Z poziomu listy "Stali klienci" lub po wprowadzeniu `user_id` sprzedawca może wyświetlić szczegółową historię danego klienta.
+  - Z poziomu listy "Stali klienci" lub po wprowadzeniu `short_id` sprzedawca może wyświetlić szczegółową historię danego klienta.
   - Historia zawiera daty i szczegóły dodanych pieczątek oraz otrzymanych/wykorzystanych kuponów.
 
 - ID: US-018
   Tytuł: Weryfikacja kuponów klienta
   Opis: Jako sprzedawca chcę mieć możliwość szybkiego sprawdzenia, jakie kupony są dostępne dla danego klienta, aby prawidłowo naliczyć rabat.
   Kryteria akceptacji:
-  - Po wprowadzeniu `user_id` klienta w panelu administracyjnym, wyświetlana jest lista jego aktywnych kuponów.
+  - Po wprowadzeniu `short_id` klienta w panelu administracyjnym, wyświetlana jest lista jego aktywnych kuponów.
   - Sprzedawca może oznaczyć kupon jako wykorzystany po jego użyciu.
 
 - ID: US-019
@@ -265,7 +270,17 @@ Klienci lodziarni często doświadczają niedogodności związanych z programami
   - Na urządzeniach desktopowych pasek znajduje się na górze ekranu.
   - Kliknięcie w "Homepage" przenosi mnie do pulpitu.
   - Kliknięcie w "Coupons" przenosi mnie do listy kuponów.
-  - Kliknięcie w "Profil" przenosi mnie do pulpitu (tymczasowo).
+  - Kliknięcie w "Profil" przenosi mnie do widoku profilu użytkownika.
+
+- ID: US-022
+  Tytuł: Przeglądanie profilu użytkownika
+  Opis: Jako zalogowany klient chcę mieć dostęp do swojego profilu, aby zobaczyć moje dane, kod QR, przejść do historii lub się wylogować.
+  Kryteria akceptacji:
+  - Po kliknięciu w ikonę "Profil" w pasku nawigacyjnym, jestem przenoszony do widoku profilu.
+  - W profilu widzę swój adres e-mail oraz datę utworzenia konta.
+  - W profilu widzę swój unikalny kod QR oraz `short_id`.
+  - W profilu znajduje się przycisk "Historia", który przenosi mnie do historii moich aktywności.
+  - W profilu znajduje się przycisk "Wyloguj", który kończy moją sesję i przenosi mnie do strony logowania.
 
 ## 6. Metryki sukcesu
 
@@ -280,7 +295,7 @@ Klienci lodziarni często doświadczają niedogodności związanych z programami
   - Dlaczego to jest ważne: Pokazuje, jak często klienci korzystają z aplikacji i jak efektywnie sprzedawcy promują program.
 
 - **Czas dodania pieczątki przez sprzedawcę:**
-  - Miernik: Średni czas od momentu podania `user_id` przez klienta do pomyślnego dodania pieczątki w panelu administracyjnym.
+  - Miernik: Średni czas od momentu podania `short_id` przez klienta do pomyślnego dodania pieczątki w panelu administracyjnym.
   - Cel: Poniżej 10 sekund.
   - Dlaczego to jest ważne: Krótki czas operacji zapewnia płynność obsługi klienta i minimalizuje kolejki.
 

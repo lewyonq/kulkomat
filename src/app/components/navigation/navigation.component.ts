@@ -33,6 +33,7 @@ interface NavLink {
           <a
             [routerLink]="link.path"
             routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
             class="nav-link"
             [attr.aria-label]="link.ariaLabel"
             [attr.aria-current]="isActive(link.path) ? 'page' : null"
@@ -238,7 +239,7 @@ interface NavLink {
 export class Navigation {
   protected navLinks = signal<NavLink[]>([
     {
-      path: '/dashboard',
+      path: '/',
       label: 'Home',
       icon: 'home',
       ariaLabel: 'Przejdź do strony głównej',

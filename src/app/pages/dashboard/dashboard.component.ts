@@ -6,7 +6,6 @@ import { Supabase } from '../../services/supabase';
 import { CouponService } from '../../services/coupon.service';
 import { ProfileDTO } from '../../types';
 import { StampProgressViewModel } from '../../types/view-models';
-import { UserIdDisplayComponent } from '../../components/dashboard/user-id-display.component';
 import { StampProgressComponent } from '../../components/dashboard/stamp-progress.component';
 import { CouponNavigationCardComponent } from '../../components/dashboard/coupon-navigation-card.component';
 
@@ -30,7 +29,6 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
   standalone: true,
   imports: [
     CommonModule,
-    UserIdDisplayComponent,
     StampProgressComponent,
     CouponNavigationCardComponent,
   ],
@@ -81,12 +79,6 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
               </app-stamp-progress>
             </section>
 
-            <!-- User ID Display -->
-            <section class="section">
-              <app-user-id-display [shortId]="shortId() || ''" [showQRCode]="true">
-              </app-user-id-display>
-            </section>
-
             <!-- Coupon Navigation -->
             <section class="section">
               <app-coupon-navigation-card [activeCouponsCount]="activeCouponsCount()">
@@ -123,11 +115,6 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
               </button>
             </div>
           }
-          <div class="logout-container">
-            <button class="logout-button" (click)="onLogout()" type="button" aria-label="logout">
-              Wyloguj sie leszczu
-            </button>
-          </div>
         </div>
       }
     </div>
@@ -269,15 +256,13 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
       }
 
       /* Refresh Button */
-      .refresh-container,
-      .logout-container {
+      .refresh-container {
         display: flex;
         justify-content: center;
         padding: 2rem 1rem;
       }
 
-      .refresh-button,
-      .logout-button {
+      .refresh-button {
         display: flex;
         align-items: center;
         gap: 0.5rem;
@@ -512,11 +497,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
         this.refreshing.set(false);
       },
     });
-  }
-
-  protected onLogout(): void {
-    this.supabase.signOut();
-    this.router.navigate(['/login']);
   }
 
   /**

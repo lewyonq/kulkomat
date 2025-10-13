@@ -79,16 +79,6 @@ import { CouponCardViewModel } from '../../types/view-models';
       <!-- Content State -->
       @else if (hasCoupons()) {
         <div class="content-wrapper">
-          <!-- Header -->
-          <header class="coupons-header">
-            <h1 class="page-title">Moje kupony</h1>
-            @if (activeCouponsCount() > 0) {
-              <p class="subtitle">
-                Masz <strong>{{ activeCouponsCount() }}</strong>
-                {{ activeCouponsCount() === 1 ? 'aktywny kupon' : 'aktywne kupony' }}
-              </p>
-            }
-          </header>
 
           <!-- Coupons Grid -->
           <main class="coupons-content">
@@ -170,8 +160,7 @@ import { CouponCardViewModel } from '../../types/view-models';
     `
       .coupons-container {
         min-height: 100vh;
-        background: linear-gradient(135deg, #f5f7fa 0%, #e8eef5 100%);
-        padding: 1rem;
+        padding: 0 1rem;
       }
 
       /* Loading State */
@@ -309,30 +298,6 @@ import { CouponCardViewModel } from '../../types/view-models';
         max-width: 800px;
         margin: 0 auto;
         padding-bottom: 2rem;
-      }
-
-      .coupons-header {
-        text-align: center;
-        padding: 2rem 1rem;
-        margin-bottom: 1rem;
-      }
-
-      .page-title {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin: 0 0 0.5rem 0;
-      }
-
-      .subtitle {
-        font-size: 1rem;
-        color: #666;
-        margin: 0;
-      }
-
-      .subtitle strong {
-        color: #6750a4;
-        font-weight: 700;
       }
 
       .coupons-content {
