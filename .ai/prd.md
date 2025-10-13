@@ -49,6 +49,15 @@ Klienci lodziarni często doświadczają niedogodności związanych z programami
 - Tylko autoryzowany personel (właściciel/sprzedawca) ma dostęp do panelu administracyjnego i możliwość dodawania pieczątek/kuponów.
 - Przy dodawaniu pieczątek przez `user_id`, sprzedawca jest zobligowany do wizualnej weryfikacji tożsamości klienta (np. prośba o pokazanie `user_id` na ekranie telefonu).
 
+### 3.6. Nawigacja w aplikacji
+
+- Aplikacja posiada główny pasek nawigacyjny ułatwiający poruszanie się po kluczowych sekcjach.
+- Pasek nawigacyjny jest responsywny: na urządzeniach mobilnych znajduje się na dole ekranu, a na urządzeniach z większym ekranem (desktop) na górze.
+- Pasek nawigacyjny zawiera trzy główne linki:
+  - **Homepage:** Prowadzi do głównego pulpitu (`dashboard`).
+  - **Coupons:** Prowadzi do widoku z kuponami (`coupons`).
+  - **Profile:** Prowadzi do profilu użytkownika (`profile`).
+
 ## 4. Granice produktu
 
 ### 4.1. Zakres MVP
@@ -246,6 +255,17 @@ Klienci lodziarni często doświadczają niedogodności związanych z programami
   - Logowanie do panelu administracyjnego wymaga unikalnych danych uwierzytelniających.
   - Połączenie z panelem administracyjnym jest szyfrowane (HTTPS).
   - Brak nieautoryzowanych prób logowania do panelu administracyjnego.
+
+- ID: US-021
+  Tytuł: Nawigacja po aplikacji
+  Opis: Jako użytkownik chcę mieć łatwy dostęp do głównych sekcji aplikacji za pomocą paska nawigacyjnego.
+  Kryteria akceptacji:
+  - Pasek nawigacyjny jest zawsze widoczny w głównych widokach aplikacji.
+  - Na urządzeniach mobilnych pasek znajduje się na dole ekranu.
+  - Na urządzeniach desktopowych pasek znajduje się na górze ekranu.
+  - Kliknięcie w "Homepage" przenosi mnie do pulpitu.
+  - Kliknięcie w "Coupons" przenosi mnie do listy kuponów.
+  - Kliknięcie w "Profil" przenosi mnie do pulpitu (tymczasowo).
 
 ## 6. Metryki sukcesu
 

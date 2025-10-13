@@ -1,7 +1,15 @@
-<header class="flex items-center justify-left p-4">
-  <div class="flex items-center cursor-pointer" routerLink="/dashboard">
-    <img src="./assets/icons/icecream_material.svg" alt="Ice Cream" class="w-12 h-12" />
-    <h1 class="text-3xl text-white">Kulkomat</h1>
-  </div>
-</header>
-<router-outlet />
+<div class="flex flex-col h-screen">
+  <header class="flex items-center justify-between p-4 bg-gray-800 text-white">
+    <div class="flex items-center cursor-pointer" routerLink="/dashboard">
+      <img src="./assets/icons/icecream_material.svg" alt="Ice Cream" class="w-12 h-12" />
+      <h1 class="text-3xl">Kulkomat</h1>
+    </div>
+    <app-navigation class="hidden md:block"></app-navigation>
+  </header>
+
+  <main class="flex-grow p-4">
+    <router-outlet></router-outlet>
+  </main>
+
+  <app-navigation class="md:hidden"></app-navigation>
+</div>
