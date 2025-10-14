@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { Navigation } from './components/navigation/navigation.component';
+import { Supabase } from './services/supabase';
 
 @Component({
   selector: 'app-root',
@@ -12,14 +13,17 @@ import { Navigation } from './components/navigation/navigation.component';
           <img src="./assets/icons/icecream_material.svg" alt="Ice Cream" class="w-12 h-12" />
           <h1 class="text-3xl">Kulkomat</h1>
         </div>
-        <app-navigation class="hidden md:block"></app-navigation>
+        @if (this.supabase.isAuthenticated()) {
+          <app-navigation class="hidden md:block"></app-navigation>
+        }
       </header>
 
       <main class="flex-grow p-4">
         <router-outlet></router-outlet>
       </main>
-
-      <app-navigation class="md:hidden"></app-navigation>
+      @if (this.supabase.isAuthenticated()) {
+        <app-navigation class="md:hidden"></app-navigation>
+      }
     </div>
   `,
   styles: `
@@ -88,4 +92,6 @@ import { Navigation } from './components/navigation/navigation.component';
     }
   `,
 })
-export class App {}
+export class App {
+   protected supabase = inject(Supabase);
+}

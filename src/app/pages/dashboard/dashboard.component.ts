@@ -8,6 +8,7 @@ import { ProfileDTO } from '../../types';
 import { StampProgressViewModel } from '../../types/view-models';
 import { StampProgressComponent } from '../../components/dashboard/stamp-progress.component';
 import { CouponNavigationCardComponent } from '../../components/dashboard/coupon-navigation-card.component';
+import { IceCreamFlavorsList } from '../../components/ice-cream-flavors/ice-cream-flavors-list/ice-cream-flavors-list';
 
 /**
  * Dashboard Component (Page Container)
@@ -31,6 +32,7 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
     CommonModule,
     StampProgressComponent,
     CouponNavigationCardComponent,
+    IceCreamFlavorsList,
   ],
   template: `
     <div class="dashboard-container">
@@ -82,6 +84,10 @@ import { CouponNavigationCardComponent } from '../../components/dashboard/coupon
             <section class="section">
               <app-stamp-progress [stampCount]="profile()!.stamp_count" [maxStamps]="10">
               </app-stamp-progress>
+            </section>
+            <!-- Ice Cream Flavors -->
+            <section class="section">
+              <app-ice-cream-flavors-list></app-ice-cream-flavors-list>
             </section>
           </main>
 

@@ -135,3 +135,19 @@ export interface CouponsViewModel {
   /** Czy lista jest pusta */
   isEmpty: boolean;
 }
+
+// ============================================================================
+// Ice Cream Flavors View Models
+// ============================================================================
+
+/**
+ * Flavor View Model - Model widoku dla pojedynczego smaku lodów
+ */
+export interface FlavorVM {
+  /** Unikalny identyfikator smaku */
+  id: number;
+  /** Nazwa smaku (np. "Czekoladowy", "Waniliowy") */
+  name: string;
+  /** Status dostępności smaku */
+  isAvailable: boolean;
+}
