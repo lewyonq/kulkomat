@@ -156,12 +156,19 @@ export type ActivityDetails =
   | Record<string, never>;
 
 /**
+ * Activity History View Row - Raw row from activity_history view
+ * Derived from: activity_history view Row type
+ */
+export type ActivityHistoryViewRow = Tables<'activity_history'>;
+
+/**
  * Activity Item DTO - Single activity record
  * API: GET /api/profiles/me/activity-history, GET /api/activity-history
  */
 export interface ActivityItemDTO {
   type: ActivityType;
   id: number;
+  user_id: string;
   details: ActivityDetails;
   created_at: string;
 }

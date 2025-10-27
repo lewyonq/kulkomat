@@ -78,7 +78,6 @@ export class Supabase implements OnDestroy {
       if (error) {
         throw error;
       }
-      await this.initAuth();
     } catch (err) {
       this.error.set(err as Error);
       console.error('Sign in error:', err);

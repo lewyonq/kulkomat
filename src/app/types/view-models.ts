@@ -85,7 +85,7 @@ export interface CouponNavigationCardProps {
 // Coupons View Models
 // ============================================================================
 
-import { CouponType, CouponStatus } from './index';
+import { CouponType, CouponStatus, ActivityType } from './index';
 
 /**
  * Coupon Card View Model - Model widoku dla pojedynczego kuponu
@@ -150,4 +150,37 @@ export interface FlavorVM {
   name: string;
   /** Status dostępności smaku */
   isAvailable: boolean;
+}
+
+/**
+ * Activity Item View Model - Model widoku dla pojedynczej aktywności
+ * Wzbogaca ActivityItemDTO o pola potrzebne do renderowania w UI
+ */
+export interface ActivityItemViewModel {
+  /** ID aktywności */
+  id: number;
+  /** Typ aktywności */
+  type: ActivityType;
+  /** Tytuł aktywności (np. "Dodano pieczątkę") */
+  title: string;
+  /** Opis aktywności (np. "Otrzymano w zamian za 10 pieczątek") */
+  description: string;
+  /** Sformatowana data (np. "14 października 2025") */
+  date: string;
+  /** Nazwa ikony do wyświetlenia (np. "stamp-plus", "coupon-generated") */
+  icon: string;
+  /** Kolor ikony/aktywności (do customizacji wyglądu) */
+  color: string;
+}
+
+/**
+ * Activity History View Model - Model widoku dla strony historii aktywności
+ */
+export interface ActivityHistoryViewModel {
+  /** Lista aktywności użytkownika */
+  activities: ActivityItemViewModel[];
+  /** Całkowita liczba aktywności */
+  total: number;
+  /** Czy są dostępne kolejne strony do pobrania */
+  hasMore: boolean;
 }

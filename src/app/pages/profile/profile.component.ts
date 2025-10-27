@@ -502,6 +502,7 @@ import { UserIdDisplayComponent } from '../../components/profile/user-id-display
 })
 export class ProfileComponent implements OnInit {
   private supabase = inject(Supabase);
+  private router = inject(Router);
 
   // Loading and error states
   protected isLoading = signal<boolean>(true);
@@ -559,12 +560,9 @@ export class ProfileComponent implements OnInit {
 
   /**
    * Navigate to activity history
-   * TODO: Implement history page
    */
   protected onNavigateToHistory(): void {
-    // Temporary: Show alert until history page is implemented
-    alert('Strona historii będzie dostępna wkrótce!');
-    // this.router.navigate(['/history']);
+    this.router.navigate(['/history']);
   }
 
   /**

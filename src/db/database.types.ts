@@ -168,7 +168,38 @@ export type Database = {
       };
     };
     Views: {
-      [_ in never]: never;
+      activity_history: {
+        Row: {
+          type: string;
+          id: number;
+          user_id: string;
+          details: Json;
+          created_at: string;
+        };
+        Insert: {
+          type?: never;
+          id?: never;
+          user_id?: never;
+          details?: never;
+          created_at?: never;
+        };
+        Update: {
+          type?: never;
+          id?: never;
+          user_id?: never;
+          details?: never;
+          created_at?: never;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'activity_history_user_id_fkey';
+            columns: ['user_id'];
+            isOneToOne: false;
+            referencedRelation: 'profiles';
+            referencedColumns: ['id'];
+          },
+        ];
+      };
     };
     Functions: {
       [_ in never]: never;
