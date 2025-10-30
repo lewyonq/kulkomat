@@ -1,4 +1,4 @@
-import { Component, Input, computed } from '@angular/core';
+import { Component, input, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 /**
@@ -40,7 +40,7 @@ import { CommonModule } from '@angular/common';
           <p class="progress-text">
             <span class="current">{{ normalizedStampCount() }}</span>
             <span class="separator">/</span>
-            <span class="total">{{ maxStamps }}</span>
+            <span class="total">{{ maxStamps() }}</span>
             <span class="unit">pieczątek</span>
           </p>
         </div>
@@ -242,35 +242,35 @@ import { CommonModule } from '@angular/common';
   ],
 })
 export class StampProgressComponent {
-  @Input() stampCount: number = 0;
-  @Input() maxStamps: number = 10;
+  stampCount = input<number>(0);
+  maxStamps = input<number>(10);
 
   /**
    * Normalized stamp count (ensures it's within valid range 0-maxStamps)
    */
   protected normalizedStampCount = computed(() => {
-    return Math.max(0, Math.min(this.stampCount, this.maxStamps));
+    return Math.max(0, Math.min(this.stampCount(), this.maxStamps()));
   });
 
   /**
    * Percentage of stamps collected
    */
   protected percentage = computed(() => {
-    return (this.normalizedStampCount() / this.maxStamps) * 100;
+    return (this.normalizedStampCount() / this.maxStamps()) * 100;
   });
 
   /**
    * Number of stamps remaining to reach reward
    */
   protected stampsToReward = computed(() => {
-    return Math.max(0, this.maxStamps - this.normalizedStampCount());
+    return Math.max(0, this.maxStamps() - this.normalizedStampCount());
   });
 
   /**
    * Whether all stamps have been collected
    */
   protected isComplete = computed(() => {
-    return this.normalizedStampCount() >= this.maxStamps;
+    return this.normalizedStampCount() >= this.maxStamps();
   });
 
   /**
@@ -278,7 +278,7 @@ export class StampProgressComponent {
    * Each stamp has a 'collected' property indicating if it's been earned
    */
   protected stamps = computed(() => {
-    return Array.from({ length: this.maxStamps }, (_, index) => ({
+    return Array.from({ length: this.maxStamps() }, (_, index) => ({
       collected: index < this.normalizedStampCount(),
     }));
   });

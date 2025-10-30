@@ -1,4 +1,4 @@
-import { Component, Input, Output, EventEmitter } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { CouponCardViewModel } from '../../types/view-models';
 
@@ -26,20 +26,20 @@ import { CouponCardViewModel } from '../../types/view-models';
   template: `
     <div
       class="coupon-card"
-      [class.inactive]="!coupon.isActive"
-      [class.clickable]="coupon.isActive"
+      [class.inactive]="!coupon().isActive"
+      [class.clickable]="coupon().isActive"
       (click)="onCouponClick()"
       (keydown.enter)="onCouponClick()"
       (keydown.space)="onCouponClick()"
       role="button"
-      [attr.tabindex]="coupon.isActive ? 0 : -1"
-      [attr.aria-label]="coupon.title + ', ' + coupon.formattedExpiryDate + (coupon.isActive ? '. Kliknij aby wykorzystać' : '')"
-      [attr.aria-disabled]="!coupon.isActive"
+      [attr.tabindex]="coupon().isActive ? 0 : -1"
+      [attr.aria-label]="coupon().title + ', ' + coupon().formattedExpiryDate + (coupon().isActive ? '. Kliknij aby wykorzystać' : '')"
+      [attr.aria-disabled]="!coupon().isActive"
     >
       <!-- Icon Section -->
-      <div class="icon-section" [style.background]="coupon.iconGradient">
+      <div class="icon-section" [style.background]="coupon().iconGradient">
         <!-- Ticket Icon (free_scoop) -->
-        @if (coupon.iconName === 'ticket') {
+        @if (coupon().iconName === 'ticket') {
           <svg
             class="coupon-icon"
             viewBox="0 0 24 24"
@@ -64,7 +64,7 @@ import { CouponCardViewModel } from '../../types/view-models';
         }
 
         <!-- Percent Icon (percentage) -->
-        @if (coupon.iconName === 'percent') {
+        @if (coupon().iconName === 'percent') {
           <svg
             class="coupon-icon"
             viewBox="0 0 24 24"
@@ -78,7 +78,7 @@ import { CouponCardViewModel } from '../../types/view-models';
         }
 
         <!-- Coins Icon (amount) -->
-        @if (coupon.iconName === 'coins') {
+        @if (coupon().iconName === 'coins') {
           <svg
             class="coupon-icon"
             viewBox="0 0 24 24"
@@ -100,25 +100,25 @@ import { CouponCardViewModel } from '../../types/view-models';
       <!-- Content Section -->
       <div class="content-section">
         <div class="header">
-          <h3 class="title">{{ coupon.title }}</h3>
+          <h3 class="title">{{ coupon().title }}</h3>
           <span
             class="status-badge"
-            [class.active]="coupon.isActive"
-            [class.used]="coupon.isUsed"
-            [class.expired]="coupon.isExpired"
+            [class.active]="coupon().isActive"
+            [class.used]="coupon().isUsed"
+            [class.expired]="coupon().isExpired"
           >
-            @if (coupon.isActive) {
+            @if (coupon().isActive) {
               Aktywny
-            } @else if (coupon.isUsed) {
+            } @else if (coupon().isUsed) {
               Wykorzystany
-            } @else if (coupon.isExpired) {
+            } @else if (coupon().isExpired) {
               Wygasły
             }
           </span>
         </div>
 
-        <p class="description">{{ coupon.description }}</p>
-        <p class="expiry-date">{{ coupon.formattedExpiryDate }}</p>
+        <p class="description">{{ coupon().description }}</p>
+        <p class="expiry-date">{{ coupon().formattedExpiryDate }}</p>
       </div>
     </div>
   `,
@@ -317,13 +317,13 @@ import { CouponCardViewModel } from '../../types/view-models';
   ],
 })
 export class CouponCardComponent {
-  @Input() coupon!: CouponCardViewModel;
-  @Output() couponClick = new EventEmitter<CouponCardViewModel>();
+  coupon = input.required<CouponCardViewModel>();
+  couponClick = output<CouponCardViewModel>();
 
   protected onCouponClick(): void {
-    if (!this.coupon.isActive) {
+    if (!this.coupon().isActive) {
       return;
     }
-    this.couponClick.emit(this.coupon);
+    this.couponClick.emit(this.coupon());
   }
 }

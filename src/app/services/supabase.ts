@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthSession, createClient, SupabaseClient } from '@supabase/supabase-js';
+import { AuthChangeEvent, AuthSession, createClient, Session, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../environment/environment';
 import { catchError, from, map, Observable, tap, throwError } from 'rxjs';
 import { ProfileDTO } from '../types';
@@ -20,11 +20,43 @@ export class Supabase implements OnDestroy {
   public isLoading = signal(true);
   public error = signal<Error | null>(null);
 
+  /**
+   * Validate UUID format to prevent SQL injection attempts
+   * @param uuid - String to validate
+   * @returns true if valid UUID format
+   */
+  private isValidUUID(uuid: string): boolean {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(uuid);
+  }
+
+  /**
+   * Validate short ID format (6-8 alphanumeric characters)
+   * @param shortId - String to validate
+   * @returns true if valid short ID format
+   */
+  private isValidShortId(shortId: string): boolean {
+    const shortIdRegex = /^[A-Z0-9]{6,8}$/;
+    return shortIdRegex.test(shortId);
+  }
+
   constructor() {
-    this.supabase = createClient(environment.supabase.url, environment.supabase.anonKey);
+    this.supabase = createClient(environment.supabase.url, environment.supabase.anonKey, {
+      auth: {
+        persistSession: true,
+        autoRefreshToken: true,
+        detectSessionInUrl: true,
+        flowType: 'pkce',
+      },
+    });
     this.initAuth();
   }
 
+  /**
+   * Get Supabase client instance
+   * WARNING: Direct client access should be used sparingly
+   * Prefer using service methods for better error handling and state management
+   */
   public get client(): SupabaseClient {
     return this.supabase;
   }
@@ -43,8 +75,17 @@ export class Supabase implements OnDestroy {
       this.session.set(session);
 
       // Ensure profile exists for current session
-      if (session?.user) {
-        await this.ensureProfileExists(session.user.id);
+      // Validate session is not expired before proceeding
+      if (session?.user && session.expires_at) {
+        const expiresAt = new Date(session.expires_at * 1000);
+        const now = new Date();
+        
+        if (expiresAt > now) {
+          await this.ensureProfileExists(session.user.id);
+        } else {
+          console.warn('Session expired, skipping profile creation');
+          this.session.set(null);
+        }
       }
 
       this.authSubscription = this.supabase.auth.onAuthStateChange(async (event, session) => {
@@ -56,9 +97,31 @@ export class Supabase implements OnDestroy {
           this.router.navigate(['/']);
         }
 
-        // Redirect to login after sign out
+        // Update session when token is refreshed
+        if (event === 'TOKEN_REFRESHED' && session) {
+          console.log('Token refreshed successfully');
+          // Session is already updated above, just log for debugging
+        }
+
+        // Clear state and redirect to login after sign out
         if (event === 'SIGNED_OUT') {
+          this.currentProfile.set(null);
+          this.error.set(null);
           this.router.navigate(['/login']);
+        }
+
+        // Handle user update events
+        if (event === 'USER_UPDATED' && session) {
+          console.log('User data updated');
+          // Refresh profile to get latest data
+          this.refreshCurrentUserProfile().subscribe({
+            next: (profile) => {
+              this.currentProfile.set(profile);
+            },
+            error: (err) => {
+              console.error('Error refreshing profile after user update:', err);
+            }
+          });
         }
       });
     } catch (err) {
@@ -93,18 +156,31 @@ export class Supabase implements OnDestroy {
   public checkOAuthError(): string | null {
     if (typeof window === 'undefined') return null;
 
-    const params = new URLSearchParams(window.location.search);
-    const error = params.get('error');
-    const errorDescription = params.get('error_description');
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const error = params.get('error');
+      const errorDescription = params.get('error_description');
 
-    if (error) {
-      // Clean URL from error parameters
-      window.history.replaceState({}, document.title, window.location.pathname);
+      if (error) {
+        // Clean URL from error parameters
+        try {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch (historyError) {
+          console.warn('Failed to clean URL parameters:', historyError);
+        }
 
-      return errorDescription || 'Wystąpił błąd podczas próby logowania. Spróbuj ponownie później.';
+        // Sanitize error description to prevent XSS
+        // Only return if it's a safe string (alphanumeric, spaces, and basic punctuation)
+        const safeErrorDescription = errorDescription?.replace(/[^a-zA-Z0-9\s.,!?-]/g, '');
+        
+        return safeErrorDescription || 'Wystąpił błąd podczas próby logowania. Spróbuj ponownie później.';
+      }
+
+      return null;
+    } catch (err) {
+      console.error('Error checking OAuth error:', err);
+      return null;
     }
-
-    return null;
   }
 
   public async signOut(): Promise<void> {
@@ -114,6 +190,10 @@ export class Supabase implements OnDestroy {
       if (error) {
         throw error;
       }
+
+      // Clear all user-related state after successful sign out
+      this.currentProfile.set(null);
+      this.error.set(null);
     } catch (err) {
       this.error.set(err as Error);
       console.error('Sign out error:', err);
@@ -127,21 +207,27 @@ export class Supabase implements OnDestroy {
    * Retrieve the authenticated user's profile
    */
   getCurrentUserProfile(): Observable<ProfileDTO> {
+    const userId = this.user()?.id;
+
+    if (!userId) {
+      return throwError(() => new Error('User not authenticated'));
+    }
+
+    if (!this.isValidUUID(userId)) {
+      return throwError(() => new Error('Invalid user ID format'));
+    }
+
     this.isLoading.set(true);
     this.error.set(null);
 
     return from(
-      this.supabase.auth.getUser().then(async ({ data: { user }, error: authError }) => {
-        if (authError || !user) {
-          throw new Error('User not authenticated');
-        }
-
-        const { data, error } = await this.supabase
-          .from('profiles')
-          .select('*')
-          .eq('id', user.id)
-          .single();
-
+      this.supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+    ).pipe(
+      map(({ data, error }) => {
         if (error) {
           throw error;
         }
@@ -150,8 +236,59 @@ export class Supabase implements OnDestroy {
           throw new Error('Profile not found');
         }
 
-        return data;
+        return {
+          id: data.id,
+          short_id: data.short_id,
+          stamp_count: data.stamp_count,
+          created_at: data.created_at,
+        };
       }),
+      tap((profile) => {
+        this.currentProfile.set(profile);
+        this.isLoading.set(false);
+      }),
+      catchError((err) => {
+        const errorMessage = err?.message || 'Failed to fetch profile';
+        this.error.set(new Error(errorMessage));
+        this.isLoading.set(false);
+        return throwError(() => new Error(errorMessage));
+      }),
+    );
+  }
+
+  /**
+   * Refresh Current User Profile
+   * Fetches profile data without auth check to avoid lock issues
+   * Uses cached user ID from session
+   */
+  refreshCurrentUserProfile(): Observable<ProfileDTO> {
+    const userId = this.user()?.id;
+    
+    if (!userId) {
+      return throwError(() => new Error('User not authenticated'));
+    }
+
+    if (!this.isValidUUID(userId)) {
+      return throwError(() => new Error('Invalid user ID format'));
+    }
+
+    return from(
+      this.supabase
+        .from('profiles')
+        .select('*')
+        .eq('id', userId)
+        .single()
+        .then(({ data, error }) => {
+          if (error) {
+            throw error;
+          }
+
+          if (!data) {
+            throw new Error('Profile not found');
+          }
+
+          return data;
+        }),
     ).pipe(
       map((profile) => ({
         id: profile.id,
@@ -161,12 +298,10 @@ export class Supabase implements OnDestroy {
       })),
       tap((profile) => {
         this.currentProfile.set(profile);
-        this.isLoading.set(false);
       }),
       catchError((err) => {
-        const errorMessage = err?.message || 'Failed to fetch profile';
-        this.error.set(errorMessage);
-        this.isLoading.set(false);
+        const errorMessage = err?.message || 'Failed to refresh profile';
+        console.error('Profile refresh error:', errorMessage);
         return throwError(() => new Error(errorMessage));
       }),
     );
@@ -178,6 +313,11 @@ export class Supabase implements OnDestroy {
    * @param userId - The user ID to check/create profile for
    */
   public async ensureProfileExists(userId: string): Promise<void> {
+    if (!this.isValidUUID(userId)) {
+      console.error('Invalid user ID format:', userId);
+      return;
+    }
+
     try {
       // Check if profile already exists
       const { data: existingProfile, error: checkError } = await this.supabase
@@ -193,8 +333,13 @@ export class Supabase implements OnDestroy {
 
       // Profile already exists, nothing to do
       if (existingProfile) {
-        this.getCurrentUserProfile().subscribe((profile) => {
-          this.currentProfile.set(profile);
+        this.refreshCurrentUserProfile().subscribe({
+          next: (profile) => {
+            this.currentProfile.set(profile);
+          },
+          error: (err) => {
+            console.error('Error refreshing profile:', err);
+          }
         });
         return;
       }
@@ -221,9 +366,27 @@ export class Supabase implements OnDestroy {
       }
 
       console.log('Profile created successfully for user:', userId);
+      
+      // Refresh profile after creation
+      this.refreshCurrentUserProfile().subscribe({
+        next: (profile) => {
+          this.currentProfile.set(profile);
+        },
+        error: (err) => {
+          console.error('Error refreshing newly created profile:', err);
+        }
+      });
     } catch (err) {
-      console.error('Error in ensureProfileExists:', err);
-      // Don't throw error to prevent blocking user login
+      const error = err as Error;
+      console.error('Error in ensureProfileExists:', {
+        message: error.message,
+        userId,
+        stack: error.stack
+      });
+      
+      // Set error signal but don't throw to prevent blocking user login
+      this.error.set(new Error(`Failed to ensure profile exists: ${error.message}`));
+      
       // The profile can be created later if needed
     }
   }
@@ -234,6 +397,10 @@ export class Supabase implements OnDestroy {
    * Retrieve a customer profile by their short ID
    */
   getProfileByShortId(shortId: string): Observable<ProfileDTO> {
+    if (!this.isValidShortId(shortId)) {
+      return throwError(() => new Error('Invalid short ID format'));
+    }
+
     this.isLoading.set(true);
     this.error.set(null);
 
@@ -276,17 +443,35 @@ export class Supabase implements OnDestroy {
   /**
    * Generate a unique short ID (6-8 character alphanumeric code)
    * Checks database to ensure uniqueness
+   * Uses cryptographically secure random number generation
+   * Implements constant-time checks to prevent timing attacks
+   * Uses exponential backoff to prevent DoS
    */
   private async generateUniqueShortId(): Promise<string> {
     const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const maxAttempts = 10;
+    const maxAttempts = 5; // Reduced to prevent DoS
+    const minDelay = 50; // Minimum delay in ms to prevent timing attacks
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
-      const length = Math.floor(Math.random() * 3) + 6; // 6-8 characters
+      const startTime = Date.now();
+      
+      // Exponential backoff: wait longer on each retry
+      if (attempt > 0) {
+        const backoffDelay = Math.min(1000, 100 * Math.pow(2, attempt - 1));
+        await new Promise(resolve => setTimeout(resolve, backoffDelay));
+      }
+      
+      // Use crypto.getRandomValues for cryptographically secure randomness
+      const lengthArray = new Uint32Array(1);
+      crypto.getRandomValues(lengthArray);
+      const length = (lengthArray[0] % 3) + 6; // 6-8 characters
+      
+      const randomValues = new Uint32Array(length);
+      crypto.getRandomValues(randomValues);
+      
       let shortId = '';
-
       for (let i = 0; i < length; i++) {
-        shortId += chars.charAt(Math.floor(Math.random() * chars.length));
+        shortId += chars.charAt(randomValues[i] % chars.length);
       }
 
       // Check if short_id already exists
@@ -295,6 +480,12 @@ export class Supabase implements OnDestroy {
         .select('short_id')
         .eq('short_id', shortId)
         .maybeSingle();
+
+      // Add constant-time delay to prevent timing attacks
+      const elapsed = Date.now() - startTime;
+      if (elapsed < minDelay) {
+        await new Promise(resolve => setTimeout(resolve, minDelay - elapsed));
+      }
 
       if (error) {
         console.error('Error checking short_id uniqueness:', error);

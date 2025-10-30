@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 /**
@@ -26,7 +26,7 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   template: `
-    @if (isOpen) {
+    @if (isOpen()) {
       <div
         class="dialog-overlay"
         (click)="onBackdropClick()"
@@ -40,12 +40,12 @@ import { CommonModule } from '@angular/common';
         <div class="dialog-container" (click)="$event.stopPropagation()">
           <!-- Dialog Header -->
           <div class="dialog-header">
-            <h2 id="dialog-title" class="dialog-title">{{ title }}</h2>
+            <h2 id="dialog-title" class="dialog-title">{{ title() }}</h2>
           </div>
 
           <!-- Dialog Content -->
           <div class="dialog-content">
-            <p id="dialog-message" class="dialog-message">{{ message }}</p>
+            <p id="dialog-message" class="dialog-message">{{ message() }}</p>
           </div>
 
           <!-- Dialog Actions -->
@@ -56,16 +56,16 @@ import { CommonModule } from '@angular/common';
               type="button"
               aria-label="Anuluj"
             >
-              {{ cancelLabel }}
+              {{ cancelLabel() }}
             </button>
             <button
               class="dialog-button confirm-button"
-              [class]="confirmButtonClass"
+              [class]="confirmButtonClass()"
               (click)="onConfirm()"
               type="button"
               aria-label="Potwierdź"
             >
-              {{ confirmLabel }}
+              {{ confirmLabel() }}
             </button>
           </div>
         </div>
@@ -230,15 +230,15 @@ import { CommonModule } from '@angular/common';
   ],
 })
 export class ConfirmationDialogComponent {
-  @Input() isOpen = false;
-  @Input() title = 'Potwierdzenie';
-  @Input() message = 'Czy na pewno chcesz kontynuować?';
-  @Input() confirmLabel = 'Tak';
-  @Input() cancelLabel = 'Nie';
-  @Input() confirmButtonClass = '';
+  isOpen = input<boolean>(false);
+  title = input<string>('Potwierdzenie');
+  message = input<string>('Czy na pewno chcesz kontynuować?');
+  confirmLabel = input<string>('Tak');
+  cancelLabel = input<string>('Nie');
+  confirmButtonClass = input<string>('');
 
-  @Output() confirm = new EventEmitter<void>();
-  @Output() cancel = new EventEmitter<void>();
+  confirm = output<void>();
+  cancel = output<void>();
 
   protected onConfirm(): void {
     this.confirm.emit();

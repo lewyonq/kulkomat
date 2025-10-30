@@ -534,21 +534,30 @@ export class ProfileComponent implements OnInit {
 
   /**
    * Load user profile from Supabase
+   * Uses the centralized currentProfile signal to avoid concurrent API calls
    */
   private loadProfile(): void {
-    this.isLoading.set(true);
-    this.error.set(null);
+    const currentProfile = this.supabase.currentProfile();
+    
+    if (currentProfile) {
+      this.profile.set(currentProfile);
+      this.isLoading.set(false);
+    } else {
+      // Only fetch if not already loaded
+      this.isLoading.set(true);
+      this.error.set(null);
 
-    this.supabase.getCurrentUserProfile().subscribe({
-      next: (profile) => {
-        this.profile.set(profile);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.error.set(err);
-        this.isLoading.set(false);
-      },
-    });
+      this.supabase.getCurrentUserProfile().subscribe({
+        next: (profile) => {
+          this.profile.set(profile);
+          this.isLoading.set(false);
+        },
+        error: (err) => {
+          this.error.set(err);
+          this.isLoading.set(false);
+        },
+      });
+    }
   }
 
   /**

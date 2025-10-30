@@ -1,4 +1,4 @@
-import { Component, Input, inject } from '@angular/core';
+import { Component, input, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 
@@ -63,9 +63,9 @@ import { Router } from '@angular/router';
             </svg>
 
             <!-- Badge with count -->
-            @if (activeCouponsCount !== undefined && activeCouponsCount > 0) {
-              <div class="badge" [attr.aria-label]="activeCouponsCount + ' aktywnych kuponów'">
-                {{ activeCouponsCount }}
+            @if (activeCouponsCount() !== undefined && activeCouponsCount()! > 0) {
+              <div class="badge" [attr.aria-label]="activeCouponsCount() + ' aktywnych kuponów'">
+                {{ activeCouponsCount() }}
               </div>
             }
           </div>
@@ -74,8 +74,8 @@ import { Router } from '@angular/router';
         <div class="card-content">
           <h3 class="card-title">Moje kupony</h3>
           <p class="card-subtitle">
-            @if (activeCouponsCount !== undefined && activeCouponsCount > 0) {
-              {{ activeCouponsCount }} {{ getCouponLabel(activeCouponsCount) }}
+            @if (activeCouponsCount() !== undefined && activeCouponsCount()! > 0) {
+              {{ activeCouponsCount() }} {{ getCouponLabel(activeCouponsCount()!) }}
             } @else {
               Zobacz dostępne rabaty
             }
@@ -292,7 +292,7 @@ import { Router } from '@angular/router';
   ],
 })
 export class CouponNavigationCardComponent {
-  @Input() activeCouponsCount?: number;
+  activeCouponsCount = input<number | undefined>(undefined);
 
   private router = inject(Router);
 

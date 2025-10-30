@@ -353,21 +353,30 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   /**
    * Load user profile from Supabase
+   * Uses the centralized currentProfile signal to avoid concurrent API calls
    */
   private loadProfile(): void {
-    this.isLoading.set(true);
-    this.error.set(null);
+    const currentProfile = this.supabase.currentProfile();
+    
+    if (currentProfile) {
+      this.profile.set(currentProfile);
+      this.isLoading.set(false);
+    } else {
+      // Only fetch if not already loaded
+      this.isLoading.set(true);
+      this.error.set(null);
 
-    this.supabase.getCurrentUserProfile().subscribe({
-      next: (profile) => {
-        this.profile.set(profile);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        this.error.set(err);
-        this.isLoading.set(false);
-      },
-    });
+      this.supabase.getCurrentUserProfile().subscribe({
+        next: (profile) => {
+          this.profile.set(profile);
+          this.isLoading.set(false);
+        },
+        error: (err) => {
+          this.error.set(err);
+          this.isLoading.set(false);
+        },
+      });
+    }
   }
 
   /**
@@ -417,19 +426,21 @@ export class DashboardComponent implements OnInit, OnDestroy {
           },
           (payload) => {
             console.log('Realtime update received:', payload);
-            // Update profile signal with new data
-            this.profile.set(payload.new as ProfileDTO);
+              // Update profile signal with new data
+              this.profile.set(payload.new as ProfileDTO);
+              // Reload active coupons count in case stamp count changed
+              this.loadActiveCouponsCount();
 
-            // Optional: Show toast notification
-            // this.showToast('Otrzymałeś pieczątkę!');
+              // Optional: Show toast notification
+              // this.showToast('Otrzymałeś pieczątkę!');
           },
         )
         .subscribe((status) => {
-          if (status === 'SUBSCRIBED') {
-            this.showRefreshButton.set(true);
+            if (status === 'SUBSCRIBED') {
+              this.showRefreshButton.set(true);
           } else if (status === 'CHANNEL_ERROR') {
             this.showRefreshButton.set(false);
-          }
+            }
         });
     } catch (err) {
       this.showRefreshButton.set(true);
@@ -460,13 +471,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.refreshing()) return;
 
     this.refreshing.set(true);
-    this.supabase.getCurrentUserProfile().subscribe({
+    this.supabase.refreshCurrentUserProfile().subscribe({
       next: (profile) => {
         this.profile.set(profile);
         this.loadActiveCouponsCount();
         this.refreshing.set(false);
       },
-      error: () => {
+      error: (err) => {
+        console.error('Failed to refresh profile:', err);
         this.refreshing.set(false);
       },
     });

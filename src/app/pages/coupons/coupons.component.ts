@@ -509,6 +509,7 @@ export class CouponsComponent implements OnInit, OnDestroy {
         this.isLoading.set(false);
       },
       error: (err) => {
+        console.error('Error loading coupons:', err);
         this.error.set(err);
         this.isLoading.set(false);
       },
