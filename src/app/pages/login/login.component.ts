@@ -90,6 +90,16 @@ export class LoginComponent implements OnInit {
     if (oauthError) {
       this.error.set(oauthError);
     }
+
+    if (typeof window !== 'undefined' && !this.error()) {
+      try {
+        const url = new URL(window.location.href);
+        const msg = url.searchParams.get('error_description');
+        if (msg) {
+          this.error.set(msg);
+        }
+      } catch {}
+    }
   }
 
   /**

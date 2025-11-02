@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
+import { loginRedirectGuard } from './guards/login-redirect.guard';
 
 export const routes: Routes = [
   {
@@ -29,5 +30,11 @@ export const routes: Routes = [
   {
     path: 'login',
     loadComponent: () => import('./pages/login/login.component').then((m) => m.LoginComponent),
+    canActivate: [loginRedirectGuard],
+  },
+  {
+    path: 'auth/callback',
+    loadComponent: () =>
+      import('./pages/auth-callback/auth-callback.component').then((m) => m.AuthCallbackComponent),
   },
 ];

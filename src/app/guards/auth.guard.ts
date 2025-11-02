@@ -15,7 +15,7 @@ import { Supabase } from '../services/supabase';
  *   canActivate: [authGuard]
  * }
  */
-export const authGuard: CanActivateFn = async () => {
+export const authGuard: CanActivateFn = async (_route, state) => {
   const supabase = inject(Supabase);
   const router = inject(Router);
 
@@ -27,7 +27,8 @@ export const authGuard: CanActivateFn = async () => {
   const isAuth = supabase.isAuthenticated();
 
   if (!isAuth) {
-    router.navigate(['/login']);
+    const next = state?.url || '/';
+    router.navigate(['/login'], { queryParams: { next } });
     return false;
   }
 

@@ -1,9 +1,10 @@
 import { computed, inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthChangeEvent, AuthSession, createClient, Session, SupabaseClient } from '@supabase/supabase-js';
+import { AuthChangeEvent, AuthSession, Session, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../environment/environment';
 import { catchError, from, map, Observable, tap, throwError } from 'rxjs';
 import { ProfileDTO } from '../types';
+import { SupabaseClientService } from './supabase-client.service';
 
 @Injectable({
   providedIn: 'root',
@@ -41,14 +42,8 @@ export class Supabase implements OnDestroy {
   }
 
   constructor() {
-    this.supabase = createClient(environment.supabase.url, environment.supabase.anonKey, {
-      auth: {
-        persistSession: true,
-        autoRefreshToken: true,
-        detectSessionInUrl: true,
-        flowType: 'pkce',
-      },
-    });
+    const clientService = inject(SupabaseClientService) as SupabaseClientService;
+    this.supabase = clientService.client;
     this.initAuth();
   }
 
@@ -94,7 +89,6 @@ export class Supabase implements OnDestroy {
         // Ensure profile exists and redirect to dashboard after successful sign in
         if (event === 'SIGNED_IN' && session) {
           await this.ensureProfileExists(session.user.id);
-          this.router.navigate(['/']);
         }
 
         // Update session when token is refreshed
@@ -103,11 +97,11 @@ export class Supabase implements OnDestroy {
           // Session is already updated above, just log for debugging
         }
 
-        // Clear state and redirect to login after sign out
         if (event === 'SIGNED_OUT') {
           this.currentProfile.set(null);
           this.error.set(null);
-          this.router.navigate(['/login']);
+          const afterLogout = (environment as any)?.auth?.defaultRedirectAfterLogout || '/login';
+          this.router.navigate([afterLogout]);
         }
 
         // Handle user update events
@@ -134,8 +128,20 @@ export class Supabase implements OnDestroy {
 
   public async signInWithGoogle(): Promise<void> {
     try {
+      const defaultRedirect = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : '/auth/callback';
+      const baseRedirect = (environment as any)?.auth?.redirectUri || defaultRedirect;
+      const next = this.router.url && this.router.url !== '/login' ? this.router.url : '/';
+      const redirectUrl = new URL(baseRedirect, typeof window !== 'undefined' ? window.location.origin : undefined);
+      if (!redirectUrl.searchParams.get('next')) {
+        redirectUrl.searchParams.set('next', next);
+      }
+
       const { error } = await this.supabase.auth.signInWithOAuth({
         provider: 'google',
+        options: {
+          redirectTo: redirectUrl.toString(),
+          scopes: 'openid email profile',
+        },
       });
 
       if (error) {
@@ -180,6 +186,45 @@ export class Supabase implements OnDestroy {
     } catch (err) {
       console.error('Error checking OAuth error:', err);
       return null;
+    }
+  }
+
+  public async handleOAuthCallback(url?: string): Promise<void> {
+    try {
+      const currentUrl = url || (typeof window !== 'undefined' ? window.location.href : '');
+      if (!currentUrl) {
+        throw new Error('Missing callback URL');
+      }
+
+      const { data, error } = await this.supabase.auth.exchangeCodeForSession(currentUrl);
+      if (error) {
+        throw error;
+      }
+
+      const session = data?.session ?? null;
+      this.session.set(session);
+
+      if (session?.user) {
+        await this.ensureProfileExists(session.user.id);
+      }
+
+      const urlObj = new URL(currentUrl);
+      const next = urlObj.searchParams.get('next');
+
+      // Clean the URL to remove sensitive params
+      if (typeof window !== 'undefined') {
+        try {
+          window.history.replaceState({}, document.title, window.location.pathname);
+        } catch {}
+      }
+
+      const defaultAfterLogin = (environment as any)?.auth?.defaultRedirectAfterLogin || '/';
+      const target = next || defaultAfterLogin;
+      this.router.navigate([target]);
+    } catch (err) {
+      const message = (err as any)?.message || 'OAuth callback failed';
+      this.error.set(new Error(message));
+      this.router.navigate(['/login'], { queryParams: { error_description: message } });
     }
   }
 
