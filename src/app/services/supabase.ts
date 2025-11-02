@@ -1,6 +1,6 @@
 import { computed, inject, Injectable, OnDestroy, signal } from '@angular/core';
 import { Router } from '@angular/router';
-import { AuthChangeEvent, AuthSession, Session, SupabaseClient } from '@supabase/supabase-js';
+import { AuthSession, SupabaseClient } from '@supabase/supabase-js';
 import { environment } from '../environment/environment';
 import { catchError, from, map, Observable, tap, throwError } from 'rxjs';
 import { ProfileDTO } from '../types';
@@ -196,19 +196,31 @@ export class Supabase implements OnDestroy {
         throw new Error('Missing callback URL');
       }
 
-      const { data, error } = await this.supabase.auth.exchangeCodeForSession(currentUrl);
+      // With detectSessionInUrl: true, Supabase automatically handles the code exchange
+      // We just need to wait for the session to be set and handle navigation
+      const urlObj = new URL(currentUrl);
+
+      // Check for OAuth errors in URL
+      const error = urlObj.searchParams.get('error');
+      const errorDescription = urlObj.searchParams.get('error_description');
+
       if (error) {
-        throw error;
+        throw new Error(errorDescription || 'OAuth authentication failed');
       }
 
-      const session = data?.session ?? null;
-      this.session.set(session);
+      // Wait for session to be available (it should be set by auto-detection)
+      // Get current session
+      const { data: { session }, error: sessionError } = await this.supabase.auth.getSession();
+
+      if (sessionError) {
+        throw sessionError;
+      }
 
       if (session?.user) {
+        this.session.set(session);
         await this.ensureProfileExists(session.user.id);
       }
 
-      const urlObj = new URL(currentUrl);
       const next = urlObj.searchParams.get('next');
 
       // Clean the URL to remove sensitive params
