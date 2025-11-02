@@ -1,7 +1,7 @@
 import { Component, inject } from '@angular/core';
 import { RouterLink, RouterOutlet } from '@angular/router';
 import { Navigation } from './components/navigation/navigation.component';
-import { Supabase } from './services/supabase';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'app-root',
@@ -13,7 +13,7 @@ import { Supabase } from './services/supabase';
           <img src="./assets/icons/icecream_material.svg" alt="Ice Cream" class="w-12 h-12" />
           <h1 class="text-3xl">Kulkomat</h1>
         </div>
-        @if (this.supabase.isAuthenticated()) {
+        @if (this.authService.isAuthenticated()) {
           <app-navigation class="hidden md:block"></app-navigation>
         }
       </header>
@@ -21,7 +21,7 @@ import { Supabase } from './services/supabase';
       <main class="flex-grow p-4">
         <router-outlet></router-outlet>
       </main>
-      @if (this.supabase.isAuthenticated()) {
+      @if (this.authService.isAuthenticated()) {
         <app-navigation class="md:hidden"></app-navigation>
       }
     </div>
@@ -93,5 +93,5 @@ import { Supabase } from './services/supabase';
   `,
 })
 export class App {
-   protected supabase = inject(Supabase);
+   protected authService = inject(AuthService);
 }

@@ -1,7 +1,7 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { from, Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { Supabase } from './supabase';
+import { AuthService } from './auth.service';
 import {
   ActivityHistoryDTO,
   ActivityHistoryQueryParams,
@@ -11,11 +11,17 @@ import {
   ActivityType,
 } from '../types';
 
+/**
+ * ActivityHistory Service
+ *
+ * Manages activity history operations including fetching user activity.
+ * Uses AuthService for authentication state.
+ */
 @Injectable({
   providedIn: 'root'
 })
 export class ActivityHistory {
-  private supabase = inject(Supabase);
+  private authService = inject(AuthService);
 
   public isLoading = signal<boolean>(false);
   public error = signal<Error | null>(null);
@@ -28,7 +34,7 @@ export class ActivityHistory {
    * @returns Observable<ActivityHistoryDTO> - Paginated list of activity items
    */
   getUserActivityHistory(params?: ActivityHistoryQueryParams): Observable<ActivityHistoryDTO> {
-    const currentUser = this.supabase.user();
+    const currentUser = this.authService.user();
 
     if (!currentUser) {
       const authError = new Error('User not authenticated');
@@ -69,7 +75,7 @@ export class ActivityHistory {
     const offset = params?.offset ?? 0;
 
     return from(
-      this.supabase.client
+      this.authService.client
         .from('activity_history')
         .select('*', { count: 'exact' })
         .eq('user_id', userId)

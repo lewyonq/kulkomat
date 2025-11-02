@@ -1,8 +1,7 @@
 import { Component, OnInit, OnDestroy, computed, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { RealtimeChannel } from '@supabase/supabase-js';
-import { Supabase } from '../../services/supabase';
+import { AuthService } from '../../services/auth.service';
 import { CouponService } from '../../services/coupon.service';
 import { ProfileDTO } from '../../types';
 import { StampProgressViewModel } from '../../types/view-models';
@@ -301,9 +300,8 @@ import { IceCreamFlavorsList } from '../../components/ice-cream-flavors/ice-crea
   ],
 })
 export class DashboardComponent implements OnInit, OnDestroy {
-  private supabase = inject(Supabase);
+  private authService = inject(AuthService);
   private couponService = inject(CouponService);
-  private router = inject(Router);
   private realtimeSubscription: RealtimeChannel | null = null;
 
   // Loading and error states
@@ -352,12 +350,12 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Load user profile from Supabase
+   * Load user profile from AuthService
    * Uses the centralized currentProfile signal to avoid concurrent API calls
    */
   private loadProfile(): void {
-    const currentProfile = this.supabase.currentProfile();
-    
+    const currentProfile = this.authService.currentProfile();
+
     if (currentProfile) {
       this.profile.set(currentProfile);
       this.isLoading.set(false);
@@ -366,7 +364,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       this.isLoading.set(true);
       this.error.set(null);
 
-      this.supabase.getCurrentUserProfile().subscribe({
+      this.authService.getCurrentUserProfile().subscribe({
         next: (profile) => {
           this.profile.set(profile);
           this.isLoading.set(false);
@@ -406,7 +404,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * Setup Realtime subscription for profile updates
    */
   private setupRealtimeSubscription(): void {
-    const userId = this.supabase.user()?.id;
+    const userId = this.authService.user()?.id;
     if (!userId) {
       console.warn('Cannot setup realtime: user not authenticated');
       this.showRefreshButton.set(true);
@@ -414,7 +412,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     }
 
     try {
-      this.realtimeSubscription = this.supabase.client
+      this.realtimeSubscription = this.authService.client
         .channel('profile-changes')
         .on(
           'postgres_changes',
@@ -452,7 +450,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
    */
   private cleanupRealtimeSubscription(): void {
     if (this.realtimeSubscription) {
-      this.supabase.client.removeChannel(this.realtimeSubscription);
+      this.authService.client.removeChannel(this.realtimeSubscription);
       this.realtimeSubscription = null;
     }
   }
@@ -471,7 +469,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     if (this.refreshing()) return;
 
     this.refreshing.set(true);
-    this.supabase.refreshCurrentUserProfile().subscribe({
+    this.authService.refreshCurrentUserProfile().subscribe({
       next: (profile) => {
         this.profile.set(profile);
         this.loadActiveCouponsCount();

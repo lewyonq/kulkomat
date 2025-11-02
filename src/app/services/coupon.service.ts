@@ -1,20 +1,20 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { from, Observable, throwError } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
-import { Supabase } from './supabase';
-import { CouponDTO, CouponsListDTO, CouponQueryParams, UseCouponCommand } from '../types';
+import { AuthService } from './auth.service';
+import { CouponDTO, CouponsListDTO, CouponQueryParams } from '../types';
 
 /**
  * Coupon Service
  *
  * Manages coupon-related operations including fetching user coupons.
- * Integrates with Supabase for data persistence and real-time updates.
+ * Uses AuthService for authentication state and Supabase client access.
  */
 @Injectable({
   providedIn: 'root',
 })
 export class CouponService {
-  private supabase = inject(Supabase);
+  private authService = inject(AuthService);
 
   public isLoading = signal<boolean>(false);
   public error = signal<Error | null>(null);
@@ -30,7 +30,7 @@ export class CouponService {
     this.isLoading.set(true);
     this.error.set(null);
 
-    const currentUser = this.supabase.user();
+    const currentUser = this.authService.user();
 
     if (!currentUser) {
       this.isLoading.set(false);
@@ -38,7 +38,7 @@ export class CouponService {
     }
 
     return from(
-      this.supabase.client
+      this.authService.client
         .from('coupons')
         .select('*', { count: 'exact' })
         .eq('user_id', currentUser.id),
@@ -78,7 +78,7 @@ export class CouponService {
     this.isLoading.set(true);
     this.error.set(null);
 
-    return from(this.supabase.client.from('coupons').select('*').eq('id', couponId).single()).pipe(
+    return from(this.authService.client.from('coupons').select('*').eq('id', couponId).single()).pipe(
       map(({ data, error }) => {
         if (error) {
           throw error;
@@ -113,7 +113,7 @@ export class CouponService {
     this.isLoading.set(true);
     this.error.set(null);
 
-    const currentUser = this.supabase.user();
+    const currentUser = this.authService.user();
 
     if (!currentUser) {
       this.isLoading.set(false);
@@ -121,7 +121,7 @@ export class CouponService {
     }
 
     return from(
-      this.supabase.client
+      this.authService.client
         .from('coupons')
         .update({ status: 'used', used_at: new Date().toISOString() })
         .eq('id', couponId)

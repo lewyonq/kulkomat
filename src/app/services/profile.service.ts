@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { Supabase } from './supabase';
+import { AuthService } from './auth.service';
 import { firstValueFrom } from 'rxjs';
 
 export interface IUserProfile {
@@ -9,29 +9,36 @@ export interface IUserProfile {
   created_at: string;
 }
 
+/**
+ * ProfileService
+ *
+ * High-level profile operations service.
+ * Uses AuthService for authentication state and profile access.
+ */
 @Injectable({ providedIn: 'root' })
 export class ProfileService {
-  private supabase = inject(Supabase);
+  private authService = inject(AuthService);
 
   async getMyProfile(): Promise<IUserProfile | null> {
-    const user = this.supabase.user();
+    const user = this.authService.user();
     if (!user) return null;
 
-    const cached = this.supabase.currentProfile();
+    const cached = this.authService.currentProfile();
     if (cached) {
       return { id: cached.id, email: user.email || '', short_id: cached.short_id, created_at: cached.created_at };
     }
 
-    const profile = await firstValueFrom(this.supabase.getCurrentUserProfile());
+    const profile = await firstValueFrom(this.authService.getCurrentUserProfile());
     return { id: profile.id, email: user.email || '', short_id: profile.short_id, created_at: profile.created_at };
   }
 
   async ensureMyProfile(): Promise<IUserProfile> {
-    const user = this.supabase.user();
+    const user = this.authService.user();
     if (!user) throw new Error('User not authenticated');
 
-    await this.supabase.ensureProfileExists(user.id);
-    const profile = await firstValueFrom(this.supabase.refreshCurrentUserProfile());
+    // Note: ensureProfileExists is handled automatically by Supabase service during auth initialization
+    // We just need to refresh the profile here
+    const profile = await firstValueFrom(this.authService.refreshCurrentUserProfile());
     return { id: profile.id, email: user.email || '', short_id: profile.short_id, created_at: profile.created_at };
   }
 }

@@ -1,7 +1,7 @@
 import { Component, OnInit, signal, computed, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { Supabase } from '../../services/supabase';
+import { AuthService } from '../../services/auth.service';
 import { ProfileDTO } from '../../types';
 import { UserIdDisplayComponent } from '../../components/profile/user-id-display.component';
 
@@ -501,7 +501,7 @@ import { UserIdDisplayComponent } from '../../components/profile/user-id-display
   ],
 })
 export class ProfileComponent implements OnInit {
-  private supabase = inject(Supabase);
+  private authService = inject(AuthService);
   private router = inject(Router);
 
   // Loading and error states
@@ -513,7 +513,7 @@ export class ProfileComponent implements OnInit {
 
   // Computed states
   protected userEmail = computed<string | null>(() => {
-    return this.supabase.user()?.email ?? null;
+    return this.authService.user()?.email ?? null;
   });
 
   protected formattedCreatedAt = computed<string>(() => {
@@ -533,12 +533,12 @@ export class ProfileComponent implements OnInit {
   }
 
   /**
-   * Load user profile from Supabase
+   * Load user profile from AuthService
    * Uses the centralized currentProfile signal to avoid concurrent API calls
    */
   private loadProfile(): void {
-    const currentProfile = this.supabase.currentProfile();
-    
+    const currentProfile = this.authService.currentProfile();
+
     if (currentProfile) {
       this.profile.set(currentProfile);
       this.isLoading.set(false);
@@ -547,7 +547,7 @@ export class ProfileComponent implements OnInit {
       this.isLoading.set(true);
       this.error.set(null);
 
-      this.supabase.getCurrentUserProfile().subscribe({
+      this.authService.getCurrentUserProfile().subscribe({
         next: (profile) => {
           this.profile.set(profile);
           this.isLoading.set(false);
@@ -578,7 +578,7 @@ export class ProfileComponent implements OnInit {
    * Logout user and redirect to login page
    */
   protected onLogout(): void {
-    this.supabase.signOut();
+    this.authService.signOut();
   }
 
   /**

@@ -2,13 +2,13 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthCardComponent } from '../../components/auth/auth-card.component';
 import { OAuthButtonComponent } from '../../components/auth/oauth-button.component';
-import { Supabase } from '../../services/supabase';
+import { AuthService } from '../../services/auth.service';
 
 /**
  * LoginComponent
  *
  * Main login page component accessible at /login route.
- * Handles user authentication via Google OAuth using Supabase.
+ * Handles user authentication via Google OAuth using AuthService.
  * Displays loyalty program benefits and provides Google sign-in button.
  * Checks for OAuth errors in URL parameters on component initialization.
  */
@@ -78,7 +78,7 @@ import { Supabase } from '../../services/supabase';
   styles: [],
 })
 export class LoginComponent implements OnInit {
-  private supabase = inject(Supabase);
+  private authService = inject(AuthService);
   private router = inject(Router);
 
   protected isLoading = signal(false);
@@ -86,7 +86,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit(): void {
     // Check for OAuth errors in URL (e.g., user cancelled, provider error)
-    const oauthError = this.supabase.checkOAuthError();
+    const oauthError = this.authService.checkOAuthError();
     if (oauthError) {
       this.error.set(oauthError);
     }
@@ -104,7 +104,7 @@ export class LoginComponent implements OnInit {
 
   /**
    * Handles Google OAuth sign-in
-   * Initiates OAuth flow by calling Supabase service
+   * Initiates OAuth flow by calling AuthService
    * User will be redirected to Google login page
    */
   protected async onGoogleSignIn(): Promise<void> {
@@ -112,11 +112,11 @@ export class LoginComponent implements OnInit {
       this.isLoading.set(true);
       this.error.set(null);
 
-      await this.supabase.signInWithGoogle();
+      await this.authService.signInWithGoogle();
 
       // Note: User will be redirected to Google OAuth page
       // After successful authentication, they'll return to the app
-      // and the auth state change will be handled by Supabase service
+      // and the auth state change will be handled by AuthService
     } catch (err) {
       this.isLoading.set(false);
 

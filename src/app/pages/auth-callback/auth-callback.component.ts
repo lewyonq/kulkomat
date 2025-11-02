@@ -1,7 +1,14 @@
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Supabase } from '../../services/supabase';
+import { AuthService } from '../../services/auth.service';
 
+/**
+ * AuthCallbackComponent
+ *
+ * Handles OAuth callback after redirect from authentication provider (Google).
+ * Exchanges auth code for session and redirects user to appropriate page.
+ * Shows loading spinner while processing the callback.
+ */
 @Component({
   selector: 'app-auth-callback',
   standalone: true,
@@ -17,9 +24,9 @@ import { Supabase } from '../../services/supabase';
   styles: [],
 })
 export class AuthCallbackComponent implements OnInit {
-  private supabase = inject(Supabase);
+  private authService = inject(AuthService);
 
   async ngOnInit(): Promise<void> {
-    await this.supabase.handleOAuthCallback(typeof window !== 'undefined' ? window.location.href : '');
+    await this.authService.handleOAuthCallback(typeof window !== 'undefined' ? window.location.href : '');
   }
 }
