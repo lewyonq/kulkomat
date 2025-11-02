@@ -1,8 +1,9 @@
 import { Injectable, inject, signal } from '@angular/core';
-import { from, Observable, throwError } from 'rxjs';
+import { from, Observable, throwError, timeout } from 'rxjs';
 import { catchError, map, tap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { CouponDTO, CouponsListDTO, CouponQueryParams } from '../types';
+import { environment } from '../environment/environment';
 
 /**
  * Coupon Service
@@ -31,18 +32,49 @@ export class CouponService {
     this.error.set(null);
 
     const currentUser = this.authService.user();
-
     if (!currentUser) {
       this.isLoading.set(false);
-      throw new Error('User not authenticated');
+      return throwError(() => new Error('User not authenticated'));
     }
 
-    return from(
-      this.authService.client
-        .from('coupons')
-        .select('*', { count: 'exact' })
-        .eq('user_id', currentUser.id),
-    ).pipe(
+    const session = this.authService.session();
+    if (!session) {
+      this.isLoading.set(false);
+      return throwError(() => new Error('No active session'));
+    }
+
+    const accessToken = session.access_token;
+
+    // Use native fetch API to avoid Supabase client blocking issues
+    // This ensures queries work independently from realtime subscriptions
+    const fetchPromise = fetch(
+      `${environment.supabase.url}/rest/v1/coupons?user_id=eq.${currentUser.id}&select=*`,
+      {
+        method: 'GET',
+        headers: {
+          'apikey': environment.supabase.anonKey,
+          'Authorization': `Bearer ${accessToken}`,
+          'Content-Type': 'application/json',
+          'Prefer': 'count=exact',
+        },
+      }
+    ).then(async (response) => {
+      if (!response.ok) {
+        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+      }
+
+      const data = await response.json();
+      const contentRange = response.headers.get('content-range');
+      const count = contentRange ? parseInt(contentRange.split('/')[1]) : data.length;
+
+      return { data, error: null, count };
+    });
+
+    return from(fetchPromise).pipe(
+      timeout({
+        each: 10000, // 10 second timeout
+        with: () => throwError(() => new Error('Request timeout'))
+      }),
       map(({ data, error, count }) => {
         if (error) {
           throw error;
@@ -60,6 +92,7 @@ export class CouponService {
       }),
       catchError((err) => {
         const errorMessage = err?.message || 'Failed to fetch coupons';
+        console.error('Error fetching coupons:', errorMessage);
         this.error.set(new Error(errorMessage));
         this.isLoading.set(false);
         return throwError(() => new Error(errorMessage));

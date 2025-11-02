@@ -31,6 +31,7 @@ export class AuthService {
 
   // Computed signals for direct access to current state
   readonly user = computed(() => this.supabase.user());
+  readonly session = computed(() => this.supabase.session());
   readonly isAuthenticated = computed(() => this.supabase.isAuthenticated());
   readonly isLoading = computed(() => this.supabase.isLoading());
   readonly currentProfile = computed(() => this.supabase.currentProfile());

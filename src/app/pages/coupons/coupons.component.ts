@@ -2,7 +2,9 @@ import { Component, OnInit, OnDestroy, computed, signal, inject } from '@angular
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
+import { RealtimeChannel } from '@supabase/supabase-js';
 import { CouponService } from '../../services/coupon.service';
+import { AuthService } from '../../services/auth.service';
 import { CouponCardComponent } from '../../components/coupons/coupon-card.component';
 import { ConfirmationDialogComponent } from '../../components/shared/confirmation-dialog.component';
 import { CouponDTO, CouponType } from '../../types';
@@ -450,8 +452,10 @@ import { CouponCardViewModel } from '../../types/view-models';
 })
 export class CouponsComponent implements OnInit, OnDestroy {
   private couponService = inject(CouponService);
+  private authService = inject(AuthService);
   private router = inject(Router);
-  private subscription: Subscription | null = null;
+  private subscriptions: Subscription[] = [];
+  private realtimeSubscription: RealtimeChannel | null = null;
 
   // Loading and error states
   protected isLoading = signal<boolean>(true);
@@ -489,10 +493,13 @@ export class CouponsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loadCoupons();
+    this.setupRealtimeSubscription();
   }
 
   ngOnDestroy(): void {
-    this.subscription?.unsubscribe();
+    this.subscriptions.forEach((sub) => sub.unsubscribe());
+    this.subscriptions = [];
+    this.cleanupRealtimeSubscription();
   }
 
   /**
@@ -502,18 +509,32 @@ export class CouponsComponent implements OnInit, OnDestroy {
     this.isLoading.set(true);
     this.error.set(null);
 
-    this.subscription = this.couponService.getUserCoupons().subscribe({
-      next: (response) => {
-        const viewModels = response.coupons.map((dto) => this.transformCouponToViewModel(dto));
-        this.coupons.set(viewModels);
-        this.isLoading.set(false);
-      },
-      error: (err) => {
-        console.error('Error loading coupons:', err);
-        this.error.set(err);
-        this.isLoading.set(false);
-      },
-    });
+    const currentUser = this.authService.user();
+    if (!currentUser) {
+      this.error.set(new Error('User not authenticated'));
+      this.isLoading.set(false);
+      return;
+    }
+
+    try {
+      const subscription = this.couponService.getUserCoupons().subscribe({
+        next: (response) => {
+          const viewModels = response.coupons.map((dto) => this.transformCouponToViewModel(dto));
+          this.coupons.set(viewModels);
+          this.isLoading.set(false);
+        },
+        error: (err) => {
+          console.error('Error loading coupons:', err);
+          this.error.set(err);
+          this.isLoading.set(false);
+        },
+      });
+      this.subscriptions.push(subscription);
+    } catch (err) {
+      console.error('Synchronous error:', err);
+      this.error.set(err as Error);
+      this.isLoading.set(false);
+    }
   }
 
   /**
@@ -642,16 +663,101 @@ export class CouponsComponent implements OnInit, OnDestroy {
     if (this.refreshing()) return;
 
     this.refreshing.set(true);
-    this.couponService.getUserCoupons().subscribe({
-      next: (response) => {
-        const viewModels = response.coupons.map((dto) => this.transformCouponToViewModel(dto));
-        this.coupons.set(viewModels);
-        this.refreshing.set(false);
-      },
-      error: (err) => {
-        this.refreshing.set(false);
-      },
-    });
+
+    // Check if user is authenticated before making the request
+    const currentUser = this.authService.user();
+    if (!currentUser) {
+      console.warn('User not authenticated, cannot refresh coupons');
+      this.refreshing.set(false);
+      return;
+    }
+
+    try {
+      const subscription = this.couponService.getUserCoupons().subscribe({
+        next: (response) => {
+          const viewModels = response.coupons.map((dto) => this.transformCouponToViewModel(dto));
+          this.coupons.set(viewModels);
+          this.refreshing.set(false);
+        },
+        error: (err) => {
+          console.error('Error refreshing coupons:', err);
+          this.refreshing.set(false);
+        },
+      });
+      this.subscriptions.push(subscription);
+    } catch (err) {
+      console.error('Synchronous error refreshing coupons:', err);
+      this.refreshing.set(false);
+    }
+  }
+
+  /**
+   * Setup Realtime subscription for coupon updates
+   */
+  private setupRealtimeSubscription(): void {
+    const userId = this.authService.user()?.id;
+    if (!userId) {
+      console.warn('Cannot setup realtime: user not authenticated');
+      return;
+    }
+
+    try {
+      this.realtimeSubscription = this.authService.client
+        .channel('coupon-changes')
+        .on(
+          'postgres_changes',
+          {
+            event: '*', // Listen to INSERT, UPDATE, DELETE
+            schema: 'public',
+            table: 'coupons',
+            filter: `user_id=eq.${userId}`,
+          },
+          (payload) => {
+            console.log('Realtime coupon update received:', payload);
+
+            // Reload coupons when changes occur
+            if (payload.eventType === 'INSERT') {
+              // New coupon created - add to the list
+              const newCoupon = this.transformCouponToViewModel(payload.new as CouponDTO);
+              const currentCoupons = this.coupons();
+              this.coupons.set([...currentCoupons, newCoupon]);
+            } else if (payload.eventType === 'UPDATE') {
+              // Coupon updated - update in the list
+              const updatedCoupon = this.transformCouponToViewModel(payload.new as CouponDTO);
+              const currentCoupons = this.coupons();
+              const updatedCoupons = currentCoupons.map((c) =>
+                c.id === updatedCoupon.id ? updatedCoupon : c
+              );
+              this.coupons.set(updatedCoupons);
+            } else if (payload.eventType === 'DELETE') {
+              // Coupon deleted - remove from the list
+              const deletedId = (payload.old as CouponDTO).id;
+              const currentCoupons = this.coupons();
+              const filteredCoupons = currentCoupons.filter((c) => c.id !== deletedId);
+              this.coupons.set(filteredCoupons);
+            }
+          },
+        )
+        .subscribe((status) => {
+          if (status === 'SUBSCRIBED') {
+            console.log('Realtime subscription active for coupons');
+          } else if (status === 'CHANNEL_ERROR') {
+            console.error('Realtime subscription error for coupons');
+          }
+        });
+    } catch (err) {
+      console.error('Error setting up realtime subscription:', err);
+    }
+  }
+
+  /**
+   * Cleanup Realtime subscription
+   */
+  private cleanupRealtimeSubscription(): void {
+    if (this.realtimeSubscription) {
+      this.authService.client.removeChannel(this.realtimeSubscription);
+      this.realtimeSubscription = null;
+    }
   }
 
   /**

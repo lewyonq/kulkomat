@@ -1,6 +1,7 @@
 import { Component, OnInit, OnDestroy, computed, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RealtimeChannel } from '@supabase/supabase-js';
+import { take } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
 import { CouponService } from '../../services/coupon.service';
 import { ProfileDTO } from '../../types';
@@ -381,23 +382,26 @@ export class DashboardComponent implements OnInit, OnDestroy {
    * Load active coupons count
    */
   private loadActiveCouponsCount(): void {
-    this.couponService.getUserCoupons({ status: 'active' }).subscribe({
-      next: (response) => {
-        // Count only non-expired active coupons
-        const now = new Date();
-        const activeCount = response.coupons.filter((coupon) => {
-          const expiresAt = new Date(coupon.expires_at);
-          return coupon.status === 'active' && expiresAt > now;
-        }).length;
+    this.couponService
+      .getUserCoupons({ status: 'active' })
+      .pipe(take(1)) // Auto-unsubscribe after first emission to prevent memory leaks
+      .subscribe({
+        next: (response) => {
+          // Count only non-expired active coupons
+          const now = new Date();
+          const activeCount = response.coupons.filter((coupon) => {
+            const expiresAt = new Date(coupon.expires_at);
+            return coupon.status === 'active' && expiresAt > now;
+          }).length;
 
-        this.activeCouponsCount.set(activeCount);
-      },
-      error: (err) => {
-        console.error('Failed to load active coupons count:', err);
-        // Don't set error state, just log it
-        // We don't want to block the dashboard if coupons fail to load
-      },
-    });
+          this.activeCouponsCount.set(activeCount);
+        },
+        error: (err) => {
+          console.error('Failed to load active coupons count:', err);
+          // Don't set error state, just log it
+          // We don't want to block the dashboard if coupons fail to load
+        },
+      });
   }
 
   /**
