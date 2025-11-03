@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { loginRedirectGuard } from './guards/login-redirect.guard';
+import { adminGuard } from './guards/admin.guard';
 
 export const routes: Routes = [
   {
@@ -37,4 +38,17 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./pages/auth-callback/auth-callback.component').then((m) => m.AuthCallbackComponent),
   },
+  // Admin Panel Routes
+  {
+    path: 'admin/login',
+    loadComponent: () =>
+      import('./pages/admin/login/admin-login-page.component').then((m) => m.AdminLoginPageComponent),
+    canActivate: [loginRedirectGuard],
+  },
+  // Future admin routes should use adminGuard:
+  // {
+  //   path: 'admin/dashboard',
+  //   loadComponent: () => import('./pages/admin/dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
+  //   canActivate: [adminGuard],
+  // },
 ];

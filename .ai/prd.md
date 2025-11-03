@@ -197,7 +197,7 @@ Klienci lodziarni często doświadczają niedogodności związanych z programami
   Opis: Jako sprzedawca chcę zalogować się do panelu administracyjnego, aby zarządzać pieczątkami i kuponami klientów.
   Kryteria akceptacji:
   - Sprzedawca wchodzi na stronę logowania do panelu administracyjnego.
-  - Sprzedawca wprowadza poprawne dane logowania (login, hasło).
+  - Sprzedawca loguje sie poprzez OAuth.
   - System autoryzuje sprzedawcę i przekierowuje go do panelu administracyjnego.
 
 - ID: US-014
