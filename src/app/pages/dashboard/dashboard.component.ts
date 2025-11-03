@@ -4,8 +4,6 @@ import { RealtimeChannel } from '@supabase/supabase-js';
 import { take } from 'rxjs/operators';
 import { AuthService } from '../../services/auth.service';
 import { CouponService } from '../../services/coupon.service';
-import { ProfileDTO } from '../../types';
-import { StampProgressViewModel } from '../../types/view-models';
 import { StampProgressComponent } from '../../components/dashboard/stamp-progress.component';
 import { CouponNavigationCardComponent } from '../../components/dashboard/coupon-navigation-card.component';
 import { IceCreamFlavorsList } from '../../components/ice-cream-flavors/ice-cream-flavors-list/ice-cream-flavors-list';
@@ -15,15 +13,9 @@ import { IceCreamFlavorsList } from '../../components/ice-cream-flavors/ice-crea
  *
  * Main view accessible after user authentication.
  * Displays key information about the loyalty program:
- * - User's unique short_id with QR code
  * - Stamp collection progress (X/10)
  * - Navigation card to coupons
- *
- * Features:
- * - Realtime updates via Supabase subscription
- * - Loading and error states
- * - Retry mechanism on error
- * - Mobile-first responsive design
+ * - Ice cream flavors list
  */
 @Component({
   selector: 'app-dashboard',
@@ -37,7 +29,7 @@ import { IceCreamFlavorsList } from '../../components/ice-cream-flavors/ice-crea
   template: `
     <div class="dashboard-container">
       <!-- Loading State -->
-      @if (isLoading() && !profile()) {
+      @if (isLoading() && !isAuthenticated()) {
         <div class="loading-container">
           <div class="spinner"></div>
           <p class="loading-text">Ładowanie danych...</p>
@@ -45,7 +37,7 @@ import { IceCreamFlavorsList } from '../../components/ice-cream-flavors/ice-crea
       }
 
       <!-- Error State -->
-      @else if (error() && !profile()) {
+      @else if (error() && !isAuthenticated()) {
         <div class="error-container">
           <div class="error-icon">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -56,70 +48,25 @@ import { IceCreamFlavorsList } from '../../components/ice-cream-flavors/ice-crea
           </div>
           <h2 class="error-title">Nie udało się pobrać danych</h2>
           <p class="error-message">{{ getErrorMessage() }}</p>
-          <button class="retry-button" (click)="onRetry()" type="button">Spróbuj ponownie</button>
         </div>
       }
 
       <!-- Content State -->
-      @else if (profile()) {
+      @else if (isAuthenticated()) {
         <div class="content-wrapper">
-          <!-- Header -->
-          <!-- <header class="dashboard-header">
-            <h1 class="welcome-title">
-              Witaj w programie lojalnościowym! 👋
-            </h1>
-            <p class="welcome-subtitle">
-              Zbieraj pieczątki i odbieraj darmowe lody
-            </p>
-          </header> -->
-
-          <!-- Main Content -->
           <main class="dashboard-content">
-            <!-- Coupon Navigation -->
+          
+            <section class="section">
+              <app-stamp-progress [maxStamps]="10"></app-stamp-progress>
+            </section>
             <section class="section">
               <app-coupon-navigation-card [activeCouponsCount]="activeCouponsCount()">
               </app-coupon-navigation-card>
             </section>
-            <!-- Stamp Progress -->
-            <section class="section">
-              <app-stamp-progress [stampCount]="profile()!.stamp_count" [maxStamps]="10">
-              </app-stamp-progress>
-            </section>
-            <!-- Ice Cream Flavors -->
             <section class="section">
               <app-ice-cream-flavors-list></app-ice-cream-flavors-list>
             </section>
           </main>
-
-          <!-- Optional: Refresh Button (for manual refresh if realtime fails) -->
-          @if (showRefreshButton()) {
-            <div class="refresh-container">
-              <button
-                class="refresh-button"
-                (click)="onRefresh()"
-                [disabled]="refreshing()"
-                type="button"
-                aria-label="Odśwież dane"
-              >
-                <svg
-                  class="refresh-icon"
-                  [class.spinning]="refreshing()"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M21.5 2V8M21.5 8H16M21.5 8L18 4.5C16.5 3 14.5 2 12 2C6.5 2 2 6.5 2 12C2 17.5 6.5 22 12 22C17 22 21 18.5 21.5 13.5"
-                    stroke="currentColor"
-                    stroke-width="2"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  />
-                </svg>
-                {{ refreshing() ? 'Odświeżanie...' : 'Odśwież' }}
-              </button>
-            </div>
-          }
         </div>
       }
     </div>
@@ -200,53 +147,11 @@ import { IceCreamFlavorsList } from '../../components/ice-cream-flavors/ice-crea
         line-height: 1.5;
       }
 
-      .retry-button {
-        padding: 0.875rem 2rem;
-        background: #6750a4;
-        color: white;
-        border: none;
-        border-radius: 8px;
-        font-size: 1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-        box-shadow: 0 2px 8px rgba(103, 80, 164, 0.3);
-      }
-
-      .retry-button:hover {
-        background: #5842a0;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 12px rgba(103, 80, 164, 0.4);
-      }
-
-      .retry-button:active {
-        transform: translateY(0);
-      }
-
       /* Content State */
       .content-wrapper {
         max-width: 800px;
         margin: 0 auto;
         padding-bottom: 2rem;
-      }
-
-      .dashboard-header {
-        text-align: center;
-        padding: 2rem 1rem;
-        margin-bottom: 1rem;
-      }
-
-      .welcome-title {
-        font-size: 1.75rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin: 0 0 0.5rem 0;
-      }
-
-      .welcome-subtitle {
-        font-size: 1rem;
-        color: #666;
-        margin: 0;
       }
 
       .dashboard-content {
@@ -257,46 +162,7 @@ import { IceCreamFlavorsList } from '../../components/ice-cream-flavors/ice-crea
         width: 100%;
       }
 
-      /* Refresh Button */
-      .refresh-container {
-        display: flex;
-        justify-content: center;
-        padding: 2rem 1rem;
-      }
-
-      .refresh-button {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        padding: 0.75rem 1.5rem;
-        background: white;
-        color: rgba(219, 39, 119, 1);
-        border: 2px solid rgba(219, 39, 119, 1);
-        border-radius: 8px;
-        font-size: 0.875rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.2s ease;
-      }
-
-      .refresh-button:hover:not(:disabled) {
-        background: rgba(236, 72, 153, 0.1);
-        transform: translateY(-1px);
-      }
-
-      .refresh-button:disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-      }
-
-      .refresh-icon {
-        width: 20px;
-        height: 20px;
-      }
-
-      .refresh-icon.spinning {
-        animation: spin 1s linear infinite;
-      }
+      /* Removed unused header and refresh styles */
     `,
   ],
 })
@@ -308,74 +174,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
   // Loading and error states
   protected isLoading = signal<boolean>(true);
   protected error = signal<Error | null>(null);
-  protected refreshing = signal<boolean>(false);
 
-  // Data state
-  protected profile = signal<ProfileDTO | null>(null);
-
-  // Computed states
-  protected shortId = computed<string | null>(() => {
-    return this.profile()?.short_id ?? null;
-  });
-
-  protected stampProgress = computed<StampProgressViewModel | null>(() => {
-    const currentProfile = this.profile();
-    if (!currentProfile) return null;
-
-    const current = currentProfile.stamp_count;
-    const total = 10;
-
-    return {
-      current,
-      total,
-      percentage: (current / total) * 100,
-      stampsToReward: Math.max(0, total - current),
-      isComplete: current >= total,
-    };
-  });
-
-  // Optional: Active coupons count (for future implementation)
+  protected isAuthenticated = computed(() => this.authService.isAuthenticated());
   protected activeCouponsCount = signal<number | undefined>(undefined);
 
-  // Show refresh button only if realtime connection fails
-  protected showRefreshButton = signal<boolean>(false);
-
   ngOnInit(): void {
-    this.loadProfile();
     this.loadActiveCouponsCount();
-    this.setupRealtimeSubscription();
   }
 
   ngOnDestroy(): void {
-    this.cleanupRealtimeSubscription();
-  }
-
-  /**
-   * Load user profile from AuthService
-   * Uses the centralized currentProfile signal to avoid concurrent API calls
-   */
-  private loadProfile(): void {
-    const currentProfile = this.authService.currentProfile();
-
-    if (currentProfile) {
-      this.profile.set(currentProfile);
-      this.isLoading.set(false);
-    } else {
-      // Only fetch if not already loaded
-      this.isLoading.set(true);
-      this.error.set(null);
-
-      this.authService.getCurrentUserProfile().subscribe({
-        next: (profile) => {
-          this.profile.set(profile);
-          this.isLoading.set(false);
-        },
-        error: (err) => {
-          this.error.set(err);
-          this.isLoading.set(false);
-        },
-      });
-    }
   }
 
   /**
@@ -405,88 +212,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Setup Realtime subscription for profile updates
-   */
-  private setupRealtimeSubscription(): void {
-    const userId = this.authService.user()?.id;
-    if (!userId) {
-      console.warn('Cannot setup realtime: user not authenticated');
-      this.showRefreshButton.set(true);
-      return;
-    }
-
-    try {
-      this.realtimeSubscription = this.authService.client
-        .channel('profile-changes')
-        .on(
-          'postgres_changes',
-          {
-            event: 'UPDATE',
-            schema: 'public',
-            table: 'profiles',
-            filter: `id=eq.${userId}`,
-          },
-          (payload) => {
-            console.log('Realtime update received:', payload);
-              // Update profile signal with new data
-              this.profile.set(payload.new as ProfileDTO);
-              // Reload active coupons count in case stamp count changed
-              this.loadActiveCouponsCount();
-
-              // Optional: Show toast notification
-              // this.showToast('Otrzymałeś pieczątkę!');
-          },
-        )
-        .subscribe((status) => {
-            if (status === 'SUBSCRIBED') {
-              this.showRefreshButton.set(true);
-          } else if (status === 'CHANNEL_ERROR') {
-            this.showRefreshButton.set(false);
-            }
-        });
-    } catch (err) {
-      this.showRefreshButton.set(true);
-    }
-  }
-
-  /**
-   * Cleanup Realtime subscription
-   */
-  private cleanupRealtimeSubscription(): void {
-    if (this.realtimeSubscription) {
-      this.authService.client.removeChannel(this.realtimeSubscription);
-      this.realtimeSubscription = null;
-    }
-  }
-
-  /**
-   * Retry loading profile after error
-   */
-  protected onRetry(): void {
-    this.loadProfile();
-  }
-
-  /**
-   * Manual refresh of profile data
-   */
-  protected onRefresh(): void {
-    if (this.refreshing()) return;
-
-    this.refreshing.set(true);
-    this.authService.refreshCurrentUserProfile().subscribe({
-      next: (profile) => {
-        this.profile.set(profile);
-        this.loadActiveCouponsCount();
-        this.refreshing.set(false);
-      },
-      error: (err) => {
-        console.error('Failed to refresh profile:', err);
-        this.refreshing.set(false);
-      },
-    });
-  }
-
-  /**
    * Get user-friendly error message
    */
   protected getErrorMessage(): string {
@@ -509,11 +234,4 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
     return 'Wystąpił błąd podczas ładowania danych. Spróbuj ponownie później.';
   }
-
-  /**
-   * Optional: Show toast notification (requires toast service)
-   */
-  // private showToast(message: string): void {
-  //   // Implementation with MatSnackBar or custom toast service
-  // }
 }

@@ -1,4 +1,6 @@
-import { Component, input, computed } from '@angular/core';
+import { Component, input, computed, inject, signal, OnInit, OnDestroy } from '@angular/core';
+import { StampService } from '../../services/stamp.service';
+import { Subscription } from 'rxjs';
 import { CommonModule } from '@angular/common';
 
 /**
@@ -8,7 +10,6 @@ import { CommonModule } from '@angular/common';
  * - Visual representation using ice cream icons (colored for collected, gray for missing)
  * - Progress bar showing completion percentage
  * - Text showing current/total stamps (e.g., "3/10 pieczątek")
- * - Dynamic message based on progress
  *
  * @Input stampCount - Current number of stamps collected (0-10)
  * @Input maxStamps - Maximum number of stamps (default: 10)
@@ -38,7 +39,7 @@ import { CommonModule } from '@angular/common';
           </div>
 
           <p class="progress-text">
-            <span class="current">{{ normalizedStampCount() }}</span>
+            <span class="current">{{ stampCount() }}</span>
             <span class="separator">/</span>
             <span class="total">{{ maxStamps() }}</span>
             <span class="unit">pieczątek</span>
@@ -64,14 +65,6 @@ import { CommonModule } from '@angular/common';
         display: flex;
         flex-direction: column;
         gap: 1rem;
-      }
-
-      .title {
-        font-size: 1.5rem;
-        font-weight: 700;
-        color: #1a1a1a;
-        margin: 0;
-        text-align: center;
       }
 
       /* Icons Grid */
@@ -174,33 +167,6 @@ import { CommonModule } from '@angular/common';
           sans-serif;
       }
 
-      /* Message */
-      .message-container {
-        text-align: center;
-      }
-
-      .message {
-        font-size: 1rem;
-        color: #616161;
-        margin: 0;
-        line-height: 1.5;
-      }
-
-      .message strong {
-        color: #6750a4;
-        font-weight: 700;
-      }
-
-      .message.complete {
-        color: #2e7d32;
-        font-weight: 600;
-        font-size: 1.125rem;
-        padding: 1rem;
-        background: #e8f5e9;
-        border-radius: 8px;
-        border: 2px solid #a5d6a7;
-      }
-
       /* Responsive Design */
       @media (max-width: 640px) {
         .stamp-progress-card {
@@ -213,10 +179,6 @@ import { CommonModule } from '@angular/common';
 
         .icon-wrapper {
           max-width: 50px;
-        }
-
-        .title {
-          font-size: 1.25rem;
         }
 
         .progress-text {
@@ -241,45 +203,46 @@ import { CommonModule } from '@angular/common';
     `,
   ],
 })
-export class StampProgressComponent {
-  stampCount = input<number>(0);
+export class StampProgressComponent implements OnInit, OnDestroy {
+  private stampService = inject(StampService);
+  private stampCountSubscription: Subscription | undefined;
+
+  stampCount = signal<number>(0);
+  isLoading = this.stampService.isLoading;
+  error = this.stampService.error;
+
   maxStamps = input<number>(10);
 
-  /**
-   * Normalized stamp count (ensures it's within valid range 0-maxStamps)
-   */
-  protected normalizedStampCount = computed(() => {
-    return Math.max(0, Math.min(this.stampCount(), this.maxStamps()));
-  });
-
-  /**
-   * Percentage of stamps collected
-   */
   protected percentage = computed(() => {
-    return (this.normalizedStampCount() / this.maxStamps()) * 100;
+    return (this.stampCount() / this.maxStamps()) * 100;
   });
 
-  /**
-   * Number of stamps remaining to reach reward
-   */
-  protected stampsToReward = computed(() => {
-    return Math.max(0, this.maxStamps() - this.normalizedStampCount());
-  });
+  ngOnInit(): void {
+    this.stampService.getActiveStampsCount().subscribe({
+      next: (count) => {
+        this.stampCount.set(count);
+      },
+      error: (err) => console.error('Failed to subscribe to stamp count updates', err)
+    });
 
-  /**
-   * Whether all stamps have been collected
-   */
-  protected isComplete = computed(() => {
-    return this.normalizedStampCount() >= this.maxStamps();
-  });
+    this.stampCountSubscription = this.stampService.watchActiveStampsCount().subscribe({
+      next: (count) => {
+        this.stampCount.set(count);
+      },
+      error: (err) => console.error('Failed to subscribe to stamp count updates', err)
+    });
+  
+  }
 
-  /**
-   * Array of stamp objects for rendering icons
-   * Each stamp has a 'collected' property indicating if it's been earned
-   */
+  ngOnDestroy(): void {
+    if (this.stampCountSubscription) {
+      this.stampCountSubscription.unsubscribe();
+    }
+  }
+
   protected stamps = computed(() => {
     return Array.from({ length: this.maxStamps() }, (_, index) => ({
-      collected: index < this.normalizedStampCount(),
+      collected: index < this.stampCount(),
     }));
   });
 }
