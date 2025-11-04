@@ -1,11 +1,12 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, inject, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
+import { SellersService } from '../../services/sellers.service';
 
 interface NavLink {
   path: string;
   label: string;
-  icon: 'home' | 'ticket' | 'user';
+  icon: 'home' | 'ticket' | 'user' | 'admin';
   ariaLabel: string;
 }
 
@@ -76,6 +77,26 @@ interface NavLink {
                     stroke="currentColor"
                     stroke-width="2"
                     stroke-linecap="round"
+                  />
+                </svg>
+              }
+
+              <!-- Admin Icon -->
+              @if (link.icon === 'admin') {
+                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path
+                    d="M12 2L3 7V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V7L12 2Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M9 12L11 14L15 10"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
                   />
                 </svg>
               }
@@ -255,6 +276,8 @@ interface NavLink {
   ],
 })
 export class Navigation {
+  private sellersService = inject(SellersService);
+
   protected navLinks = signal<NavLink[]>([
     {
       path: '/',
@@ -275,6 +298,31 @@ export class Navigation {
       ariaLabel: 'Przejdź do profilu',
     },
   ]);
+
+  constructor() {
+    // Check if user is seller and add admin link
+    this.checkSellerStatus();
+  }
+
+  private async checkSellerStatus(): Promise<void> {
+    const isSeller = await this.sellersService.isCurrentUserSeller();
+    if (isSeller) {
+      const currentLinks = this.navLinks();
+      const hasAdminLink = currentLinks.some((link) => link.path === '/admin/dashboard');
+
+      if (!hasAdminLink) {
+        this.navLinks.set([
+          ...currentLinks,
+          {
+            path: '/admin/dashboard',
+            label: 'Admin',
+            icon: 'admin',
+            ariaLabel: 'Przejdź do panelu administracyjnego',
+          },
+        ]);
+      }
+    }
+  }
 
   protected isActive(path: string): boolean {
     return window.location.pathname === path;

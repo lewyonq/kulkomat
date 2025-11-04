@@ -26,6 +26,43 @@ export class StampService {
    *
    * @returns Observable<number> - The count of active stamps.
    */
+  /**
+   * Get Customer's Active Stamps Count
+   * Fetches the count of active stamps for a specific customer.
+   *
+   * @param userId - The ID of the user.
+   * @returns Observable<number> - The count of active stamps.
+   */
+  getCustomerStampsCount(userId: string): Observable<number> {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    return from(
+      this.authService.client
+        .from('stamps')
+        .select('*', { count: 'exact', head: true })
+        .eq('user_id', userId)
+        .eq('status', 'active')
+    ).pipe(
+      map(({ count, error }) => {
+        if (error) {
+          throw error;
+        }
+        return count ?? 0;
+      }),
+      tap(() => {
+        this.isLoading.set(false);
+      }),
+      catchError((err) => {
+        const errorMessage = err?.message || 'Failed to fetch customer stamps count';
+        console.error('Error fetching customer stamps count:', errorMessage);
+        this.error.set(new Error(errorMessage));
+        this.isLoading.set(false);
+        return throwError(() => new Error(errorMessage));
+      })
+    );
+  }
+
   getActiveStampsCount(): Observable<number> {
     if (this.stampCountCache() !== null) {
       return of(this.stampCountCache()!);

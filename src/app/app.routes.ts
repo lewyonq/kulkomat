@@ -45,10 +45,12 @@ export const routes: Routes = [
       import('./pages/admin/login/admin-login-page.component').then((m) => m.AdminLoginPageComponent),
     canActivate: [loginRedirectGuard],
   },
-  // Future admin routes should use adminGuard:
-  // {
-  //   path: 'admin/dashboard',
-  //   loadComponent: () => import('./pages/admin/dashboard/admin-dashboard.component').then(m => m.AdminDashboardComponent),
-  //   canActivate: [adminGuard],
-  // },
+  {
+    path: 'admin/dashboard',
+    loadComponent: () =>
+      import('./pages/admin/dashboard/admin-dashboard-page.component').then(
+        (m) => m.AdminDashboardPageComponent,
+      ),
+    canActivate: [adminGuard],
+  },
 ];
