@@ -7,6 +7,7 @@ import { StampService } from '../../../services/stamp.service';
 
 type SearchStatus = 'idle' | 'loading' | 'success' | 'error';
 type ActionStatus = 'idle' | 'loading' | 'success' | 'error';
+type SuccessMessage = string | null;
 
 /**
  * AdminDashboardPageComponent
@@ -97,6 +98,86 @@ type ActionStatus = 'idle' | 'loading' | 'success' | 'error';
               </dl>
             </div>
 
+            <!-- Add Stamps Section -->
+            <div class="mt-6 pt-6 border-t border-gray-200">
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Dodaj pieczątki</h3>
+
+              <!-- Success Message -->
+              @if (actionStatus() === 'success' && successMessage()) {
+                <div class="mb-4 bg-green-50 border border-green-200 rounded-lg p-4 flex items-start" role="status" aria-live="polite">
+                  <svg
+                    class="h-5 w-5 text-green-400 mt-0.5 mr-3 flex-shrink-0"
+                    fill="currentColor"
+                    viewBox="0 0 20 20"
+                    aria-hidden="true"
+                  >
+                    <path
+                      fill-rule="evenodd"
+                      d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                      clip-rule="evenodd"
+                    />
+                  </svg>
+                  <p class="text-sm font-medium text-green-800">{{ successMessage() }}</p>
+                </div>
+              }
+
+              <div class="flex items-end gap-4">
+                <div class="flex-1 max-w-xs">
+                  <label for="stamps-input" class="block text-sm font-medium text-gray-700 mb-2">
+                    Liczba pieczątek
+                  </label>
+                  <input
+                    id="stamps-input"
+                    type="number"
+                    min="1"
+                    step="1"
+                    [value]="stampsToAdd()"
+                    (input)="updateStampsToAdd(+$any($event.target).value)"
+                    [disabled]="actionStatus() === 'loading'"
+                    class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed sm:text-sm"
+                    aria-label="Wprowadź liczbę pieczątek do dodania"
+                    aria-describedby="stamps-input-description"
+                  />
+                  <p id="stamps-input-description" class="mt-1 text-xs text-gray-500">
+                    Wprowadź liczbę pieczątek (minimum 1)
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  (click)="addStamps()"
+                  [disabled]="actionStatus() === 'loading' || stampsToAdd() < 1"
+                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:bg-gray-300 disabled:cursor-not-allowed disabled:hover:bg-gray-300"
+                  aria-label="Dodaj pieczątki do konta klienta"
+                >
+                  @if (actionStatus() === 'loading') {
+                    <svg
+                      class="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <circle
+                        class="opacity-25"
+                        cx="12"
+                        cy="12"
+                        r="10"
+                        stroke="currentColor"
+                        stroke-width="4"
+                      />
+                      <path
+                        class="opacity-75"
+                        fill="currentColor"
+                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                      />
+                    </svg>
+                    Dodawanie...
+                  } @else {
+                    Dodaj pieczątki
+                  }
+                </button>
+              </div>
+            </div>
+
             <!-- Coupons List -->
             <!-- @if (customer()?.coupons && customer()!.coupons.length > 0) {
               <div class="mt-6">
@@ -171,6 +252,8 @@ export class AdminDashboardPageComponent {
   readonly searchStatus = signal<SearchStatus>('idle');
   readonly actionStatus = signal<ActionStatus>('idle');
   readonly error = signal<ApiErrorResponse | null>(null);
+  readonly stampsToAdd = signal<number>(1);
+  readonly successMessage = signal<SuccessMessage>(null);
 
   /**
    * Handle customer search event
@@ -185,6 +268,9 @@ export class AdminDashboardPageComponent {
     this.error.set(null);
     this.customer.set(null);
     this.stampCount.set(null);
+    this.successMessage.set(null);
+    this.actionStatus.set('idle');
+    this.stampsToAdd.set(1);
 
     this.adminService.getCustomerDetailsByShortId(shortId).subscribe({
       next: (customerData) => {
@@ -229,6 +315,86 @@ export class AdminDashboardPageComponent {
     this.customer.set(null);
     this.stampCount.set(null);
     this.error.set(null);
+    this.successMessage.set(null);
+    this.actionStatus.set('idle');
+    this.stampsToAdd.set(1);
+  }
+
+  /**
+   * Update stamps to add value
+   * @param value - Number of stamps to add
+   */
+  updateStampsToAdd(value: number): void {
+    if (value < 1) {
+      this.stampsToAdd.set(1);
+      return;
+    }
+    this.stampsToAdd.set(value);
+  }
+
+  /**
+   * Add stamps to customer account
+   * Validates input and calls AdminService to add stamps
+   */
+  addStamps(): void {
+    const currentCustomer = this.customer();
+    if (!currentCustomer) {
+      this.error.set({
+        error: {
+          code: 'NO_CUSTOMER',
+          message: 'Brak wybranego klienta.',
+        },
+      });
+      return;
+    }
+
+    const count = this.stampsToAdd();
+    if (count < 1) {
+      this.error.set({
+        error: {
+          code: 'INVALID_COUNT',
+          message: 'Liczba pieczątek musi być większa niż 0.',
+        },
+      });
+      return;
+    }
+
+    console.log('Dodajemy pieczateczki');
+
+    this.actionStatus.set('loading');
+    this.error.set(null);
+    this.successMessage.set(null);
+
+    this.adminService.addStampsToCustomer(currentCustomer.id, count).subscribe({
+      next: () => {
+        this.successMessage.set(
+          `Dodano ${count} ${count === 1 ? 'pieczątkę' : count < 5 ? 'pieczątki' : 'pieczątek'} dla klienta.`
+        );
+        this.actionStatus.set('success');
+        this.stampsToAdd.set(1);
+
+        // Refresh stamp count
+        this.stampService.getCustomerStampsCount(currentCustomer.id).subscribe({
+          next: (newCount) => {
+            this.stampCount.set(newCount);
+            console.log('finito');
+          },
+          error: (err) => {
+            console.error('Error refreshing stamp count:', err);
+          },
+        });
+      },
+      error: (err) => {
+        console.error('Error adding stamps:', err);
+        this.actionStatus.set('error');
+        this.error.set({
+          error: {
+            code: 'ADD_STAMPS_ERROR',
+            message: err?.message || 'Nie udało się dodać pieczątek.',
+          },
+        });
+      },
+    });
   }
 
   /**
