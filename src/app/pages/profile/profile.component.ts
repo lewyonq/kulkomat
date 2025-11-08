@@ -155,6 +155,35 @@ import { UserIdDisplayComponent } from '../../components/profile/user-id-display
                 </svg>
                 <span>Historia</span>
               </button>
+              <button
+                class="action-button primary"
+                (click)="onNavigateToContact()"
+                type="button"
+                aria-label="Przejdź do formularza kontaktowego"
+              >
+                <svg
+                  class="button-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M4 4H20C21.1 4 22 4.9 22 6V18C22 19.1 21.1 20 20 20H4C2.9 20 2 19.1 2 18V6C2 4.9 2.9 4 4 4Z"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                  <path
+                    d="M22 6L12 13L2 6"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+                <span>Kontakt</span>
+              </button>
 
               <button
                 class="action-button secondary"
@@ -586,6 +615,13 @@ export class ProfileComponent implements OnInit {
    */
   protected onNavigateToHistory(): void {
     this.router.navigate(['/history']);
+  }
+
+  /**
+   * Navigate to contact page
+   */
+  protected onNavigateToContact(): void {
+    this.router.navigate(['/contact']);
   }
 
   /**

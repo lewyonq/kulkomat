@@ -302,7 +302,6 @@ export type ContactSubmissionDTO = Tables<'contact_submissions'>;
  * API: POST /api/contact
  */
 export interface CreateContactSubmissionCommand {
-  email?: string | null; // Required if user not authenticated
   message: string;
 }
 
