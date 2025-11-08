@@ -42,7 +42,7 @@ export class StampService {
         .from('stamps')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', userId)
-        .eq('status', 'active')
+        .eq('status', 'active'),
     ).pipe(
       map(({ count, error }) => {
         if (error) {
@@ -59,7 +59,7 @@ export class StampService {
         this.error.set(new Error(errorMessage));
         this.isLoading.set(false);
         return throwError(() => new Error(errorMessage));
-      })
+      }),
     );
   }
 
@@ -82,7 +82,7 @@ export class StampService {
         .from('stamps')
         .select('*', { count: 'exact', head: true })
         .eq('user_id', currentUser.id)
-        .eq('status', 'active')
+        .eq('status', 'active'),
     ).pipe(
       map(({ count, error }) => {
         if (error) {
@@ -90,7 +90,6 @@ export class StampService {
         }
         const stampCount = count ?? 0;
         this.stampCountCache.set(stampCount);
-        console.log("api call made to get stamps");
         return stampCount;
       }),
       tap(() => {
@@ -102,7 +101,7 @@ export class StampService {
         this.error.set(new Error(errorMessage));
         this.isLoading.set(false);
         return throwError(() => new Error(errorMessage));
-      })
+      }),
     );
   }
 
@@ -125,23 +124,33 @@ export class StampService {
 
       const setupRealtimeChannel = (initialCount: number) => {
         let stampCount = initialCount;
-        
+
         channel = this.authService.client
           .channel('public:stamps')
           .on(
             'postgres_changes',
-            { event: 'INSERT', schema: 'public', table: 'stamps', filter: `user_id=eq.${currentUser.id}` },
+            {
+              event: 'INSERT',
+              schema: 'public',
+              table: 'stamps',
+              filter: `user_id=eq.${currentUser.id}`,
+            },
             (payload) => {
               if (payload.new['status'] === 'active') {
                 stampCount++;
                 this.stampCountCache.set(stampCount);
                 subscriber.next(stampCount);
               }
-            }
+            },
           )
           .on(
             'postgres_changes',
-            { event: 'UPDATE', schema: 'public', table: 'stamps', filter: `user_id=eq.${currentUser.id}` },
+            {
+              event: 'UPDATE',
+              schema: 'public',
+              table: 'stamps',
+              filter: `user_id=eq.${currentUser.id}`,
+            },
             (payload) => {
               const oldStatus = payload.old['status'];
               const newStatus = payload.new['status'];
@@ -155,18 +164,23 @@ export class StampService {
                 }
                 subscriber.next(stampCount);
               }
-            }
+            },
           )
           .on(
             'postgres_changes',
-            { event: 'DELETE', schema: 'public', table: 'stamps', filter: `user_id=eq.${currentUser.id}` },
+            {
+              event: 'DELETE',
+              schema: 'public',
+              table: 'stamps',
+              filter: `user_id=eq.${currentUser.id}`,
+            },
             (payload) => {
               if (payload.old['status'] === 'active') {
                 stampCount--;
                 this.stampCountCache.set(stampCount);
                 subscriber.next(stampCount);
               }
-            }
+            },
           )
           .subscribe();
       };

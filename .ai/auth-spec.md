@@ -39,6 +39,7 @@ Zakres: logowanie wyłącznie przez Google OAuth z wykorzystaniem Supabase Auth.
   - `supabaseAnonKey: string`
   - `auth: { redirectUri: string; defaultRedirectAfterLogin: string; defaultRedirectAfterLogout: string; adminEmails?: string[] }`
 - Przykład (opis kontraktu, bez implementacji):
+
 ```ts
 export const environment = {
   production: false,
@@ -48,8 +49,8 @@ export const environment = {
     redirectUri: 'http://localhost:4200/auth/callback',
     defaultRedirectAfterLogin: '/dashboard',
     defaultRedirectAfterLogout: '/login',
-    adminEmails: ['owner@example.com'] // opcjonalnie do whitelisting'u adminów
-  }
+    adminEmails: ['owner@example.com'], // opcjonalnie do whitelisting'u adminów
+  },
 } as const;
 ```
 
@@ -58,9 +59,10 @@ export const environment = {
 - `SupabaseClientService` (singleton):
   - Odpowiada za utworzenie i udostępnienie instancji `createClient(supabaseUrl, supabaseAnonKey, { auth: { persistSession: true, autoRefreshToken: true, detectSessionInUrl: false } })`.
   - Kontrakt:
+
 ```ts
 export interface ISupabaseClientService {
-  client: SupabaseClient
+  client: SupabaseClient;
 }
 ```
 
@@ -72,6 +74,7 @@ export interface ISupabaseClientService {
     - `user$: Observable<User | null>` – pochodna z `session$`.
     - (opcjonalnie) `isAdmin$: Observable<boolean>` – na podstawie istnienia rekordu w `sellers` dla `user.id`.
   - Metody (kontrakty):
+
 ```ts
 export interface IAuthService {
   init(): void; // pobranie sesji z Supabase i subskrypcja onAuthStateChange
@@ -82,18 +85,20 @@ export interface IAuthService {
   getUserOnce(): Promise<User | null>;
 }
 ```
-  - Zasady działania:
-    - `init()` pobiera `getSession()` oraz ustawia `onAuthStateChange` do aktualizacji store.
-    - `signInWithGoogle()` używa `supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo, scopes: 'openid email profile' } })` oraz dołącza `next` jako parametr stanu.
-    - `handleOAuthCallback()` wywołuje `supabase.auth.exchangeCodeForSession()` (kod z query), w razie błędu kieruje na `/login` z komunikatem.
-    - `signOut()` wywołuje `supabase.auth.signOut()` i czyści lokalny stan, przekierowuje na `defaultRedirectAfterLogout`.
+
+- Zasady działania:
+  - `init()` pobiera `getSession()` oraz ustawia `onAuthStateChange` do aktualizacji store.
+  - `signInWithGoogle()` używa `supabase.auth.signInWithOAuth({ provider: 'google', options: { redirectTo, scopes: 'openid email profile' } })` oraz dołącza `next` jako parametr stanu.
+  - `handleOAuthCallback()` wywołuje `supabase.auth.exchangeCodeForSession()` (kod z query), w razie błędu kieruje na `/login` z komunikatem.
+  - `signOut()` wywołuje `supabase.auth.signOut()` i czyści lokalny stan, przekierowuje na `defaultRedirectAfterLogout`.
 
 - `ProfileService` (aplikacyjny):
   - Zajmuje się odczytem/aktualizacją rekordu `profiles` zalogowanego użytkownika.
   - Kontrakty minimalne:
+
 ```ts
 export interface IUserProfile {
-  id: string;        // = auth.users.id
+  id: string; // = auth.users.id
   short_id: string;
   created_at: string;
 }
@@ -107,6 +112,7 @@ export interface IProfileService {
 - `SellersService` (aplikacyjny):
   - Zajmuje się odczytem rekordu `sellers` zalogowanego użytkownika.
   - Kontrakty minimalne:
+
 ```ts
 export interface ISellersService {
   isCurrentUserSeller(): Promise<boolean>;
@@ -234,7 +240,11 @@ export interface IProfileService {
 // Sellers
 export interface ISellersService {
   isCurrentUserSeller(): Promise<boolean>;
-  getCurrentSellerRecord(): Promise<{ user_id: string; active: boolean; created_at: string } | null>;
+  getCurrentSellerRecord(): Promise<{
+    user_id: string;
+    active: boolean;
+    created_at: string;
+  } | null>;
 }
 
 // Guardy (opisowo)

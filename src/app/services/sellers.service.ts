@@ -32,7 +32,11 @@ export class SellersService {
     }
   }
 
-  async getCurrentSellerRecord(): Promise<{ user_id: string; active: boolean; created_at: string } | null> {
+  async getCurrentSellerRecord(): Promise<{
+    user_id: string;
+    active: boolean;
+    created_at: string;
+  } | null> {
     const user = this.authService.user();
     if (!user) return null;
 

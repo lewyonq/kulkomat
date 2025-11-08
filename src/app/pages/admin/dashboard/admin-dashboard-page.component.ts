@@ -62,7 +62,11 @@ type SuccessMessage = string | null;
               </svg>
               <div class="flex-1">
                 <h3 class="text-sm font-medium text-red-800">Błąd wyszukiwania</h3>
-                <p class="mt-1 text-sm text-red-700">{{ error()?.error?.message || 'Nie znaleziono klienta o podanym identyfikatorze.' }}</p>
+                <p class="mt-1 text-sm text-red-700">
+                  {{
+                    error()?.error?.message || 'Nie znaleziono klienta o podanym identyfikatorze.'
+                  }}
+                </p>
                 <button
                   (click)="resetSearch()"
                   class="mt-3 text-sm font-medium text-red-800 hover:text-red-900 underline focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 rounded"
@@ -85,15 +89,21 @@ type SuccessMessage = string | null;
               <dl class="sm:divide-y sm:divide-gray-200">
                 <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500">Aktywne pieczątki</dt>
-                  <dd class="mt-1 text-sm font-medium text-indigo-600 sm:col-span-2 sm:mt-0">{{ stampCount() ?? 'Brak danych' }}</dd>
+                  <dd class="mt-1 text-sm font-medium text-indigo-600 sm:col-span-2 sm:mt-0">
+                    {{ stampCount() ?? 'Brak danych' }}
+                  </dd>
                 </div>
                 <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500">ID Klienta</dt>
-                  <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ customer()?.short_id }}</dd>
+                  <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                    {{ customer()?.short_id }}
+                  </dd>
                 </div>
                 <div class="py-4 sm:grid sm:grid-cols-3 sm:gap-4 sm:py-5 sm:px-6">
                   <dt class="text-sm font-medium text-gray-500">Dołączył</dt>
-                  <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">{{ formatDate(customer()?.created_at) }}</dd>
+                  <dd class="mt-1 text-sm text-gray-900 sm:col-span-2 sm:mt-0">
+                    {{ formatDate(customer()?.created_at) }}
+                  </dd>
                 </div>
               </dl>
             </div>
@@ -104,7 +114,11 @@ type SuccessMessage = string | null;
 
               <!-- Success Message -->
               @if (actionStatus() === 'success' && successMessage()) {
-                <div class="mb-4 bg-green-50 border border-green-200 rounded-lg p-4 flex items-start" role="status" aria-live="polite">
+                <div
+                  class="mb-4 bg-green-50 border border-green-200 rounded-lg p-4 flex items-start"
+                  role="status"
+                  aria-live="polite"
+                >
                   <svg
                     class="h-5 w-5 text-green-400 mt-0.5 mr-3 flex-shrink-0"
                     fill="currentColor"
@@ -237,7 +251,6 @@ type SuccessMessage = string | null;
             } -->
           </div>
         }
-
       </div>
     </div>
   `,
@@ -277,7 +290,6 @@ export class AdminDashboardPageComponent {
         this.customer.set(customerData);
         this.stampService.getCustomerStampsCount(customerData.id).subscribe({
           next: (count) => {
-            console.log(count);
             this.stampCount.set(count);
             this.searchStatus.set('success');
           },
@@ -359,8 +371,6 @@ export class AdminDashboardPageComponent {
       return;
     }
 
-    console.log('Dodajemy pieczateczki');
-
     this.actionStatus.set('loading');
     this.error.set(null);
     this.successMessage.set(null);
@@ -368,7 +378,7 @@ export class AdminDashboardPageComponent {
     this.adminService.addStampsToCustomer(currentCustomer.id, count).subscribe({
       next: () => {
         this.successMessage.set(
-          `Dodano ${count} ${count === 1 ? 'pieczątkę' : count < 5 ? 'pieczątki' : 'pieczątek'} dla klienta.`
+          `Dodano ${count} ${count === 1 ? 'pieczątkę' : count < 5 ? 'pieczątki' : 'pieczątek'} dla klienta.`,
         );
         this.actionStatus.set('success');
         this.stampsToAdd.set(1);
@@ -377,7 +387,6 @@ export class AdminDashboardPageComponent {
         this.stampService.getCustomerStampsCount(currentCustomer.id).subscribe({
           next: (newCount) => {
             this.stampCount.set(newCount);
-            console.log('finito');
           },
           error: (err) => {
             console.error('Error refreshing stamp count:', err);

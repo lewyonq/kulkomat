@@ -10,10 +10,9 @@ import { FlavorVM } from '../types/view-models';
  * W przyszłości będzie zintegrowany z API backendu.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class IceCreamFlavorService {
-
   /**
    * Zwraca listę dostępnych smaków lodów
    *
@@ -25,43 +24,43 @@ export class IceCreamFlavorService {
       {
         id: 1,
         name: 'Czekoladowy',
-        isAvailable: true
+        isAvailable: true,
       },
       {
         id: 2,
         name: 'Waniliowy',
-        isAvailable: true
+        isAvailable: true,
       },
       {
         id: 3,
         name: 'Truskawkowy',
-        isAvailable: true
+        isAvailable: true,
       },
       {
         id: 4,
         name: 'Pistacjowy',
-        isAvailable: false
+        isAvailable: false,
       },
       {
         id: 5,
         name: 'Karmelowy',
-        isAvailable: true
+        isAvailable: true,
       },
       {
         id: 6,
         name: 'Orzechowy',
-        isAvailable: true
+        isAvailable: true,
       },
       {
         id: 7,
         name: 'Mango',
-        isAvailable: false
+        isAvailable: false,
       },
       {
         id: 8,
         name: 'Kokosowy',
-        isAvailable: true
-      }
+        isAvailable: true,
+      },
     ];
 
     return of(flavors);

@@ -1,4 +1,13 @@
-import { Component, Input, Output, EventEmitter, ElementRef, ViewChild, AfterViewInit, OnDestroy } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  ElementRef,
+  ViewChild,
+  AfterViewInit,
+  OnDestroy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivityItemViewModel } from '../../types/view-models';
 import { ActivityListItemComponent } from './activity-list-item.component';
@@ -23,14 +32,16 @@ import { ActivityListItemComponent } from './activity-list-item.component';
       }
     </div>
   `,
-  styles: [`
-    .activity-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.75rem;
-      padding: 0;
-    }
-  `]
+  styles: [
+    `
+      .activity-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        padding: 0;
+      }
+    `,
+  ],
 })
 export class ActivityListComponent {
   @Input({ required: true }) activities: ActivityItemViewModel[] = [];

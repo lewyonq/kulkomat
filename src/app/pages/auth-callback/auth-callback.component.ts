@@ -24,7 +24,9 @@ import { SellersService } from '../../services/sellers.service';
   template: `
     <div class="min-h-[50vh] flex items-center justify-center">
       <div class="flex items-center gap-3 text-sm" role="status" aria-live="polite">
-        <span class="animate-spin inline-block w-5 h-5 border-2 border-gray-300 border-t-pink-500 rounded-full"></span>
+        <span
+          class="animate-spin inline-block w-5 h-5 border-2 border-gray-300 border-t-pink-500 rounded-full"
+        ></span>
         <span>Finalizowanie logowania...</span>
       </div>
     </div>
@@ -40,7 +42,9 @@ export class AuthCallbackComponent implements OnInit {
   async ngOnInit(): Promise<void> {
     try {
       // Handle OAuth callback and establish session
-      await this.authService.handleOAuthCallback(typeof window !== 'undefined' ? window.location.href : '');
+      await this.authService.handleOAuthCallback(
+        typeof window !== 'undefined' ? window.location.href : '',
+      );
 
       // Get the 'next' parameter to determine where user intended to go
       const next = this.route.snapshot.queryParamMap.get('next');
@@ -64,7 +68,7 @@ export class AuthCallbackComponent implements OnInit {
   private async handleAdminAccess(intendedPath: string): Promise<void> {
     try {
       // Wait a moment for session to be fully established
-      await new Promise(resolve => setTimeout(resolve, 100));
+      await new Promise((resolve) => setTimeout(resolve, 100));
 
       // Check if current user is a seller
       const isSeller = await this.sellersService.isCurrentUserSeller();

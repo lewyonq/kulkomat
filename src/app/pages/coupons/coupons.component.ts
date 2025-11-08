@@ -81,11 +81,13 @@ import { CouponCardViewModel } from '../../types/view-models';
       <!-- Content State -->
       @else if (hasCoupons()) {
         <div class="content-wrapper">
-
           <!-- Coupons Grid -->
           <main class="coupons-content">
             @for (coupon of sortedCoupons(); track coupon.id) {
-              <app-coupon-card [coupon]="coupon" (couponClick)="onCouponClick($event)"></app-coupon-card>
+              <app-coupon-card
+                [coupon]="coupon"
+                (couponClick)="onCouponClick($event)"
+              ></app-coupon-card>
             }
           </main>
 
@@ -134,9 +136,20 @@ import { CouponCardViewModel } from '../../types/view-models';
       @if (showSuccessMessage()) {
         <div class="success-toast" role="alert" aria-live="polite">
           <div class="success-content">
-            <svg class="success-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              class="success-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
-              <path d="M8 12L11 15L16 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+              <path
+                d="M8 12L11 15L16 9"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+              />
             </svg>
             <span>Kupon został wykorzystany!</span>
           </div>
@@ -147,7 +160,12 @@ import { CouponCardViewModel } from '../../types/view-models';
       @if (useCouponError()) {
         <div class="error-toast" role="alert" aria-live="assertive">
           <div class="error-content">
-            <svg class="error-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <svg
+              class="error-icon"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
               <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
               <path d="M12 8V12" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
               <circle cx="12" cy="16" r="1" fill="currentColor" />
@@ -713,8 +731,6 @@ export class CouponsComponent implements OnInit, OnDestroy {
             filter: `user_id=eq.${userId}`,
           },
           (payload) => {
-            console.log('Realtime coupon update received:', payload);
-
             // Reload coupons when changes occur
             if (payload.eventType === 'INSERT') {
               // New coupon created - add to the list
@@ -726,7 +742,7 @@ export class CouponsComponent implements OnInit, OnDestroy {
               const updatedCoupon = this.transformCouponToViewModel(payload.new as CouponDTO);
               const currentCoupons = this.coupons();
               const updatedCoupons = currentCoupons.map((c) =>
-                c.id === updatedCoupon.id ? updatedCoupon : c
+                c.id === updatedCoupon.id ? updatedCoupon : c,
               );
               this.coupons.set(updatedCoupons);
             } else if (payload.eventType === 'DELETE') {
@@ -803,7 +819,9 @@ export class CouponsComponent implements OnInit, OnDestroy {
         // Update the coupon in the list
         const updatedViewModel = this.transformCouponToViewModel(updatedCoupon);
         const currentCoupons = this.coupons();
-        const updatedCoupons = currentCoupons.map((c) => (c.id === updatedCoupon.id ? updatedViewModel : c));
+        const updatedCoupons = currentCoupons.map((c) =>
+          c.id === updatedCoupon.id ? updatedViewModel : c,
+        );
         this.coupons.set(updatedCoupons);
 
         // Show success message

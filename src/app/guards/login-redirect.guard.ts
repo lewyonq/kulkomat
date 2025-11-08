@@ -12,7 +12,10 @@ export const loginRedirectGuard: CanActivateFn = async (route, _state) => {
   }
 
   if (supabase.isAuthenticated()) {
-    const next = route.queryParamMap.get('next') || (environment as any)?.auth?.defaultRedirectAfterLogin || '/';
+    const next =
+      route.queryParamMap.get('next') ||
+      (environment as any)?.auth?.defaultRedirectAfterLogin ||
+      '/';
     router.navigate([next]);
     return false;
   }

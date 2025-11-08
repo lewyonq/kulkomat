@@ -33,7 +33,12 @@ import { CouponCardViewModel } from '../../types/view-models';
       (keydown.space)="onCouponClick()"
       role="button"
       [attr.tabindex]="coupon().isActive ? 0 : -1"
-      [attr.aria-label]="coupon().title + ', ' + coupon().formattedExpiryDate + (coupon().isActive ? '. Kliknij aby wykorzystać' : '')"
+      [attr.aria-label]="
+        coupon().title +
+        ', ' +
+        coupon().formattedExpiryDate +
+        (coupon().isActive ? '. Kliknij aby wykorzystać' : '')
+      "
       [attr.aria-disabled]="!coupon().isActive"
     >
       <!-- Icon Section -->

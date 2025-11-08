@@ -1,14 +1,8 @@
 import { Component, OnInit, computed, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivityHistory } from '../../services/activity-history';
-import {
-  ActivityHistoryViewModel,
-  ActivityItemViewModel,
-} from '../../types/view-models';
-import {
-  ActivityItemDTO,
-  CouponType,
-} from '../../types';
+import { ActivityHistoryViewModel, ActivityItemViewModel } from '../../types/view-models';
+import { ActivityItemDTO, CouponType } from '../../types';
 import { ActivityListComponent } from '../../components/history/activity-list.component';
 
 /**
@@ -48,9 +42,7 @@ import { ActivityListComponent } from '../../components/history/activity-list.co
           </div>
           <h2 class="error-title">Nie udało się pobrać historii</h2>
           <p class="error-message">{{ getErrorMessage() }}</p>
-          <button class="retry-button" (click)="onRetry()" type="button">
-            Spróbuj ponownie
-          </button>
+          <button class="retry-button" (click)="onRetry()" type="button">Spróbuj ponownie</button>
         </div>
       }
 
@@ -59,14 +51,15 @@ import { ActivityListComponent } from '../../components/history/activity-list.co
         <div class="empty-container">
           <div class="empty-icon">
             <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M3 7H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-              <path d="M3 17H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <path d="M3 7H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+              <path d="M3 17H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
             </svg>
           </div>
           <h2 class="empty-title">Brak historii aktywności</h2>
           <p class="empty-message">
-            Twoje aktywności pojawią się tutaj po zebraniu pierwszych pieczątek lub otrzymaniu kuponów.
+            Twoje aktywności pojawią się tutaj po zebraniu pierwszych pieczątek lub otrzymaniu
+            kuponów.
           </p>
         </div>
       }
@@ -84,9 +77,7 @@ import { ActivityListComponent } from '../../components/history/activity-list.co
 
           <!-- Activity List -->
           <main class="history-content">
-            <app-activity-list
-              [activities]="viewModel().activities"
-            />
+            <app-activity-list [activities]="viewModel().activities" />
           </main>
         </div>
       }
@@ -260,7 +251,6 @@ import { ActivityListComponent } from '../../components/history/activity-list.co
         flex-direction: column;
         gap: 1.5rem;
       }
-
     `,
   ],
 })
@@ -302,7 +292,6 @@ export class HistoryComponent implements OnInit {
       });
   }
 
-
   /**
    * Retry loading after error
    */
@@ -334,12 +323,10 @@ export class HistoryComponent implements OnInit {
    * Map ActivityHistoryDTO to ActivityHistoryViewModel
    */
   private mapDTOToViewModel(
-    dto: import('../../types').ActivityHistoryDTO
+    dto: import('../../types').ActivityHistoryDTO,
   ): ActivityHistoryViewModel {
     return {
-      activities: dto.activities.map((item) =>
-        this.mapActivityItemToViewModel(item)
-      ),
+      activities: dto.activities.map((item) => this.mapActivityItemToViewModel(item)),
       total: dto.total,
       hasMore: dto.offset + dto.limit < dto.total,
     };
@@ -361,7 +348,8 @@ export class HistoryComponent implements OnInit {
           description: 'Otrzymano pieczątkę do kolekcji',
           date,
           icon: 'stamp-plus',
-          color: 'linear-gradient(135deg, rgb(var(--color-primary-dark)), rgb(var(--color-primary)))',
+          color:
+            'linear-gradient(135deg, rgb(var(--color-primary-dark)), rgb(var(--color-primary)))',
         };
 
       case 'coupon_generated':
@@ -374,7 +362,8 @@ export class HistoryComponent implements OnInit {
           description: `Wygenerowano kupon: ${couponTitle}`,
           date,
           icon: 'coupon-generated',
-          color: 'linear-gradient(135deg, rgb(var(--color-success)), rgb(var(--color-success-light)))',
+          color:
+            'linear-gradient(135deg, rgb(var(--color-success)), rgb(var(--color-success-light)))',
         };
 
       case 'coupon_used':
@@ -407,7 +396,8 @@ export class HistoryComponent implements OnInit {
           description: 'Nieznany typ aktywności',
           date,
           icon: 'stamp-plus',
-          color: 'linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-primary-light)))',
+          color:
+            'linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-primary-light)))',
         };
     }
   }

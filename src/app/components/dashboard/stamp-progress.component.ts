@@ -25,7 +25,11 @@ import { CommonModule } from '@angular/common';
         <div class="icons-grid">
           @for (stamp of stamps(); track $index) {
             <div class="icon-wrapper" [class.collected]="stamp.collected">
-              <img src="./assets/icons/icecream_material.svg" alt="Ice Cream" class="w-8 h-8 ice-cream-icon"/>
+              <img
+                src="./assets/icons/icecream_material.svg"
+                alt="Ice Cream"
+                class="w-8 h-8 ice-cream-icon"
+              />
             </div>
           }
         </div>
@@ -45,8 +49,6 @@ import { CommonModule } from '@angular/common';
             <span class="unit">pieczątek</span>
           </p>
         </div>
-
-        
       </div>
     </div>
   `,
@@ -83,7 +85,7 @@ import { CommonModule } from '@angular/common';
         align-items: center;
         justify-content: center;
         border-radius: 12px;
-        background:rgba(245, 245, 245, 0.53);
+        background: rgba(245, 245, 245, 0.53);
         transition: all 0.3s ease;
       }
 
@@ -222,16 +224,15 @@ export class StampProgressComponent implements OnInit, OnDestroy {
       next: (count) => {
         this.stampCount.set(count);
       },
-      error: (err) => console.error('Failed to subscribe to stamp count updates', err)
+      error: (err) => console.error('Failed to subscribe to stamp count updates', err),
     });
 
     this.stampCountSubscription = this.stampService.watchActiveStampsCount().subscribe({
       next: (count) => {
         this.stampCount.set(count);
       },
-      error: (err) => console.error('Failed to subscribe to stamp count updates', err)
+      error: (err) => console.error('Failed to subscribe to stamp count updates', err),
     });
-  
   }
 
   ngOnDestroy(): void {

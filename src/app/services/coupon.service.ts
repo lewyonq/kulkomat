@@ -52,12 +52,12 @@ export class CouponService {
       {
         method: 'GET',
         headers: {
-          'apikey': environment.supabase.anonKey,
-          'Authorization': `Bearer ${accessToken}`,
+          apikey: environment.supabase.anonKey,
+          Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
-          'Prefer': 'count=exact',
+          Prefer: 'count=exact',
         },
-      }
+      },
     ).then(async (response) => {
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
@@ -73,7 +73,7 @@ export class CouponService {
     return from(fetchPromise).pipe(
       timeout({
         each: 10000, // 10 second timeout
-        with: () => throwError(() => new Error('Request timeout'))
+        with: () => throwError(() => new Error('Request timeout')),
       }),
       map(({ data, error, count }) => {
         if (error) {
@@ -111,7 +111,9 @@ export class CouponService {
     this.isLoading.set(true);
     this.error.set(null);
 
-    return from(this.authService.client.from('coupons').select('*').eq('id', couponId).single()).pipe(
+    return from(
+      this.authService.client.from('coupons').select('*').eq('id', couponId).single(),
+    ).pipe(
       map(({ data, error }) => {
         if (error) {
           throw error;

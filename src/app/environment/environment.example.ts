@@ -7,6 +7,6 @@ export const environment = {
   auth: {
     redirectUri: 'http://localhost:4200/auth/callback',
     defaultRedirectAfterLogin: '/',
-    defaultRedirectAfterLogout: '/login'
+    defaultRedirectAfterLogout: '/login',
   },
 };

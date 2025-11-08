@@ -7,6 +7,7 @@ Celem tego widoku jest wyświetlenie aktualnie dostępnych smaków lodów na str
 ## 2. Routing widoku
 
 Komponent będzie częścią strony głównej, która jest dostępna pod główną ścieżką aplikacji:
+
 - **Ścieżka**: `/` (root)
 
 Komponent `IceCreamFlavorsListComponent` zostanie osadzony bezpośrednio w szablonie komponentu strony głównej (np. `HomePageComponent` lub `DashboardPageComponent`).
@@ -55,8 +56,8 @@ Na potrzeby widoku zdefiniowany zostanie jeden główny typ `ViewModel`.
 
   ```typescript
   export interface FlavorVM {
-    id: number;          // Unikalny identyfikator smaku
-    name: string;        // Nazwa smaku, np. "Czekoladowy"
+    id: number; // Unikalny identyfikator smaku
+    name: string; // Nazwa smaku, np. "Czekoladowy"
     isAvailable: boolean; // Status dostępności smaku
   }
   ```

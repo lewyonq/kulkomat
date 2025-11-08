@@ -1,11 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  input,
-  output,
-  OnInit,
-  inject,
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, input, output, OnInit, inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 
@@ -67,7 +60,10 @@ import { CommonModule } from '@angular/common';
               @if (searchForm.get('shortId')?.hasError('required')) {
                 <p>Kod klienta jest wymagany</p>
               }
-              @if (searchForm.get('shortId')?.hasError('minlength') || searchForm.get('shortId')?.hasError('maxlength')) {
+              @if (
+                searchForm.get('shortId')?.hasError('minlength') ||
+                searchForm.get('shortId')?.hasError('maxlength')
+              ) {
                 <p>Kod musi mieć dokładnie 6 znaków</p>
               }
               @if (searchForm.get('shortId')?.hasError('pattern')) {

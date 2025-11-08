@@ -39,11 +39,7 @@ import { AdminLoginFormComponent } from './admin-login-form.component';
   imports: [AdminLoginFormComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <app-admin-login-form
-      [isLoading]="isLoading()"
-      [error]="error()"
-      (login)="handleLogin()"
-    />
+    <app-admin-login-form [isLoading]="isLoading()" [error]="error()" (login)="handleLogin()" />
   `,
 })
 export class AdminLoginPageComponent implements OnInit {

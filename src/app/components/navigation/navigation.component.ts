@@ -42,7 +42,12 @@ interface NavLink {
             <div class="icon-wrapper">
               <!-- Home Icon -->
               @if (link.icon === 'home') {
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  class="nav-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M3 9L12 2L21 9V20C21 20.5523 20.5523 21 20 21H4C3.44772 21 3 20.5523 3 20V9Z"
                     stroke="currentColor"
@@ -50,13 +55,24 @@ interface NavLink {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
-                  <path d="M9 21V12H15V21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                  <path
+                    d="M9 21V12H15V21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
                 </svg>
               }
 
               <!-- Ticket Icon -->
               @if (link.icon === 'ticket') {
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  class="nav-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M3 8C3 7.44772 3.44772 7 4 7H20C20.5523 7 21 7.44772 21 8V10C19.8954 10 19 10.8954 19 12C19 13.1046 19.8954 14 21 14V16C21 16.5523 20.5523 17 20 17H4C3.44772 17 3 16.5523 3 16V14C4.10457 14 5 13.1046 5 12C5 10.8954 4.10457 10 3 10V8Z"
                     stroke="currentColor"
@@ -64,13 +80,24 @@ interface NavLink {
                     stroke-linecap="round"
                     stroke-linejoin="round"
                   />
-                  <path d="M9 7V17" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-dasharray="2 2" />
+                  <path
+                    d="M9 7V17"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-dasharray="2 2"
+                  />
                 </svg>
               }
 
               <!-- User Icon -->
               @if (link.icon === 'user') {
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  class="nav-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <circle cx="12" cy="8" r="4" stroke="currentColor" stroke-width="2" />
                   <path
                     d="M6 21V19C6 16.7909 7.79086 15 10 15H14C16.2091 15 18 16.7909 18 19V21"
@@ -83,7 +110,12 @@ interface NavLink {
 
               <!-- Admin Icon -->
               @if (link.icon === 'admin') {
-                <svg class="nav-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg
+                  class="nav-icon"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
                   <path
                     d="M12 2L3 7V11C3 16.55 6.84 21.74 12 23C17.16 21.74 21 16.55 21 11V7L12 2Z"
                     stroke="currentColor"

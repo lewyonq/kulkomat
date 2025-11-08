@@ -27,26 +27,22 @@ import { AlertComponent } from '../../../components/shared/alert.component';
   imports: [SpinnerComponent, AlertComponent],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4">
+    <div
+      class="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 px-4"
+    >
       <div class="w-full max-w-md">
         <div class="bg-white rounded-2xl shadow-xl p-8">
           <!-- Header -->
           <div class="text-center mb-8">
-            <h1 class="text-3xl font-bold text-gray-900 mb-2">
-              Panel dla sprzedawcy
-            </h1>
-            <p class="text-gray-600">
-              Zaloguj się, aby zarządzać systemem
-            </p>
+            <h1 class="text-3xl font-bold text-gray-900 mb-2">Panel dla sprzedawcy</h1>
+            <p class="text-gray-600">Zaloguj się, aby zarządzać systemem</p>
           </div>
 
           <!-- Loading State -->
           @if (isLoading()) {
             <div class="py-8">
               <app-spinner />
-              <p class="text-center text-gray-600 mt-4">
-                Przekierowywanie do logowania...
-              </p>
+              <p class="text-center text-gray-600 mt-4">Przekierowywanie do logowania...</p>
             </div>
           }
 
@@ -90,9 +86,7 @@ import { AlertComponent } from '../../../components/shared/alert.component';
 
           <!-- Footer -->
           <div class="mt-8 pt-6 border-t border-gray-200 text-center">
-            <p class="text-sm text-gray-500">
-              Dostęp tylko dla autoryzowanego personelu
-            </p>
+            <p class="text-sm text-gray-500">Dostęp tylko dla autoryzowanego personelu</p>
           </div>
         </div>
       </div>

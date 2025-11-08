@@ -36,7 +36,9 @@ export class AdminService {
       return throwError(() => new Error('Admin not authenticated'));
     }
 
-    return from(this.authService.client.from('profiles').select('*').eq('short_id', shortId).single()).pipe(
+    return from(
+      this.authService.client.from('profiles').select('*').eq('short_id', shortId).single(),
+    ).pipe(
       map(({ data, error }) => {
         if (error) {
           throw error;

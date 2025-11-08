@@ -1,6 +1,7 @@
 # Przewodnik po stylach aplikacji
 
 ## Spis treści
+
 1. [Wprowadzenie](#wprowadzenie)
 2. [System kolorów](#system-kolorów)
 3. [Zmienne CSS](#zmienne-css)
@@ -26,11 +27,11 @@ Aplikacja wykorzystuje **różową paletę kolorów** jako główny motyw wizual
 
 ```scss
 // Podstawowe odcienie różu
---color-primary: 219 39 119;        // Pink 600 - główny kolor marki
---color-primary-light: 236 72 153;  // Pink 500 - jaśniejszy odcień
+--color-primary: 219 39 119; // Pink 600 - główny kolor marki
+--color-primary-light: 236 72 153; // Pink 500 - jaśniejszy odcień
 --color-primary-lighter: 244 114 182; // Pink 400 - najjaśniejszy
---color-primary-dark: 190 24 93;    // Pink 700 - ciemniejszy
---color-primary-darker: 154 63 96;  // Pink 800 - najciemniejszy
+--color-primary-dark: 190 24 93; // Pink 700 - ciemniejszy
+--color-primary-darker: 154 63 96; // Pink 800 - najciemniejszy
 
 // Kolory z przezroczystością (dla nakładek)
 --color-primary-alpha-10: rgba(219, 39, 119, 0.1);
@@ -42,9 +43,9 @@ Aplikacja wykorzystuje **różową paletę kolorów** jako główny motyw wizual
 ### Kolory powierzchni i tła
 
 ```scss
---color-surface: 255 255 255;              // Biały
---color-surface-variant: 246 220 225;      // Jasny różowy odcień
---color-background: 255 248 248;           // Bardzo jasny różowy
+--color-surface: 255 255 255; // Biały
+--color-surface-variant: 246 220 225; // Jasny różowy odcień
+--color-background: 255 248 248; // Bardzo jasny różowy
 --color-background-gradient-start: 245 245 245;
 --color-background-gradient-mid: 232 232 232;
 ```
@@ -52,11 +53,11 @@ Aplikacja wykorzystuje **różową paletę kolorów** jako główny motyw wizual
 ### Kolory tekstu
 
 ```scss
---color-text-primary: 26 26 26;       // Prawie czarny
---color-text-secondary: 102 102 102;  // Szary 600
---color-text-tertiary: 158 158 158;   // Szary 400
+--color-text-primary: 26 26 26; // Prawie czarny
+--color-text-secondary: 102 102 102; // Szary 600
+--color-text-tertiary: 158 158 158; // Szary 400
 --color-text-on-primary: 255 255 255; // Biały (na różowym tle)
---color-text-on-surface: 34 25 27;    // Ciemny brązowo-szary
+--color-text-on-surface: 34 25 27; // Ciemny brązowo-szary
 ```
 
 ### Kolory stanów
@@ -188,7 +189,7 @@ background: rgba(var(--color-primary), 0.5);
       border-radius: 12px;
       box-shadow: var(--shadow-pink);
     }
-    
+
     h1 {
       margin: 0 0 1rem 0;
     }
@@ -330,9 +331,7 @@ Aplikacja używa Tailwind CSS 4.x. Możesz rozszerzyć konfigurację o własne k
 Następnie używaj w klasach Tailwind:
 
 ```html
-<div class="bg-[rgb(var(--color-primary))] text-white">
-  Treść
-</div>
+<div class="bg-[rgb(var(--color-primary))] text-white">Treść</div>
 ```
 
 ---

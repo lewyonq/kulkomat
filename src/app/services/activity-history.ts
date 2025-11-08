@@ -18,7 +18,7 @@ import {
  * Uses AuthService for authentication state.
  */
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class ActivityHistory {
   private authService = inject(AuthService);
@@ -66,7 +66,7 @@ export class ActivityHistory {
    */
   private _fetchActivityHistory(
     userId: string,
-    params?: ActivityHistoryQueryParams
+    params?: ActivityHistoryQueryParams,
   ): Observable<ActivityHistoryDTO> {
     this.isLoading.set(true);
     this.error.set(null);
@@ -88,7 +88,7 @@ export class ActivityHistory {
         }
 
         const activities = (data as ActivityHistoryViewRow[]).map((row) =>
-          this.mapViewRowToActivityItem(row)
+          this.mapViewRowToActivityItem(row),
         );
 
         return {
@@ -105,7 +105,7 @@ export class ActivityHistory {
         this.error.set(err);
         this.isLoading.set(false);
         return throwError(() => err);
-      })
+      }),
     );
   }
 

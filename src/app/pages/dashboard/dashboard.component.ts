@@ -55,7 +55,6 @@ import { IceCreamFlavorsList } from '../../components/ice-cream-flavors/ice-crea
       @else if (isAuthenticated()) {
         <div class="content-wrapper">
           <main class="dashboard-content">
-          
             <section class="section">
               <app-stamp-progress [maxStamps]="10"></app-stamp-progress>
             </section>
@@ -182,8 +181,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
     this.loadActiveCouponsCount();
   }
 
-  ngOnDestroy(): void {
-  }
+  ngOnDestroy(): void {}
 
   /**
    * Load active coupons count

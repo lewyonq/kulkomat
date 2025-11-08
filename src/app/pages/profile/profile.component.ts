@@ -54,7 +54,6 @@ import { UserIdDisplayComponent } from '../../components/profile/user-id-display
       <!-- Content State -->
       @else if (profile()) {
         <div class="content-wrapper">
-
           <!-- Main Content -->
           <main class="profile-content">
             <!-- QR Code Section -->
@@ -104,9 +103,24 @@ import { UserIdDisplayComponent } from '../../components/profile/user-id-display
                         stroke="currentColor"
                         stroke-width="2"
                       />
-                      <path d="M16 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                      <path d="M8 2V6" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                      <path d="M3 10H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                      <path
+                        d="M16 2V6"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M8 2V6"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
+                      <path
+                        d="M3 10H21"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                      />
                     </svg>
                   </div>
                   <div class="info-content">

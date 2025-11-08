@@ -93,5 +93,5 @@ import { AuthService } from './services/auth.service';
   `,
 })
 export class App {
-   protected authService = inject(AuthService);
+  protected authService = inject(AuthService);
 }

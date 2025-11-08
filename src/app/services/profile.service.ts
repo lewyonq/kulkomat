@@ -25,11 +25,21 @@ export class ProfileService {
 
     const cached = this.authService.currentProfile();
     if (cached) {
-      return { id: cached.id, email: user.email || '', short_id: cached.short_id, created_at: cached.created_at };
+      return {
+        id: cached.id,
+        email: user.email || '',
+        short_id: cached.short_id,
+        created_at: cached.created_at,
+      };
     }
 
     const profile = await firstValueFrom(this.authService.getCurrentUserProfile());
-    return { id: profile.id, email: user.email || '', short_id: profile.short_id, created_at: profile.created_at };
+    return {
+      id: profile.id,
+      email: user.email || '',
+      short_id: profile.short_id,
+      created_at: profile.created_at,
+    };
   }
 
   async ensureMyProfile(): Promise<IUserProfile> {
@@ -39,6 +49,11 @@ export class ProfileService {
     // Note: ensureProfileExists is handled automatically by Supabase service during auth initialization
     // We just need to refresh the profile here
     const profile = await firstValueFrom(this.authService.refreshCurrentUserProfile());
-    return { id: profile.id, email: user.email || '', short_id: profile.short_id, created_at: profile.created_at };
+    return {
+      id: profile.id,
+      email: user.email || '',
+      short_id: profile.short_id,
+      created_at: profile.created_at,
+    };
   }
 }

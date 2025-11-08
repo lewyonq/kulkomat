@@ -74,7 +74,7 @@ export class Supabase implements OnDestroy {
       if (session?.user && session.expires_at) {
         const expiresAt = new Date(session.expires_at * 1000);
         const now = new Date();
-        
+
         if (expiresAt > now) {
           await this.ensureProfileExists(session.user.id);
         } else {
@@ -114,7 +114,7 @@ export class Supabase implements OnDestroy {
             },
             error: (err) => {
               console.error('Error refreshing profile after user update:', err);
-            }
+            },
           });
         }
       });
@@ -128,10 +128,16 @@ export class Supabase implements OnDestroy {
 
   public async signInWithGoogle(): Promise<void> {
     try {
-      const defaultRedirect = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : '/auth/callback';
+      const defaultRedirect =
+        typeof window !== 'undefined'
+          ? `${window.location.origin}/auth/callback`
+          : '/auth/callback';
       const baseRedirect = (environment as any)?.auth?.redirectUri || defaultRedirect;
       const next = this.router.url && this.router.url !== '/login' ? this.router.url : '/';
-      const redirectUrl = new URL(baseRedirect, typeof window !== 'undefined' ? window.location.origin : undefined);
+      const redirectUrl = new URL(
+        baseRedirect,
+        typeof window !== 'undefined' ? window.location.origin : undefined,
+      );
       if (!redirectUrl.searchParams.get('next')) {
         redirectUrl.searchParams.set('next', next);
       }
@@ -178,8 +184,10 @@ export class Supabase implements OnDestroy {
         // Sanitize error description to prevent XSS
         // Only return if it's a safe string (alphanumeric, spaces, and basic punctuation)
         const safeErrorDescription = errorDescription?.replace(/[^a-zA-Z0-9\s.,!?-]/g, '');
-        
-        return safeErrorDescription || 'Wystąpił błąd podczas próby logowania. Spróbuj ponownie później.';
+
+        return (
+          safeErrorDescription || 'Wystąpił błąd podczas próby logowania. Spróbuj ponownie później.'
+        );
       }
 
       return null;
@@ -210,7 +218,10 @@ export class Supabase implements OnDestroy {
 
       // Wait for session to be available (it should be set by auto-detection)
       // Get current session
-      const { data: { session }, error: sessionError } = await this.supabase.auth.getSession();
+      const {
+        data: { session },
+        error: sessionError,
+      } = await this.supabase.auth.getSession();
 
       if (sessionError) {
         throw sessionError;
@@ -277,13 +288,7 @@ export class Supabase implements OnDestroy {
     this.isLoading.set(true);
     this.error.set(null);
 
-    return from(
-      this.supabase
-        .from('profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
-    ).pipe(
+    return from(this.supabase.from('profiles').select('*').eq('id', userId).single()).pipe(
       map(({ data, error }) => {
         if (error) {
           throw error;
@@ -320,7 +325,7 @@ export class Supabase implements OnDestroy {
    */
   refreshCurrentUserProfile(): Observable<ProfileDTO> {
     const userId = this.user()?.id;
-    
+
     if (!userId) {
       return throwError(() => new Error('User not authenticated'));
     }
@@ -396,7 +401,7 @@ export class Supabase implements OnDestroy {
           },
           error: (err) => {
             console.error('Error refreshing profile:', err);
-          }
+          },
         });
         return;
       }
@@ -423,7 +428,7 @@ export class Supabase implements OnDestroy {
       }
 
       console.log('Profile created successfully for user:', userId);
-      
+
       // Refresh profile after creation
       this.refreshCurrentUserProfile().subscribe({
         next: (profile) => {
@@ -431,19 +436,19 @@ export class Supabase implements OnDestroy {
         },
         error: (err) => {
           console.error('Error refreshing newly created profile:', err);
-        }
+        },
       });
     } catch (err) {
       const error = err as Error;
       console.error('Error in ensureProfileExists:', {
         message: error.message,
         userId,
-        stack: error.stack
+        stack: error.stack,
       });
-      
+
       // Set error signal but don't throw to prevent blocking user login
       this.error.set(new Error(`Failed to ensure profile exists: ${error.message}`));
-      
+
       // The profile can be created later if needed
     }
   }
@@ -511,21 +516,21 @@ export class Supabase implements OnDestroy {
 
     for (let attempt = 0; attempt < maxAttempts; attempt++) {
       const startTime = Date.now();
-      
+
       // Exponential backoff: wait longer on each retry
       if (attempt > 0) {
         const backoffDelay = Math.min(1000, 100 * Math.pow(2, attempt - 1));
-        await new Promise(resolve => setTimeout(resolve, backoffDelay));
+        await new Promise((resolve) => setTimeout(resolve, backoffDelay));
       }
-      
+
       // Use crypto.getRandomValues for cryptographically secure randomness
       const lengthArray = new Uint32Array(1);
       crypto.getRandomValues(lengthArray);
       const length = (lengthArray[0] % 3) + 6; // 6-8 characters
-      
+
       const randomValues = new Uint32Array(length);
       crypto.getRandomValues(randomValues);
-      
+
       let shortId = '';
       for (let i = 0; i < length; i++) {
         shortId += chars.charAt(randomValues[i] % chars.length);
@@ -541,7 +546,7 @@ export class Supabase implements OnDestroy {
       // Add constant-time delay to prevent timing attacks
       const elapsed = Date.now() - startTime;
       if (elapsed < minDelay) {
-        await new Promise(resolve => setTimeout(resolve, minDelay - elapsed));
+        await new Promise((resolve) => setTimeout(resolve, minDelay - elapsed));
       }
 
       if (error) {

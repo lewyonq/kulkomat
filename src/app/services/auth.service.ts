@@ -26,8 +26,12 @@ export class AuthService {
   private router = inject(Router);
 
   // Observables for reactive streams
-  readonly session$: Observable<Session | null> = toObservable(this.supabase.session) as unknown as Observable<Session | null>;
-  readonly user$: Observable<User | null> = this.session$.pipe(map((s) => (s ? (s.user as User) : null)));
+  readonly session$: Observable<Session | null> = toObservable(
+    this.supabase.session,
+  ) as unknown as Observable<Session | null>;
+  readonly user$: Observable<User | null> = this.session$.pipe(
+    map((s) => (s ? (s.user as User) : null)),
+  );
 
   // Computed signals for direct access to current state
   readonly user = computed(() => this.supabase.user());
@@ -49,14 +53,22 @@ export class AuthService {
    */
   async signInWithGoogle(options?: { redirectTo?: string; next?: string }): Promise<void> {
     try {
-      const defaultRedirect = typeof window !== 'undefined' ? `${window.location.origin}/auth/callback` : '/auth/callback';
-      const baseRedirect = options?.redirectTo || (environment as any)?.auth?.redirectUri || defaultRedirect;
+      const defaultRedirect =
+        typeof window !== 'undefined'
+          ? `${window.location.origin}/auth/callback`
+          : '/auth/callback';
+      const baseRedirect =
+        options?.redirectTo || (environment as any)?.auth?.redirectUri || defaultRedirect;
 
       // Determine the 'next' parameter (where to go after login)
-      const next = options?.next || (this.router.url && this.router.url !== '/login' ? this.router.url : '/');
+      const next =
+        options?.next || (this.router.url && this.router.url !== '/login' ? this.router.url : '/');
 
       // Build redirect URL with 'next' parameter
-      const redirectUrl = new URL(baseRedirect, typeof window !== 'undefined' ? window.location.origin : undefined);
+      const redirectUrl = new URL(
+        baseRedirect,
+        typeof window !== 'undefined' ? window.location.origin : undefined,
+      );
       if (!redirectUrl.searchParams.get('next')) {
         redirectUrl.searchParams.set('next', next);
       }

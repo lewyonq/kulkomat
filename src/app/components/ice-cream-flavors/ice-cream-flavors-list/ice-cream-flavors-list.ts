@@ -39,52 +39,54 @@ import { IceCreamFlavorCard } from '../ice-cream-flavor-card/ice-cream-flavor-ca
       }
     </div>
   `,
-  styles: [`
-    .flavors-list-container {
-      padding: 1.5rem;
-      max-width: 1200px;
-      margin: 0 auto;
-    }
-
-    .flavors-title {
-      font-size: 1.875rem;
-      font-weight: 700;
-      color: rgb(var(--color-text-primary));
-      margin: 0 0 1.5rem 0;
-    }
-
-    .flavors-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
-    }
-
-    .empty-state,
-    .loading-state {
-      text-align: center;
-      padding: 3rem 1rem;
-    }
-
-    .empty-message {
-      font-size: 1rem;
-      color: rgb(var(--color-text-secondary));
-      margin: 0;
-    }
-
-    @media (max-width: 640px) {
+  styles: [
+    `
       .flavors-list-container {
-        padding: 1rem;
+        padding: 1.5rem;
+        max-width: 1200px;
+        margin: 0 auto;
       }
 
       .flavors-title {
-        font-size: 1.5rem;
+        font-size: 1.875rem;
+        font-weight: 700;
+        color: rgb(var(--color-text-primary));
+        margin: 0 0 1.5rem 0;
       }
 
       .flavors-grid {
-        grid-template-columns: 1fr;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 1rem;
       }
-    }
-  `]
+
+      .empty-state,
+      .loading-state {
+        text-align: center;
+        padding: 3rem 1rem;
+      }
+
+      .empty-message {
+        font-size: 1rem;
+        color: rgb(var(--color-text-secondary));
+        margin: 0;
+      }
+
+      @media (max-width: 640px) {
+        .flavors-list-container {
+          padding: 1rem;
+        }
+
+        .flavors-title {
+          font-size: 1.5rem;
+        }
+
+        .flavors-grid {
+          grid-template-columns: 1fr;
+        }
+      }
+    `,
+  ],
 })
 export class IceCreamFlavorsList implements OnInit {
   /**
@@ -95,8 +97,8 @@ export class IceCreamFlavorsList implements OnInit {
   constructor(private iceCreamFlavorService: IceCreamFlavorService) {}
 
   ngOnInit(): void {
-    this.flavors$ = this.iceCreamFlavorService.getFlavors().pipe(
-      map(flavors => flavors.filter(flavor => flavor.isAvailable))
-    );
+    this.flavors$ = this.iceCreamFlavorService
+      .getFlavors()
+      .pipe(map((flavors) => flavors.filter((flavor) => flavor.isAvailable)));
   }
 }

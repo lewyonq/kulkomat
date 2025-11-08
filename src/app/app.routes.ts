@@ -42,7 +42,9 @@ export const routes: Routes = [
   {
     path: 'admin/login',
     loadComponent: () =>
-      import('./pages/admin/login/admin-login-page.component').then((m) => m.AdminLoginPageComponent),
+      import('./pages/admin/login/admin-login-page.component').then(
+        (m) => m.AdminLoginPageComponent,
+      ),
     canActivate: [loginRedirectGuard],
   },
   {
