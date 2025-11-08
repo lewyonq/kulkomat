@@ -43,7 +43,6 @@ export class AdminService {
         if (error) {
           throw error;
         }
-        console.log(data);
         if (!data) {
           throw new Error('Customer not found');
         }

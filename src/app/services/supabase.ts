@@ -93,7 +93,6 @@ export class Supabase implements OnDestroy {
 
         // Update session when token is refreshed
         if (event === 'TOKEN_REFRESHED' && session) {
-          console.log('Token refreshed successfully');
           // Session is already updated above, just log for debugging
         }
 
@@ -106,7 +105,6 @@ export class Supabase implements OnDestroy {
 
         // Handle user update events
         if (event === 'USER_UPDATED' && session) {
-          console.log('User data updated');
           // Refresh profile to get latest data
           this.refreshCurrentUserProfile().subscribe({
             next: (profile) => {
@@ -426,8 +424,6 @@ export class Supabase implements OnDestroy {
         console.error('Error creating profile:', insertError);
         throw insertError;
       }
-
-      console.log('Profile created successfully for user:', userId);
 
       // Refresh profile after creation
       this.refreshCurrentUserProfile().subscribe({

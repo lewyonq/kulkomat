@@ -755,9 +755,7 @@ export class CouponsComponent implements OnInit, OnDestroy {
           },
         )
         .subscribe((status) => {
-          if (status === 'SUBSCRIBED') {
-            console.log('Realtime subscription active for coupons');
-          } else if (status === 'CHANNEL_ERROR') {
+          if (status === 'CHANNEL_ERROR') {
             console.error('Realtime subscription error for coupons');
           }
         });
