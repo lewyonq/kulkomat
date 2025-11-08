@@ -219,7 +219,6 @@ export class StampProgressComponent implements OnInit, OnDestroy {
     return this.stampCount() % this.maxStamps();
   });
 
-
   protected percentage = computed(() => {
     return (this.normalizedStampCount() / this.maxStamps()) * 100;
   });

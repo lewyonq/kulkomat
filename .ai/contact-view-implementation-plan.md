@@ -39,7 +39,7 @@ ContactPageComponent
   - `ngSubmit`: Uruchamia proces wysyłania formularza.
 
 - **Obsługiwana walidacja**:
-  - **Wiadomość (`message`)**: 
+  - **Wiadomość (`message`)**:
     - `Validators.required`: Pole jest wymagane.
     - `Validators.minLength(10)`: Wiadomość musi mieć co najmniej 10 znaków.
 
@@ -91,7 +91,7 @@ Integracja z backendem (Supabase) odbędzie się poprzez dedykowany serwis, np. 
 ## 8. Interakcje użytkownika
 
 - **Wpisywanie wiadomości**: Użytkownik wpisuje treść w pole `textarea`. Walidacja `minLength` jest sprawdzana na bieżąco.
-- **Wysyłanie formularza**: 
+- **Wysyłanie formularza**:
   - Użytkownik klika przycisk "Wyślij".
   - Przycisk jest nieaktywny, jeśli formularz jest nieprawidłowy lub trwa wysyłanie.
   - Po kliknięciu komponent pokazuje stan ładowania.

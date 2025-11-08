@@ -30,8 +30,7 @@ export const routes: Routes = [
   },
   {
     path: 'contact',
-    loadComponent: () =>
-      import('./pages/contact/contact').then((m) => m.Contact),
+    loadComponent: () => import('./pages/contact/contact').then((m) => m.Contact),
     canActivate: [authGuard],
   },
   {

@@ -132,7 +132,9 @@ interface ContactFormViewModel {
               placeholder="Napisz swoją wiadomość... (minimum 10 znaków)"
               aria-required="true"
               aria-describedby="message-error"
-              [attr.aria-invalid]="contactForm.controls.message.invalid && contactForm.controls.message.touched"
+              [attr.aria-invalid]="
+                contactForm.controls.message.invalid && contactForm.controls.message.touched
+              "
             ></textarea>
 
             <!-- Validation Error -->

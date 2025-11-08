@@ -54,6 +54,7 @@ Struktura widoku będzie prosta i skupi się na jednym głównym komponencie, kt
 Do implementacji widoku wymagany będzie jeden nowy typ `ViewModel`.
 
 - **AdminLoginViewModel**: Interfejs opisujący stan widoku `AdminLogin`.
+
   ```typescript
   export interface AdminLoginViewModel {
     isLoading: boolean;
