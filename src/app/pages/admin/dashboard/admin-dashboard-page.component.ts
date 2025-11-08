@@ -135,7 +135,7 @@ type SuccessMessage = string | null;
                 </div>
               }
 
-              <div class="flex items-end gap-4">
+              <div class="flex items-end gap-4 mb-5">
                 <div class="flex-1 max-w-xs">
                   <label for="stamps-input" class="block text-sm font-medium text-gray-700 mb-2">
                     Liczba pieczątek

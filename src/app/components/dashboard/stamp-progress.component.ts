@@ -43,7 +43,7 @@ import { CommonModule } from '@angular/common';
           </div>
 
           <p class="progress-text">
-            <span class="current">{{ stampCount() }}</span>
+            <span class="current">{{ normalizedStampCount() }}</span>
             <span class="separator">/</span>
             <span class="total">{{ maxStamps() }}</span>
             <span class="unit">pieczątek</span>
@@ -215,8 +215,13 @@ export class StampProgressComponent implements OnInit, OnDestroy {
 
   maxStamps = input<number>(10);
 
+  protected normalizedStampCount = computed(() => {
+    return this.stampCount() % this.maxStamps();
+  });
+
+
   protected percentage = computed(() => {
-    return (this.stampCount() / this.maxStamps()) * 100;
+    return (this.normalizedStampCount() / this.maxStamps()) * 100;
   });
 
   ngOnInit(): void {
@@ -230,6 +235,9 @@ export class StampProgressComponent implements OnInit, OnDestroy {
     this.stampCountSubscription = this.stampService.watchActiveStampsCount().subscribe({
       next: (count) => {
         this.stampCount.set(count);
+        if (this.stampCount() === this.maxStamps()) {
+          this.stampCount.set(0);
+        }
       },
       error: (err) => console.error('Failed to subscribe to stamp count updates', err),
     });
@@ -243,7 +251,7 @@ export class StampProgressComponent implements OnInit, OnDestroy {
 
   protected stamps = computed(() => {
     return Array.from({ length: this.maxStamps() }, (_, index) => ({
-      collected: index < this.stampCount(),
+      collected: index < this.normalizedStampCount(),
     }));
   });
 }
