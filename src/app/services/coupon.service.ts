@@ -1,8 +1,8 @@
 import { Injectable, inject, signal } from '@angular/core';
 import { from, Observable, throwError, timeout } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map, tap, switchMap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import { CouponDTO, CouponsListDTO, CouponQueryParams } from '../types';
+import { CouponDTO, CouponsListDTO, CouponQueryParams, AddCouponFormViewModel } from '../types';
 import { environment } from '../environment/environment';
 
 /**
@@ -181,6 +181,87 @@ export class CouponService {
       }),
       catchError((err) => {
         const errorMessage = err?.message || 'Failed to use coupon';
+        this.error.set(new Error(errorMessage));
+        this.isLoading.set(false);
+        return throwError(() => new Error(errorMessage));
+      }),
+    );
+  }
+
+  /**
+   * Add Coupon (Admin)
+   * Creates a new coupon for a customer by their short_id.
+   * This method is used by admin panel to manually add coupons.
+   *
+   * Steps:
+   * 1. Fetch user_id from profiles table using short_id
+   * 2. Create coupon using the RPC function create_manual_coupon
+   *
+   * @param formData - Form data containing short_id, type, value, and expires_at
+   * @returns Observable<CouponDTO> - The created coupon data
+   */
+  addCoupon(formData: AddCouponFormViewModel): Observable<CouponDTO> {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    const currentUser = this.authService.user();
+    if (!currentUser) {
+      this.isLoading.set(false);
+      return throwError(() => new Error('Admin not authenticated'));
+    }
+
+    // Step 1: Get user_id from short_id
+    return from(
+      this.authService.client
+        .from('profiles')
+        .select('id')
+        .eq('short_id', formData.short_id)
+        .single(),
+    ).pipe(
+      switchMap(({ data: profile, error: profileError }) => {
+        if (profileError) {
+          throw profileError;
+        }
+
+        if (!profile) {
+          throw new Error('Nie znaleziono klienta o podanym ID');
+        }
+
+        // Step 2: Create coupon using RPC function
+        // Convert date from YYYY-MM-DD to ISO 8601 format
+        const expiresAtISO = new Date(formData.expires_at).toISOString();
+
+        return from(
+          this.authService.client
+            .from('coupons')
+            .insert({
+              user_id: profile.id,
+              type: formData.type,
+              value: formData.value,
+              expires_at: expiresAtISO,
+              status: 'active',
+            })
+            .select()
+            .single(),
+        );
+      }),
+      map(({ data, error }) => {
+        if (error) {
+          throw error;
+        }
+
+        if (!data) {
+          throw new Error('Nie udało się utworzyć kuponu');
+        }
+
+        return data as CouponDTO;
+      }),
+      tap(() => {
+        this.isLoading.set(false);
+      }),
+      catchError((err) => {
+        const errorMessage = err?.message || 'Nie udało się dodać kuponu';
+        console.error('Error adding coupon:', errorMessage);
         this.error.set(new Error(errorMessage));
         this.isLoading.set(false);
         return throwError(() => new Error(errorMessage));
