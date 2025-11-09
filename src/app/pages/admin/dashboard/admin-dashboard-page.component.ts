@@ -1,5 +1,6 @@
 import { Component, ChangeDetectionStrategy, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { CustomerSearchComponent } from '../../../components/admin/customer-search.component';
 import { AdminService } from '../../../services/admin.service';
 import { ApiErrorResponse, ProfileDTO } from '../../../types';
@@ -19,7 +20,7 @@ type SuccessMessage = string | null;
 @Component({
   selector: 'app-admin-dashboard-page',
   standalone: true,
-  imports: [CommonModule, CustomerSearchComponent],
+  imports: [CommonModule, CustomerSearchComponent, RouterLink],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="min-h-screen bg-gray-50 py-8 px-4 sm:px-6 lg:px-8">
@@ -190,6 +191,35 @@ type SuccessMessage = string | null;
                   }
                 </button>
               </div>
+            </div>
+
+            <!-- View History Button Section -->
+            <div class="mt-6 pt-6 border-t border-gray-200 mb-4">
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Historia aktywności</h3>
+              <p class="text-sm text-gray-600 mb-4">
+                Wyświetl szczegółową historię wszystkich aktywności klienta w programie lojalnościowym.
+              </p>
+              <a
+                [routerLink]="['/admin/customer', customer()?.id, 'history']"
+                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+                aria-label="Wyświetl historię aktywności klienta"
+              >
+                <svg
+                  class="h-5 w-5 mr-2 -ml-1"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+                Wyświetl historię
+              </a>
             </div>
 
             <!-- Coupons List -->

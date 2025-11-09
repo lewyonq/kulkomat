@@ -243,7 +243,6 @@ Klienci lodziarni często doświadczają niedogodności związanych z programami
   Opis: Jako sprzedawca chcę mieć możliwość szybkiego sprawdzenia, jakie kupony są dostępne dla danego klienta, aby prawidłowo naliczyć rabat.
   Kryteria akceptacji:
   - Po wprowadzeniu `short_id` klienta w panelu administracyjnym, wyświetlana jest lista jego aktywnych kuponów.
-  - Sprzedawca może oznaczyć kupon jako wykorzystany po jego użyciu.
 
 - ID: US-019
   Tytuł: Generowanie jednorazowych kodów nagród

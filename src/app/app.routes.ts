@@ -60,4 +60,12 @@ export const routes: Routes = [
       ),
     canActivate: [adminGuard],
   },
+  {
+    path: 'admin/customer/:id/history',
+    loadComponent: () =>
+      import('./pages/admin/customer-history-page/customer-history-page').then(
+        (m) => m.CustomerHistoryPage,
+      ),
+    canActivate: [adminGuard],
+  },
 ];
