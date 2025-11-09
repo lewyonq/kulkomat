@@ -237,12 +237,17 @@ export class CouponService {
         const expiresAtISO = new Date(formData.expires_at).toISOString();
 
         return from(
-          this.authService.client.rpc('create_manual_coupon', {
-            p_user_id: profile.id,
-            p_type: formData.type,
-            p_value: formData.value,
-            p_expires_at: expiresAtISO,
-          }),
+          this.authService.client
+            .from('coupons')
+            .insert({
+              user_id: profile.id,
+              type: formData.type,
+              value: formData.value,
+              expires_at: expiresAtISO,
+              status: 'active',
+            })
+            .select()
+            .single(),
         );
       }),
       map(({ data, error }) => {
