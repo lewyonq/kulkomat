@@ -96,6 +96,17 @@ export interface CreateCouponCommand {
 }
 
 /**
+ * Add Coupon Form View Model - Form data for admin coupon creation
+ * Used to collect data from the admin form before converting to CreateCouponCommand
+ */
+export interface AddCouponFormViewModel {
+  short_id: string;
+  type: CouponType;
+  value: number;
+  expires_at: string; // Date in YYYY-MM-DD format
+}
+
+/**
  * Use Coupon Command - Request to mark coupon as used
  * API: PATCH /api/coupons/{coupon_id}/use
  */
