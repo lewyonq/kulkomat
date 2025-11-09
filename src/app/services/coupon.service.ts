@@ -2,12 +2,7 @@ import { Injectable, inject, signal } from '@angular/core';
 import { from, Observable, throwError, timeout } from 'rxjs';
 import { catchError, map, tap, switchMap } from 'rxjs/operators';
 import { AuthService } from './auth.service';
-import {
-  CouponDTO,
-  CouponsListDTO,
-  CouponQueryParams,
-  AddCouponFormViewModel,
-} from '../types';
+import { CouponDTO, CouponsListDTO, CouponQueryParams, AddCouponFormViewModel } from '../types';
 import { environment } from '../environment/environment';
 
 /**

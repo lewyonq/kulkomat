@@ -1,11 +1,4 @@
-import {
-  Component,
-  ChangeDetectionStrategy,
-  output,
-  input,
-  OnInit,
-  signal,
-} from '@angular/core';
+import { Component, ChangeDetectionStrategy, output, input, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -63,9 +56,7 @@ import { AddCouponFormViewModel, CouponType } from '../../types';
 
       <!-- Coupon Type Field -->
       <div>
-        <label for="type" class="block text-sm font-medium text-gray-700 mb-2">
-          Typ kuponu
-        </label>
+        <label for="type" class="block text-sm font-medium text-gray-700 mb-2"> Typ kuponu </label>
         <select
           id="type"
           formControlName="type"

@@ -38,7 +38,7 @@ Nowy widok będzie składał się z komponentu-strony (`CustomerHistoryPageCompo
 ### `CustomerHistoryPageComponent` (Nowy)
 
 - **Opis komponentu**: Jest to inteligentny komponent (strona), który odpowiada za pobranie `user_id` z parametrów ścieżki URL, a następnie za pomocą `ActivityHistoryService` pobiera i przekazuje dane o aktywności klienta do komponentu `HistoryListComponent`. Komponent wyświetla również nagłówek z informacją, czyjej historii dotyczy widok.
-- **Główne elementy**: 
+- **Główne elementy**:
   - Nagłówek `<h1>` lub `<h2>` (np. "Historia klienta").
   - Komponent `<app-history-list>` do wyświetlenia danych.
   - Wskaźnik ładowania (`*ngIf="isLoading"`).
@@ -51,7 +51,7 @@ Nowy widok będzie składał się z komponentu-strony (`CustomerHistoryPageCompo
 ### `HistoryListComponent` (Istniejący)
 
 - **Opis komponentu**: Głupi (prezentacyjny) komponent, który renderuje listę aktywności na podstawie otrzymanych danych. Każdy element listy jest stylizowany w zależności od typu aktywności.
-- **Główne elementy**: 
+- **Główne elementy**:
   - Kontener listy (`<ul>` lub `<div>` z `*ngFor`).
   - Elementy listy (`<li>` lub `<app-history-item>`), które wyświetlają ikonę, opis i datę dla każdego zdarzenia.
 - **Obsługiwane interakcje**: Brak.
@@ -117,10 +117,14 @@ Integracja z API będzie realizowana poprzez dedykowany serwis `ActivityHistoryS
 - **Wywołanie w komponencie**:
   ```typescript
   // W CustomerHistoryPageComponent.ts (ngOnInit)
-  this.route.params.pipe(
-    map(params => params['id']),
-    switchMap(userId => this.activityHistoryService.getActivityHistoryForUser(userId))
-  ).subscribe(response => { /* ... */ });
+  this.route.params
+    .pipe(
+      map((params) => params['id']),
+      switchMap((userId) => this.activityHistoryService.getActivityHistoryForUser(userId)),
+    )
+    .subscribe((response) => {
+      /* ... */
+    });
   ```
 - **Typy żądania/odpowiedzi**:
   - **Żądanie**: `GET /api/activity-history?user_id={userId}`
@@ -140,7 +144,7 @@ Integracja z API będzie realizowana poprzez dedykowany serwis `ActivityHistoryS
 
 - **Walidacja `user_id`**: W `CustomerHistoryPageComponent`, przed wywołaniem API, należy sprawdzić, czy `id` pobrane z `ActivatedRoute` jest poprawnym identyfikatorem (np. nie jest `null` lub `undefined`).
 - **Ochrona trasy**: `AdminGuard` musi być zastosowany do nowej ścieżki `/admin/customer/:id/history`, aby uniemożliwić dostęp nieautoryzowanym użytkownikom.
-- **Stan interfejsu**: 
+- **Stan interfejsu**:
   - Gdy `isLoading` jest `true`, wyświetlany jest loader.
   - Gdy `error` nie jest `null`, wyświetlany jest komunikat o błędzie.
   - Gdy dane zostaną pomyślnie załadowane, wyświetlana jest lista historii.
@@ -156,7 +160,7 @@ Integracja z API będzie realizowana poprzez dedykowany serwis `ActivityHistoryS
 
 1.  **Utworzenie komponentu**: Wygeneruj nowy komponent `CustomerHistoryPageComponent` za pomocą Angular CLI: `ng generate component pages/admin/customer-history-page`.
 2.  **Aktualizacja routingu**: W `admin-routing.module.ts` dodaj nową ścieżkę: `{ path: 'customer/:id/history', component: CustomerHistoryPageComponent, canActivate: [AdminGuard] }`.
-3.  **Implementacja `CustomerHistoryPageComponent`**: 
+3.  **Implementacja `CustomerHistoryPageComponent`**:
     - Wstrzyknij `ActivatedRoute` i `ActivityHistoryService`.
     - W `ngOnInit` zaimplementuj logikę pobierania `id` z trasy i wywołania serwisu.
     - Dodaj do szablonu HTML obsługę stanów ładowania, błędu oraz wywołanie komponentu `<app-history-list>`.

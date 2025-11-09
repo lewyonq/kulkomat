@@ -53,6 +53,7 @@ AdminAddCouponPage (Komponent-strona, /admin/add-coupon)
 Do implementacji widoku wymagane będą następujące typy:
 
 - **`CreateCouponCommand` (DTO)**: Obiekt transferu danych używany w żądaniu API do utworzenia kuponu. Zgodny z definicją w `src/app/types/index.ts`.
+
   ```typescript
   export interface CreateCouponCommand {
     user_id: string; // UUID klienta, pobrane na podstawie short_id

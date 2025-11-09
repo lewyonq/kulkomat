@@ -1,4 +1,11 @@
-import { Component, OnInit, computed, signal, inject, ChangeDetectionStrategy } from '@angular/core';
+import {
+  Component,
+  OnInit,
+  computed,
+  signal,
+  inject,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ActivatedRoute, Router } from '@angular/router';
 import { ActivityHistory } from '../../../services/activity-history';
@@ -37,7 +44,9 @@ import { ActivityListComponent } from '../../../components/history/activity-list
 
         <!-- Error State -->
         @else if (error() && viewModel().activities.length === 0) {
-          <div class="flex flex-col items-center justify-center min-h-[60vh] gap-6 px-4 text-center">
+          <div
+            class="flex flex-col items-center justify-center min-h-[60vh] gap-6 px-4 text-center"
+          >
             <div class="w-16 h-16 text-red-500">
               <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2" />
@@ -45,7 +54,9 @@ import { ActivityListComponent } from '../../../components/history/activity-list
                 <circle cx="12" cy="16" r="1" fill="currentColor" />
               </svg>
             </div>
-            <h2 class="text-xl sm:text-2xl font-bold text-gray-900">Nie udało się pobrać historii</h2>
+            <h2 class="text-xl sm:text-2xl font-bold text-gray-900">
+              Nie udało się pobrać historii
+            </h2>
             <p class="text-sm text-gray-600 max-w-md">{{ getErrorMessage() }}</p>
             <div class="flex flex-col sm:flex-row gap-3 w-full max-w-md">
               <button
@@ -92,13 +103,24 @@ import { ActivityListComponent } from '../../../components/history/activity-list
               <div class="w-16 h-16 text-gray-400 mb-4">
                 <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
                   <path d="M3 7H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                  <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
-                  <path d="M3 17H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+                  <path
+                    d="M3 12H21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
+                  <path
+                    d="M3 17H21"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                  />
                 </svg>
               </div>
               <h2 class="text-xl font-semibold text-gray-900 mb-2">Brak historii aktywności</h2>
               <p class="text-sm text-gray-500 max-w-md">
-                Ten klient nie posiada jeszcze żadnej historii aktywności w programie lojalnościowym.
+                Ten klient nie posiada jeszcze żadnej historii aktywności w programie
+                lojalnościowym.
               </p>
             </div>
           </div>

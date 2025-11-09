@@ -221,15 +221,9 @@ import { AddCouponFormViewModel, ApiErrorResponse, ProfileDTO } from '../../../t
               <h3 class="text-sm font-medium text-blue-800">Informacje o kuponach</h3>
               <div class="mt-2 text-sm text-blue-700">
                 <ul class="list-disc pl-5 space-y-1">
-                  <li>
-                    <strong>Rabat procentowy:</strong> Wartość musi być w zakresie 1-100%.
-                  </li>
-                  <li>
-                    <strong>Rabat kwotowy:</strong> Wartość w złotych (np. 10 zł rabatu).
-                  </li>
-                  <li>
-                    <strong>Data ważności:</strong> Kupon będzie aktywny do wybranej daty.
-                  </li>
+                  <li><strong>Rabat procentowy:</strong> Wartość musi być w zakresie 1-100%.</li>
+                  <li><strong>Rabat kwotowy:</strong> Wartość w złotych (np. 10 zł rabatu).</li>
+                  <li><strong>Data ważności:</strong> Kupon będzie aktywny do wybranej daty.</li>
                   <li>
                     <strong>ID Klienta:</strong> 6-znakowy kod alfanumeryczny widoczny na karcie
                     klienta.
