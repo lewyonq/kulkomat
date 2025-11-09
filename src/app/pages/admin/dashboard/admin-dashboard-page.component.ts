@@ -193,33 +193,56 @@ type SuccessMessage = string | null;
               </div>
             </div>
 
-            <!-- View History Button Section -->
+            <!-- Actions Section -->
             <div class="mt-6 pt-6 border-t border-gray-200 mb-4">
-              <h3 class="text-lg font-medium text-gray-900 mb-4">Historia aktywności</h3>
-              <p class="text-sm text-gray-600 mb-4">
-                Wyświetl szczegółową historię wszystkich aktywności klienta w programie lojalnościowym.
-              </p>
-              <a
-                [routerLink]="['/admin/customer', customer()?.id, 'history']"
-                class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
-                aria-label="Wyświetl historię aktywności klienta"
-              >
-                <svg
-                  class="h-5 w-5 mr-2 -ml-1"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                  aria-hidden="true"
+              <h3 class="text-lg font-medium text-gray-900 mb-4">Akcje</h3>
+              <div class="flex flex-wrap gap-3">
+                <!-- Add Coupon Button -->
+                <a
+                  [routerLink]="['/admin/customer', customer()?.id, 'add-coupon']"
+                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-green-500 transition-colors"
+                  aria-label="Dodaj kupon dla klienta"
                 >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                Wyświetl historię
-              </a>
+                  <svg
+                    class="h-5 w-5 mr-2 -ml-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 4v16m8-8H4"
+                    />
+                  </svg>
+                  Dodaj kupon
+                </a>
+
+                <!-- View History Button -->
+                <a
+                  [routerLink]="['/admin/customer', customer()?.id, 'history']"
+                  class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors"
+                  aria-label="Wyświetl historię aktywności klienta"
+                >
+                  <svg
+                    class="h-5 w-5 mr-2 -ml-1"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    aria-hidden="true"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                  Wyświetl historię
+                </a>
+              </div>
             </div>
 
             <!-- Coupons List -->

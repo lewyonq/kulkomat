@@ -1,9 +1,17 @@
-import { Component, ChangeDetectionStrategy, signal, inject, viewChild } from '@angular/core';
+import {
+  Component,
+  ChangeDetectionStrategy,
+  signal,
+  inject,
+  viewChild,
+  OnInit,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, ActivatedRoute } from '@angular/router';
 import { AddCouponFormComponent } from '../../../components/admin/add-coupon-form.component';
 import { CouponService } from '../../../services/coupon.service';
-import { AddCouponFormViewModel, ApiErrorResponse } from '../../../types';
+import { AdminService } from '../../../services/admin.service';
+import { AddCouponFormViewModel, ApiErrorResponse, ProfileDTO } from '../../../types';
 
 /**
  * AdminAddCouponPageComponent
@@ -132,12 +140,61 @@ import { AddCouponFormViewModel, ApiErrorResponse } from '../../../types';
           </div>
         }
 
+        <!-- Customer Info Card -->
+        @if (customer() && !success()) {
+          <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <h2 class="text-lg font-semibold text-gray-900 mb-4">Klient</h2>
+            <div class="flex items-center gap-6">
+              <div>
+                <p class="text-sm text-gray-500">ID Klienta</p>
+                <p class="text-base font-medium text-gray-900">{{ customer()?.short_id }}</p>
+              </div>
+              <div>
+                <p class="text-sm text-gray-500">Dołączył</p>
+                <p class="text-base font-medium text-gray-900">
+                  {{ formatDate(customer()?.created_at) }}
+                </p>
+              </div>
+            </div>
+          </div>
+        }
+
+        <!-- Loading Customer State -->
+        @if (isLoadingCustomer()) {
+          <div class="bg-white rounded-lg shadow-sm p-6 mb-6">
+            <div class="flex items-center justify-center py-8">
+              <svg
+                class="animate-spin h-8 w-8 text-indigo-600"
+                fill="none"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"
+                />
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                />
+              </svg>
+              <span class="ml-3 text-gray-600">Ładowanie danych klienta...</span>
+            </div>
+          </div>
+        }
+
         <!-- Form Section -->
-        @if (!success()) {
+        @if (!success() && !isLoadingCustomer() && customer()) {
           <div class="bg-white rounded-lg shadow-sm p-6">
             <h2 class="text-xl font-semibold text-gray-900 mb-6">Dane kuponu</h2>
             <app-add-coupon-form
               [isLoading]="isLoading()"
+              [prefillShortId]="customer()?.short_id"
               (formSubmit)="onFormSubmit($event)"
             />
           </div>
@@ -186,8 +243,9 @@ import { AddCouponFormViewModel, ApiErrorResponse } from '../../../types';
     </div>
   `,
 })
-export class AdminAddCouponPageComponent {
+export class AdminAddCouponPageComponent implements OnInit {
   private couponService = inject(CouponService);
+  private adminService = inject(AdminService);
   private router = inject(Router);
   private route = inject(ActivatedRoute);
 
@@ -196,8 +254,47 @@ export class AdminAddCouponPageComponent {
 
   // State signals
   readonly isLoading = signal<boolean>(false);
+  readonly isLoadingCustomer = signal<boolean>(false);
   readonly error = signal<ApiErrorResponse | null>(null);
   readonly success = signal<boolean>(false);
+  readonly customer = signal<ProfileDTO | null>(null);
+  readonly customerId = signal<string | null>(null);
+
+  ngOnInit(): void {
+    // Get customer ID from route params
+    const id = this.route.snapshot.paramMap.get('id');
+    if (id) {
+      this.customerId.set(id);
+      this.loadCustomerData(id);
+    }
+  }
+
+  /**
+   * Load customer data by UUID
+   * @param customerId - Customer's UUID
+   */
+  private loadCustomerData(customerId: string): void {
+    this.isLoadingCustomer.set(true);
+    this.error.set(null);
+
+    // Fetch customer profile from database
+    this.adminService.getCustomerDetailsById(customerId).subscribe({
+      next: (profile) => {
+        this.customer.set(profile);
+        this.isLoadingCustomer.set(false);
+      },
+      error: (err) => {
+        console.error('Error loading customer:', err);
+        this.isLoadingCustomer.set(false);
+        this.error.set({
+          error: {
+            code: 'CUSTOMER_LOAD_ERROR',
+            message: 'Nie udało się załadować danych klienta.',
+          },
+        });
+      },
+    });
+  }
 
   /**
    * Handle form submission
@@ -263,5 +360,21 @@ export class AdminAddCouponPageComponent {
    */
   goBack(): void {
     this.router.navigate(['/admin/dashboard']);
+  }
+
+  /**
+   * Format date for display
+   * @param dateString - ISO date string
+   * @returns Formatted date string
+   */
+  formatDate(dateString: string | undefined): string {
+    if (!dateString) return '-';
+
+    const date = new Date(dateString);
+    return date.toLocaleDateString('pl-PL', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+    });
   }
 }

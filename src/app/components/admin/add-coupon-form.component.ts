@@ -34,6 +34,9 @@ import { AddCouponFormViewModel, CouponType } from '../../types';
       <div>
         <label for="short_id" class="block text-sm font-medium text-gray-700 mb-2">
           ID Klienta
+          @if (prefillShortId()) {
+            <span class="ml-2 text-xs text-gray-500">(automatycznie uzupełnione)</span>
+          }
         </label>
         <input
           id="short_id"
@@ -43,7 +46,6 @@ import { AddCouponFormViewModel, CouponType } from '../../types';
           placeholder="np. ABC123"
           class="block w-full rounded-lg border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 disabled:bg-gray-100 disabled:cursor-not-allowed sm:text-sm"
           [class.border-red-300]="isFieldInvalid('short_id')"
-          [disabled]="isLoading()"
           aria-label="Wprowadź 6-znakowy identyfikator klienta"
           aria-describedby="short_id-error"
         />
@@ -191,6 +193,9 @@ export class AddCouponFormComponent implements OnInit {
   // Input: loading state from parent component
   isLoading = input<boolean>(false);
 
+  // Input: pre-filled short_id (optional)
+  prefillShortId = input<string | undefined>();
+
   // Output: emit form data when form is submitted
   formSubmit = output<AddCouponFormViewModel>();
 
@@ -208,9 +213,11 @@ export class AddCouponFormComponent implements OnInit {
    * Initialize the reactive form with validators
    */
   private initializeForm(): void {
+    const prefilledShortId = this.prefillShortId();
+
     this.couponForm = this.fb.group({
       short_id: [
-        '',
+        { value: prefilledShortId || '', disabled: !!prefilledShortId },
         [Validators.required, Validators.pattern(/^[a-zA-Z0-9]{6}$/)],
       ],
       type: ['', [Validators.required]],
@@ -293,7 +300,8 @@ export class AddCouponFormComponent implements OnInit {
     }
 
     // Emit form data to parent component
-    const formData: AddCouponFormViewModel = this.couponForm.value;
+    // Use getRawValue() to include disabled fields (short_id when pre-filled)
+    const formData: AddCouponFormViewModel = this.couponForm.getRawValue();
     this.formSubmit.emit(formData);
   }
 

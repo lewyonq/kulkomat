@@ -63,6 +63,49 @@ export class AdminService {
   }
 
   /**
+   * Get Customer Details By ID (UUID)
+   * Fetches customer profile using their UUID.
+   *
+   * @param customerId - The customer's UUID
+   * @returns Observable<ProfileDTO> - Customer profile data
+   */
+  getCustomerDetailsById(customerId: string): Observable<ProfileDTO> {
+    this.isLoading.set(true);
+    this.error.set(null);
+
+    const currentUser = this.authService.user();
+    if (!currentUser) {
+      this.isLoading.set(false);
+      return throwError(() => new Error('Admin not authenticated'));
+    }
+
+    return from(
+      this.authService.client.from('profiles').select('*').eq('id', customerId).single(),
+    ).pipe(
+      map(({ data, error }) => {
+        if (error) {
+          throw error;
+        }
+        if (!data) {
+          throw new Error('Customer not found');
+        }
+
+        return data as ProfileDTO;
+      }),
+      tap(() => {
+        this.isLoading.set(false);
+      }),
+      catchError((err) => {
+        const errorMessage = err?.message || 'Failed to fetch customer details';
+        console.error('Error fetching customer details:', errorMessage);
+        this.error.set(new Error(errorMessage));
+        this.isLoading.set(false);
+        return throwError(() => new Error(errorMessage));
+      }),
+    );
+  }
+
+  /**
    * Add Stamps to Customer
    * Adds specified number of stamps to a customer's account.
    *

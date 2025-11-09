@@ -68,4 +68,12 @@ export const routes: Routes = [
       ),
     canActivate: [adminGuard],
   },
+  {
+    path: 'admin/customer/:id/add-coupon',
+    loadComponent: () =>
+      import('./pages/admin/add-coupon/admin-add-coupon-page.component').then(
+        (m) => m.AdminAddCouponPageComponent,
+      ),
+    canActivate: [adminGuard],
+  },
 ];
