@@ -54,7 +54,7 @@ setup('authenticate', async ({ page }) => {
     // URL został znaleziony, generujemy klucz
     storageKey = getSupabaseStorageKey(supabaseUrl);
   } else {
-    // Fallback - użyj ogólnego klucza testowego
+    // Fallback - użyj ogólnego klucza testowego / localhost zastap project id
     storageKey = 'sb-localhost-auth-token';
     console.warn(`Using fallback storage key: ${storageKey}`);
   }
