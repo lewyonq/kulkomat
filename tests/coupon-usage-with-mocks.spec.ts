@@ -55,11 +55,11 @@ test.describe('Coupon Usage Flow (with API mocks)', () => {
     await activeCouponCard.click();
 
     // 10. Sprawdź dialog potwierdzenia
-    const confirmDialog = page.locator('app-confirmation-dialog');
+    const confirmDialog = page.locator('.dialog-overlay');
     await expect(confirmDialog).toBeVisible();
 
     // 11. Potwierdź wykorzystanie
-    await page.getByRole('button', { name: 'Tak' }).click();
+    await page.getByRole('button', { name: 'Potwierdź' }).click();
 
     // 12. Sprawdź komunikat sukcesu
     const successToast = page.locator('.success-toast');
@@ -130,13 +130,13 @@ test.describe('Coupon Usage Flow (with API mocks)', () => {
     await page.locator('.coupon-card.clickable').first().click();
 
     // 4. Dialog się pojawia
-    await expect(page.locator('app-confirmation-dialog')).toBeVisible();
+    await expect(page.locator('.dialog-overlay')).toBeVisible();
 
     // 5. Kliknij "Nie"
-    await page.getByRole('button', { name: 'Nie' }).click();
+    await page.getByRole('button', { name: 'Anuluj' }).click();
 
     // 6. Dialog znika
-    await expect(page.locator('app-confirmation-dialog')).not.toBeVisible();
+    await expect(page.locator('.dialog-overlay')).not.toBeVisible();
 
     // 7. Kupon nadal jest aktywny
     await expect(page.locator('.coupon-card.clickable')).toBeVisible();

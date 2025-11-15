@@ -44,14 +44,14 @@ test.describe('Coupon Usage Flow', () => {
     await activeCoupon.click();
 
     // 8. Poczekaj na pojawienie się dialogu potwierdzenia
-    const confirmDialog = page.locator('app-confirmation-dialog');
+    const confirmDialog = page.locator('.dialog-overlay');
     await expect(confirmDialog).toBeVisible({ timeout: 5000 });
 
     // 9. Sprawdź, czy dialog ma odpowiedni tekst
     await expect(page.getByText('Czy na pewno chcesz wykorzystać kupon?')).toBeVisible();
 
     // 10. Kliknij przycisk "Tak" w dialogu potwierdzenia
-    const confirmButton = page.getByRole('button', { name: 'Tak' });
+    const confirmButton = page.getByRole('button', { name: 'Potwierdź' });
     await expect(confirmButton).toBeVisible();
     await confirmButton.click();
 
@@ -91,7 +91,7 @@ test.describe('Coupon Usage Flow', () => {
     await activeCoupon.click();
 
     // 5. Dialog powinien się pojawić
-    const confirmDialog = page.locator('app-confirmation-dialog');
+    const confirmDialog = page.locator('.dialog-overlay');
     await expect(confirmDialog).toBeVisible();
 
     // 6. Sprawdź zawartość dialogu
@@ -99,7 +99,7 @@ test.describe('Coupon Usage Flow', () => {
     await expect(page.getByText('Pamiętaj, że sprzedawca musi widzieć wykorzystanie kuponu')).toBeVisible();
 
     // 7. Kliknij "Nie" aby anulować
-    const cancelButton = page.getByRole('button', { name: 'Nie' });
+    const cancelButton = page.getByRole('button', { name: 'Anuluj' });
     await expect(cancelButton).toBeVisible();
     await cancelButton.click();
 
@@ -134,7 +134,7 @@ test.describe('Coupon Usage Flow', () => {
     await inactiveCoupon.click();
 
     // 6. Dialog nie powinien się pojawić
-    const confirmDialog = page.locator('app-confirmation-dialog');
+    const confirmDialog = page.locator('.dialog-overlay');
     await expect(confirmDialog).not.toBeVisible({ timeout: 2000 });
   });
 });
