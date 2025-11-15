@@ -1,0 +1,35 @@
+{
+  "access_token": "mock-test-access-token-playwright-e2e-testing",
+  "token_type": "bearer",
+  "expires_in": 315360000,
+  "expires_at": 2050000000,
+  "refresh_token": "mock-test-refresh-token-playwright-e2e-testing",
+  "user": {
+    "id": "00000000-0000-0000-0000-000000000001",
+    "aud": "authenticated",
+    "role": "authenticated",
+    "email": "playwright.test@kulkomat.test",
+    "email_confirmed_at": "2024-01-01T00:00:00.000Z",
+    "phone": "",
+    "confirmed_at": "2024-01-01T00:00:00.000Z",
+    "last_sign_in_at": "2024-01-01T00:00:00.000Z",
+    "app_metadata": {
+      "provider": "google",
+      "providers": ["google"]
+    },
+    "user_metadata": {
+      "email": "playwright.test@kulkomat.test",
+      "email_verified": true,
+      "full_name": "Playwright Test User",
+      "iss": "https://accounts.google.com",
+      "name": "Playwright Test User",
+      "phone_verified": false,
+      "picture": "https://example.com/avatar.png",
+      "provider_id": "mock-google-provider-id",
+      "sub": "mock-google-provider-id"
+    },
+    "identities": [],
+    "created_at": "2024-01-01T00:00:00.000Z",
+    "updated_at": "2024-01-01T00:00:00.000Z"
+  }
+}
