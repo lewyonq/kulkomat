@@ -18,6 +18,9 @@
 
 - **Frontend**: Angular, TypeScript, Tailwind CSS v4
 - **Backend & Database**: Supabase
+- **Testing**: 
+  - Jasmine + Karma (unit & component tests)
+  - Playwright (E2E tests)
 - **CI/CD & Hosting**: GitHub Actions, DigitalOcean (via Docker image)
 
 ## Getting Started Locally
@@ -58,12 +61,26 @@ The application will be available at `http://localhost:4200/`.
 
 In the project directory, you can run the following scripts:
 
+### Development
+
 - `npm start`: Runs the app in development mode.
 - `npm run build`: Builds the app for production.
 - `npm run watch`: Builds the app in watch mode for development.
-- `npm test`: Launches the test runner.
+
+### Testing
+
+- `npm test`: Runs unit tests with Jasmine/Karma.
+- `npx playwright test`: Runs all E2E tests.
+- `npx playwright test --ui`: Opens Playwright UI mode for interactive testing.
+- `npx playwright test --project=chromium`: Runs tests only on Chrome.
+- `npx playwright test --debug`: Runs tests in debug mode.
+- `npx playwright codegen`: Generates tests by recording browser interactions.
+
+### Code Quality
+
 - `npm run lint`: Lints the project files.
 - `npm run format`: Formats code with Prettier.
+- `npm run format:check`: Checks code formatting without making changes.
 
 ## Project Scope
 
