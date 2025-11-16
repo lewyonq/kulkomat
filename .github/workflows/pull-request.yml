@@ -17,6 +17,23 @@ jobs:
       - name: Setup Node.js project
         uses: ./.github/actions/setup-node-project
 
+      - name: Create environment file
+        run: |
+          cat > src/app/environment/environment.ts << 'EOF'
+          export const environment = {
+            production: false,
+            supabase: {
+              url: 'https://mock.supabase.co',
+              anonKey: 'mock-anon-key',
+            },
+            auth: {
+              redirectUri: 'http://localhost:4200/auth/callback',
+              defaultRedirectAfterLogin: '/',
+              defaultRedirectAfterLogout: '/login',
+            },
+          };
+          EOF
+
       - name: Run ESLint
         run: npm run lint
 
@@ -35,6 +52,23 @@ jobs:
 
       - name: Setup Node.js project
         uses: ./.github/actions/setup-node-project
+
+      - name: Create environment file
+        run: |
+          cat > src/app/environment/environment.ts << 'EOF'
+          export const environment = {
+            production: false,
+            supabase: {
+              url: 'https://mock.supabase.co',
+              anonKey: 'mock-anon-key',
+            },
+            auth: {
+              redirectUri: 'http://localhost:4200/auth/callback',
+              defaultRedirectAfterLogin: '/',
+              defaultRedirectAfterLogout: '/login',
+            },
+          };
+          EOF
 
       - name: Run unit tests with coverage
         run: npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
