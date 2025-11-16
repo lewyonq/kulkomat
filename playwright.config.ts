@@ -22,20 +22,34 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    // Projekt 'setup' do uwierzytelniania
+    // Projekt 'setup' do uwierzytelniania (używany tylko dla testów z prawdziwym backendem)
     {
       name: 'setup',
       testMatch: /.*\.setup\.ts/,
     },
 
+    // Projekt dla testów z prawdziwym backendem (wymaga setupu)
     {
       name: 'chromium',
+      testMatch: /.*coupon-usage\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
         // Użyj zapisanego stanu sesji. To nas loguje!
         storageState: 'playwright/.auth/user.json',
       },
       dependencies: ['setup'], // Uruchom testy chromium PO zakończeniu setupu
+    },
+
+    // Projekt dla testów z mockowanym API (nie wymaga setupu ani prawdziwego backendu)
+    {
+      name: 'chromium-mocked',
+      testMatch: /.*with-mocks\.spec\.ts/,
+      use: {
+        ...devices['Desktop Chrome'],
+        // Użyj zapisanego stanu sesji. To nas loguje!
+        storageState: 'playwright/.auth/user.json',
+      },
+      dependencies: ['setup'], // Uruchom testy PO zakończeniu setupu
     },
   ],
 

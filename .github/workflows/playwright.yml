@@ -39,11 +39,11 @@ jobs:
       run: |
         npx http-server dist/kulkomat/browser -p 4200 &
         echo $! > server.pid
-        sleep 5
+        npx wait-on http://localhost:4200 --timeout 60000 --interval 1000
     - name: Run Playwright tests
       env:
         SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
-      run: npx playwright test
+      run: npx playwright test --project=chromium-mocked
     - name: Stop application server
       if: always()
       run: |
