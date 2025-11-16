@@ -26,40 +26,21 @@ setup('authenticate', async ({ page }) => {
   // Wczytaj dane mockowej sesji OAuth2
   const authData = JSON.parse(fs.readFileSync(mockAuthFile, 'utf-8'));
 
-  // Przejdź do strony głównej aplikacji
-  await page.goto('/');
-
-  // Pobierz URL Supabase z aplikacji (może być dostępny w window lub w środowisku)
-  // Dla celów testowych, spróbujmy wykryć klucz automatycznie
-  const supabaseUrl = await page.evaluate(() => {
-    // Sprawdź czy Supabase URL jest dostępny w localStorage
-    const keys = Object.keys(localStorage);
-    const authKey = keys.find(k => k.startsWith('sb-') && k.endsWith('-auth-token'));
-    if (authKey) {
-      // Wyciągnij project ref z klucza
-      return authKey;
-    }
-    // Fallback - sprawdź environment (jeśli jest dostępny w window)
-    if ((window as any).__env && (window as any).__env.supabase) {
-      return (window as any).__env.supabase.url;
-    }
-    return null;
-  });
-
-  let storageKey: string;
-  if (supabaseUrl && supabaseUrl.startsWith('sb-')) {
-    // Klucz został znaleziony bezpośrednio
-    storageKey = supabaseUrl;
-  } else if (supabaseUrl) {
-    // URL został znaleziony, generujemy klucz
-    storageKey = getSupabaseStorageKey(supabaseUrl);
-  } else {
-    // Fallback - użyj ogólnego klucza testowego / localhost zastap project id
-    storageKey = 'sb-localhost-auth-token';
-    console.warn(`Using fallback storage key: ${storageKey}`);
+  // Pobierz Supabase URL ze zmiennej środowiskowej
+  const supabaseUrl = process.env.SUPABASE_URL;
+  if (!supabaseUrl) {
+    throw new Error(
+      'SUPABASE_URL environment variable is not set. ' +
+      'Please set it before running tests: export SUPABASE_URL=https://your-project.supabase.co'
+    );
   }
 
+  // Wygeneruj klucz localStorage na podstawie URL
+  const storageKey = getSupabaseStorageKey(supabaseUrl);
   console.log(`Setting up authentication with storage key: ${storageKey}`);
+
+  // Przejdź do strony głównej aplikacji
+  await page.goto('/');
 
   // Ustaw sesję OAuth2 w localStorage
   await page.evaluate(

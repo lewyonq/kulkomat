@@ -34,10 +34,11 @@ Ten plik zawiera zmockowane dane sesji Supabase/OAuth2:
 
 Skrypt setup, który:
 1. Ładuje mockową sesję z `user.json`
-2. Automatycznie wykrywa poprawny klucz localStorage dla Supabase
-3. Ustawia sesję w localStorage przeglądarki
-4. Weryfikuje, że użytkownik jest zalogowany
-5. Zapisuje stan sesji do `playwright/.auth/user.json`
+2. Pobiera URL Supabase ze zmiennej środowiskowej `SUPABASE_URL`
+3. Generuje poprawny klucz localStorage na podstawie project-ref z URL
+4. Ustawia sesję w localStorage przeglądarki
+5. Weryfikuje, że użytkownik jest zalogowany
+6. Zapisuje stan sesji do `playwright/.auth/user.json`
 
 Ten stan sesji jest następnie używany przez wszystkie testy w projekcie `chromium`.
 
@@ -51,6 +52,23 @@ Ten stan sesji jest następnie używany przez wszystkie testy w projekcie `chrom
 ## Uruchamianie Testów
 
 ### Wymagania
+
+#### 1. Konfiguracja zmiennych środowiskowych
+
+Przed uruchomieniem testów, ustaw zmienną środowiskową `SUPABASE_URL`:
+
+```bash
+export SUPABASE_URL=https://your-project.supabase.co
+```
+
+Możesz też pobrać URL z pliku `src/app/environment/environment.ts`:
+
+```bash
+# Przykład: jeśli Twój URL w environment.ts to https://abc123.supabase.co
+export SUPABASE_URL=https://abc123.supabase.co
+```
+
+#### 2. Uruchom serwer deweloperski
 
 Upewnij się, że serwer deweloperski działa:
 

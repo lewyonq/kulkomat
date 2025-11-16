@@ -46,6 +46,11 @@ To get a local copy up and running, follow these simple steps.
    ```sh
    npm install
    ```
+4. Configure environment:
+   ```sh
+   cp src/app/environment/environment.example.ts src/app/environment/environment.ts
+   ```
+   Edit `src/app/environment/environment.ts` and set your Supabase credentials.
 
 ### Running the Application
 
@@ -98,6 +103,20 @@ Features **out of scope** for the MVP include native mobile apps, online orderin
 ## Project Status
 
 This project is currently **in development**.
+
+## CI/CD Configuration
+
+### GitHub Secrets
+
+For CI/CD workflows to run properly, configure the following secrets in your GitHub repository settings (`Settings > Secrets and variables > Actions`):
+
+- `SUPABASE_URL`: Your Supabase project URL (e.g., `https://your-project.supabase.co`)
+- `SUPABASE_ANON_KEY`: Your Supabase anonymous key
+- `AUTH_REDIRECT_URI`: OAuth redirect URI for authentication
+
+These secrets are used by:
+- **Playwright workflow**: E2E tests require `SUPABASE_URL` to generate correct localStorage keys
+- **Pull Request workflow**: Full CI pipeline including E2E tests with environment configuration
 
 ## License
 
