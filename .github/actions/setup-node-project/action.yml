@@ -1,14 +1,11 @@
 name: 'Setup Node.js Project'
-description: 'Composite action to checkout code, setup Node.js, and install dependencies'
+description: 'Composite action to setup Node.js and install dependencies'
 
 runs:
   using: 'composite'
   steps:
-    - name: Checkout code
-      uses: actions/checkout@v5
-
     - name: Setup Node.js
-      uses: actions/setup-node@v6
+      uses: actions/setup-node@v4
       with:
         node-version: lts/*
         cache: 'npm'
