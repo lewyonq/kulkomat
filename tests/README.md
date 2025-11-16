@@ -24,6 +24,7 @@ Testy używają zmockowanej sesji OAuth2, aby symulować zalogowanego użytkowni
 #### `tests/auth/user.json`
 
 Ten plik zawiera zmockowane dane sesji Supabase/OAuth2:
+
 - Mock access token (nie wygaśnie do 2050 roku)
 - Mock user ID: `00000000-0000-0000-0000-000000000001`
 - Mock email: `playwright.test@kulkomat.test`
@@ -33,6 +34,7 @@ Ten plik zawiera zmockowane dane sesji Supabase/OAuth2:
 #### `tests/auth.setup.ts`
 
 Skrypt setup, który:
+
 1. Ładuje mockową sesję z `user.json`
 2. Pobiera URL Supabase ze zmiennej środowiskowej `SUPABASE_URL`
 3. Generuje poprawny klucz localStorage na podstawie project-ref z URL
@@ -113,6 +115,7 @@ npx playwright test --headed
 ### Test 1: Pełny flow wykorzystania kuponu
 
 **Co testuje:**
+
 1. Użytkownik jest zalogowany (widzi link "Kupony")
 2. Może przejść do strony kuponów
 3. Widzi aktywne kupony
@@ -122,11 +125,13 @@ npx playwright test --headed
 7. Toast z sukcesem znika po kilku sekundach
 
 **Uwagi:**
+
 - Test pomija się automatycznie, jeśli użytkownik nie ma aktywnych kuponów
 
 ### Test 2: Dialog potwierdzenia
 
 **Co testuje:**
+
 1. Kliknięcie na kupon pokazuje dialog
 2. Dialog zawiera odpowiedni tekst
 3. Kliknięcie "Nie" zamyka dialog
@@ -135,6 +140,7 @@ npx playwright test --headed
 ### Test 3: Nieaktywne kupony
 
 **Co testuje:**
+
 1. Nieaktywne kupony (wykorzystane/wygasłe) są widoczne
 2. Kliknięcie na nieaktywny kupon nie wywołuje dialogu
 3. Nieaktywne kupony nie są klikaln
@@ -186,10 +192,10 @@ test('example with mocked API', async ({ page }) => {
             status: 'active',
             created_at: '2024-01-01',
             expires_at: '2025-12-31',
-            value: null
-          }
-        ]
-      })
+            value: null,
+          },
+        ],
+      }),
     });
   });
 
@@ -211,6 +217,7 @@ test('example with mocked API', async ({ page }) => {
 ### Problem: Testy nie mogą znaleźć linku "Kupony"
 
 **Rozwiązanie:**
+
 - Sprawdź czy serwer deweloperski działa
 - Sprawdź czy mockowa sesja jest poprawnie ustawiona
 - Uruchom test z `--headed --debug` aby zobaczyć co się dzieje
@@ -218,6 +225,7 @@ test('example with mocked API', async ({ page }) => {
 ### Problem: Timeout podczas ładowania strony
 
 **Rozwiązanie:**
+
 - Zwiększ timeout w konfiguracji lub konkretnym teście
 - Sprawdź czy aplikacja nie ma błędów w konsoli
 - Upewnij się, że wszystkie zależności są zainstalowane
@@ -225,6 +233,7 @@ test('example with mocked API', async ({ page }) => {
 ### Problem: Sesja OAuth2 wygasła
 
 **Rozwiązanie:**
+
 - Mock sesji ma długi czas wygaśnięcia (2050 rok)
 - Jeśli problem persystuje, sprawdź `tests/auth/user.json`
 - Możesz potrzebować zaktualizować `expires_at` na jeszcze dalszą datę

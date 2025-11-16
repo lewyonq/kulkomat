@@ -60,7 +60,7 @@ export default defineConfig({
    * Terminal 2: npx playwright test
    *
    * Automatyczne uruchamianie jest wyłączone, bo może powodować timeouty.
-  */
+   */
   // webServer: {
   //   command: 'npm start',
   //   url: 'http://localhost:4200',

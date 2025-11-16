@@ -150,7 +150,10 @@ test.describe('Coupon Usage Flow (with API mocks)', () => {
     await page.waitForLoadState('networkidle');
 
     // 2.5 Poczekaj na kupon
-    await page.locator('.coupon-card.clickable').first().waitFor({ state: 'visible', timeout: 10000 });
+    await page
+      .locator('.coupon-card.clickable')
+      .first()
+      .waitFor({ state: 'visible', timeout: 10000 });
 
     // 3. Kliknij na kupon
     await page.locator('.coupon-card.clickable').first().click();

@@ -44,9 +44,7 @@ describe('StampService', () => {
       from: jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            eq: jasmine.createSpy('eq').and.returnValue(
-              Promise.resolve({ count: 5, error: null })
-            ),
+            eq: jasmine.createSpy('eq').and.returnValue(Promise.resolve({ count: 5, error: null })),
           }),
         }),
       }),
@@ -107,9 +105,9 @@ describe('StampService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            eq: jasmine.createSpy('eq').and.returnValue(
-              Promise.resolve({ count: null, error: null })
-            ),
+            eq: jasmine
+              .createSpy('eq')
+              .and.returnValue(Promise.resolve({ count: null, error: null })),
           }),
         }),
       });
@@ -128,9 +126,9 @@ describe('StampService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            eq: jasmine.createSpy('eq').and.returnValue(
-              Promise.resolve({ count: null, error: dbError })
-            ),
+            eq: jasmine
+              .createSpy('eq')
+              .and.returnValue(Promise.resolve({ count: null, error: dbError })),
           }),
         }),
       });
@@ -149,9 +147,7 @@ describe('StampService', () => {
     it('should filter by user_id and status=active', (done) => {
       const selectSpy = jasmine.createSpy('select').and.returnValue({
         eq: jasmine.createSpy('eq').and.returnValue({
-          eq: jasmine.createSpy('eq').and.returnValue(
-            Promise.resolve({ count: 5, error: null })
-          ),
+          eq: jasmine.createSpy('eq').and.returnValue(Promise.resolve({ count: 5, error: null })),
         }),
       });
 
@@ -262,9 +258,9 @@ describe('StampService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            eq: jasmine.createSpy('eq').and.returnValue(
-              Promise.resolve({ count: null, error: null })
-            ),
+            eq: jasmine
+              .createSpy('eq')
+              .and.returnValue(Promise.resolve({ count: null, error: null })),
           }),
         }),
       });
@@ -283,9 +279,9 @@ describe('StampService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            eq: jasmine.createSpy('eq').and.returnValue(
-              Promise.resolve({ count: null, error: dbError })
-            ),
+            eq: jasmine
+              .createSpy('eq')
+              .and.returnValue(Promise.resolve({ count: null, error: dbError })),
           }),
         }),
       });
@@ -374,9 +370,9 @@ describe('StampService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            eq: jasmine.createSpy('eq').and.returnValue(
-              Promise.resolve({ count: null, error: dbError })
-            ),
+            eq: jasmine
+              .createSpy('eq')
+              .and.returnValue(Promise.resolve({ count: null, error: dbError })),
           }),
         }),
       });
@@ -440,9 +436,9 @@ describe('StampService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            eq: jasmine.createSpy('eq').and.returnValue(
-              Promise.resolve({ count: null, error: errorWithoutMessage })
-            ),
+            eq: jasmine
+              .createSpy('eq')
+              .and.returnValue(Promise.resolve({ count: null, error: errorWithoutMessage })),
           }),
         }),
       });
@@ -461,9 +457,9 @@ describe('StampService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            eq: jasmine.createSpy('eq').and.returnValue(
-              Promise.resolve({ count: null, error: dbError })
-            ),
+            eq: jasmine
+              .createSpy('eq')
+              .and.returnValue(Promise.resolve({ count: null, error: dbError })),
           }),
         }),
       });
@@ -487,9 +483,7 @@ describe('StampService', () => {
     it('should only count active stamps', (done) => {
       const selectSpy = jasmine.createSpy('select').and.returnValue({
         eq: jasmine.createSpy('eq').and.returnValue({
-          eq: jasmine.createSpy('eq').and.returnValue(
-            Promise.resolve({ count: 5, error: null })
-          ),
+          eq: jasmine.createSpy('eq').and.returnValue(Promise.resolve({ count: 5, error: null })),
         }),
       });
 
@@ -510,9 +504,7 @@ describe('StampService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            eq: jasmine.createSpy('eq').and.returnValue(
-              Promise.resolve({ count: 0, error: null })
-            ),
+            eq: jasmine.createSpy('eq').and.returnValue(Promise.resolve({ count: 0, error: null })),
           }),
         }),
       });
@@ -530,9 +522,9 @@ describe('StampService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            eq: jasmine.createSpy('eq').and.returnValue(
-              Promise.resolve({ count: 1000, error: null })
-            ),
+            eq: jasmine
+              .createSpy('eq')
+              .and.returnValue(Promise.resolve({ count: 1000, error: null })),
           }),
         }),
       });
@@ -549,9 +541,7 @@ describe('StampService', () => {
     it('should use exact count for accuracy', (done) => {
       const selectSpy = jasmine.createSpy('select').and.returnValue({
         eq: jasmine.createSpy('eq').and.returnValue({
-          eq: jasmine.createSpy('eq').and.returnValue(
-            Promise.resolve({ count: 5, error: null })
-          ),
+          eq: jasmine.createSpy('eq').and.returnValue(Promise.resolve({ count: 5, error: null })),
         }),
       });
 
@@ -561,10 +551,7 @@ describe('StampService', () => {
 
       service.getCustomerStampsCount(mockCustomerId).subscribe({
         next: () => {
-          expect(selectSpy).toHaveBeenCalledWith(
-            '*',
-            jasmine.objectContaining({ count: 'exact' })
-          );
+          expect(selectSpy).toHaveBeenCalledWith('*', jasmine.objectContaining({ count: 'exact' }));
           done();
         },
         error: done.fail,
@@ -574,9 +561,7 @@ describe('StampService', () => {
     it('should use head-only query for performance', (done) => {
       const selectSpy = jasmine.createSpy('select').and.returnValue({
         eq: jasmine.createSpy('eq').and.returnValue({
-          eq: jasmine.createSpy('eq').and.returnValue(
-            Promise.resolve({ count: 5, error: null })
-          ),
+          eq: jasmine.createSpy('eq').and.returnValue(Promise.resolve({ count: 5, error: null })),
         }),
       });
 
@@ -586,10 +571,7 @@ describe('StampService', () => {
 
       service.getActiveStampsCount().subscribe({
         next: () => {
-          expect(selectSpy).toHaveBeenCalledWith(
-            '*',
-            jasmine.objectContaining({ head: true })
-          );
+          expect(selectSpy).toHaveBeenCalledWith('*', jasmine.objectContaining({ head: true }));
           done();
         },
         error: done.fail,
@@ -630,9 +612,9 @@ describe('StampService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            eq: jasmine.createSpy('eq').and.returnValue(
-              Promise.resolve({ count: null, error: dbError })
-            ),
+            eq: jasmine
+              .createSpy('eq')
+              .and.returnValue(Promise.resolve({ count: null, error: dbError })),
           }),
         }),
       });

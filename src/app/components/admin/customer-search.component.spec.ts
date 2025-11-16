@@ -67,7 +67,9 @@ describe('CustomerSearchComponent', () => {
 
       invalidIds.forEach((id) => {
         shortIdControl?.setValue(id);
-        expect(shortIdControl?.hasError('minlength')).withContext(`"${id}" should have minlength error`).toBe(true);
+        expect(shortIdControl?.hasError('minlength'))
+          .withContext(`"${id}" should have minlength error`)
+          .toBe(true);
         expect(shortIdControl?.valid).withContext(`"${id}" should be invalid`).toBe(false);
       });
     });
@@ -78,7 +80,9 @@ describe('CustomerSearchComponent', () => {
 
       invalidIds.forEach((id) => {
         shortIdControl?.setValue(id);
-        expect(shortIdControl?.hasError('maxlength')).withContext(`"${id}" should have maxlength error`).toBe(true);
+        expect(shortIdControl?.hasError('maxlength'))
+          .withContext(`"${id}" should have maxlength error`)
+          .toBe(true);
         expect(shortIdControl?.valid).withContext(`"${id}" should be invalid`).toBe(false);
       });
     });
@@ -89,7 +93,9 @@ describe('CustomerSearchComponent', () => {
 
       invalidIds.forEach((id) => {
         shortIdControl?.setValue(id);
-        expect(shortIdControl?.hasError('pattern')).withContext(`"${id}" should have pattern error`).toBe(true);
+        expect(shortIdControl?.hasError('pattern'))
+          .withContext(`"${id}" should have pattern error`)
+          .toBe(true);
         expect(shortIdControl?.valid).withContext(`"${id}" should be invalid`).toBe(false);
       });
     });
@@ -100,7 +106,9 @@ describe('CustomerSearchComponent', () => {
 
       invalidIds.forEach((id) => {
         shortIdControl?.setValue(id);
-        expect(shortIdControl?.hasError('pattern')).withContext(`"${id}" should have pattern error`).toBe(true);
+        expect(shortIdControl?.hasError('pattern'))
+          .withContext(`"${id}" should have pattern error`)
+          .toBe(true);
         expect(shortIdControl?.valid).withContext(`"${id}" should be invalid`).toBe(false);
       });
     });
@@ -111,7 +119,9 @@ describe('CustomerSearchComponent', () => {
 
       invalidIds.forEach((id) => {
         shortIdControl?.setValue(id);
-        expect(shortIdControl?.hasError('pattern')).withContext(`"${id}" should have pattern error`).toBe(true);
+        expect(shortIdControl?.hasError('pattern'))
+          .withContext(`"${id}" should have pattern error`)
+          .toBe(true);
         expect(shortIdControl?.valid).withContext(`"${id}" should be invalid`).toBe(false);
       });
     });
@@ -175,7 +185,7 @@ describe('CustomerSearchComponent', () => {
 
       const invalidInputs = [' ABC123 ', '  abc123  ', ' ABC12 '];
 
-      invalidInputs.forEach(input => {
+      invalidInputs.forEach((input) => {
         searchSpy.calls.reset();
         component.searchForm.get('shortId')?.setValue(input);
         component.onSubmit();
@@ -407,14 +417,14 @@ describe('CustomerSearchComponent', () => {
 
       // Valid alphanumeric
       const validCodes = ['ABC123', 'XYZ999', '123ABC', 'aaa111'];
-      validCodes.forEach(code => {
+      validCodes.forEach((code) => {
         shortIdControl?.setValue(code);
         expect(shortIdControl?.valid).withContext(`${code} should be valid`).toBe(true);
       });
 
       // Invalid with special chars
       const invalidCodes = ['ABC-23', 'ABC_23', 'ABC.23', 'ABC+23'];
-      invalidCodes.forEach(code => {
+      invalidCodes.forEach((code) => {
         shortIdControl?.setValue(code);
         expect(shortIdControl?.valid).withContext(`${code} should be invalid`).toBe(false);
       });
@@ -441,18 +451,14 @@ describe('CustomerSearchComponent', () => {
 
     it('should reject input with whitespace as invalid', () => {
       const shortIdControl = component.searchForm.get('shortId');
-      const invalidInputs = [
-        ' ABC123',
-        'ABC123 ',
-        ' ABC123 ',
-        '  ABC123  ',
-        '\tABC123\t',
-      ];
+      const invalidInputs = [' ABC123', 'ABC123 ', ' ABC123 ', '  ABC123  ', '\tABC123\t'];
 
-      invalidInputs.forEach(input => {
+      invalidInputs.forEach((input) => {
         shortIdControl?.setValue(input);
         expect(shortIdControl?.valid).withContext(`"${input}" should be invalid`).toBe(false);
-        expect(shortIdControl?.hasError('pattern')).withContext(`"${input}" should have pattern error`).toBe(true);
+        expect(shortIdControl?.hasError('pattern'))
+          .withContext(`"${input}" should have pattern error`)
+          .toBe(true);
       });
     });
 

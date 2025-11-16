@@ -44,15 +44,15 @@ describe('AuthService', () => {
     // Create Supabase client mock
     supabaseClientMock = {
       auth: {
-        signInWithOAuth: jasmine.createSpy('signInWithOAuth').and.returnValue(
-          Promise.resolve({ data: {}, error: null })
-        ),
-        getSession: jasmine.createSpy('getSession').and.returnValue(
-          Promise.resolve({ data: { session: mockSession }, error: null })
-        ),
-        getUser: jasmine.createSpy('getUser').and.returnValue(
-          Promise.resolve({ data: { user: mockUser }, error: null })
-        ),
+        signInWithOAuth: jasmine
+          .createSpy('signInWithOAuth')
+          .and.returnValue(Promise.resolve({ data: {}, error: null })),
+        getSession: jasmine
+          .createSpy('getSession')
+          .and.returnValue(Promise.resolve({ data: { session: mockSession }, error: null })),
+        getUser: jasmine
+          .createSpy('getUser')
+          .and.returnValue(Promise.resolve({ data: { user: mockUser }, error: null })),
       },
     };
 
@@ -74,7 +74,7 @@ describe('AuthService', () => {
         isLoading: signal(false),
         error: signal(null),
         client: supabaseClientMock,
-      }
+      },
     );
 
     // Create Router mock
@@ -157,7 +157,6 @@ describe('AuthService', () => {
   });
 
   describe('signInWithGoogle()', () => {
-
     it('should call signInWithOAuth with default redirect URL', async () => {
       await service.signInWithGoogle();
 
@@ -229,7 +228,7 @@ describe('AuthService', () => {
       };
 
       supabaseClientMock.auth.signInWithOAuth.and.returnValue(
-        Promise.resolve({ error: mockError })
+        Promise.resolve({ error: mockError }),
       );
 
       await expectAsync(service.signInWithGoogle()).toBeRejectedWith(mockError);
@@ -307,9 +306,7 @@ describe('AuthService', () => {
       const mockError = new Error('Invalid callback');
       supabaseMock.handleOAuthCallback.and.returnValue(Promise.reject(mockError));
 
-      await expectAsync(
-        service.handleOAuthCallback('invalid-url')
-      ).toBeRejectedWith(mockError);
+      await expectAsync(service.handleOAuthCallback('invalid-url')).toBeRejectedWith(mockError);
     });
   });
 
@@ -404,7 +401,7 @@ describe('AuthService', () => {
 
     it('should return null when session does not exist', async () => {
       supabaseClientMock.auth.getSession.and.returnValue(
-        Promise.resolve({ data: { session: null }, error: null })
+        Promise.resolve({ data: { session: null }, error: null }),
       );
 
       const result = await service.getSessionOnce();
@@ -422,7 +419,7 @@ describe('AuthService', () => {
       };
 
       supabaseClientMock.auth.getSession.and.returnValue(
-        Promise.resolve({ data: { session: null }, error: mockError })
+        Promise.resolve({ data: { session: null }, error: mockError }),
       );
 
       const result = await service.getSessionOnce();
@@ -432,7 +429,7 @@ describe('AuthService', () => {
 
     it('should return null when data is undefined', async () => {
       supabaseClientMock.auth.getSession.and.returnValue(
-        Promise.resolve({ data: undefined, error: null })
+        Promise.resolve({ data: undefined, error: null }),
       );
 
       const result = await service.getSessionOnce();
@@ -451,7 +448,7 @@ describe('AuthService', () => {
 
     it('should return null when user does not exist', async () => {
       supabaseClientMock.auth.getUser.and.returnValue(
-        Promise.resolve({ data: { user: null }, error: null })
+        Promise.resolve({ data: { user: null }, error: null }),
       );
 
       const result = await service.getUserOnce();
@@ -469,7 +466,7 @@ describe('AuthService', () => {
       };
 
       supabaseClientMock.auth.getUser.and.returnValue(
-        Promise.resolve({ data: { user: null }, error: mockError })
+        Promise.resolve({ data: { user: null }, error: mockError }),
       );
 
       const result = await service.getUserOnce();
@@ -479,7 +476,7 @@ describe('AuthService', () => {
 
     it('should return null when data is undefined', async () => {
       supabaseClientMock.auth.getUser.and.returnValue(
-        Promise.resolve({ data: undefined, error: null })
+        Promise.resolve({ data: undefined, error: null }),
       );
 
       const result = await service.getUserOnce();
@@ -512,8 +509,14 @@ describe('AuthService', () => {
         const nullSessionSignal = signal(null);
         const isAuthComputed = computed(() => false);
 
-        Object.defineProperty(supabaseMock, 'session', { value: nullSessionSignal, configurable: true });
-        Object.defineProperty(supabaseMock, 'isAuthenticated', { value: isAuthComputed, configurable: true });
+        Object.defineProperty(supabaseMock, 'session', {
+          value: nullSessionSignal,
+          configurable: true,
+        });
+        Object.defineProperty(supabaseMock, 'isAuthenticated', {
+          value: isAuthComputed,
+          configurable: true,
+        });
 
         expect(service.isAuthenticated()).toBe(false);
       });
@@ -522,7 +525,10 @@ describe('AuthService', () => {
         // Create a new mock with loading state
         const loadingSignal = signal(true);
 
-        Object.defineProperty(supabaseMock, 'isLoading', { value: loadingSignal, configurable: true });
+        Object.defineProperty(supabaseMock, 'isLoading', {
+          value: loadingSignal,
+          configurable: true,
+        });
 
         expect(service.isLoading()).toBe(true);
       });
@@ -584,7 +590,7 @@ describe('AuthService', () => {
         supabaseMock.signOut.and.callFake(async () => {
           Object.defineProperty(supabaseMock, 'currentProfile', {
             value: nullProfileSignal,
-            configurable: true
+            configurable: true,
           });
         });
 

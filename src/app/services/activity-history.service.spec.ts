@@ -52,7 +52,7 @@ describe('ActivityHistory', () => {
                   data: [mockActivityViewRow],
                   error: null,
                   count: 1,
-                })
+                }),
               ),
             }),
           }),
@@ -121,7 +121,7 @@ describe('ActivityHistory', () => {
           data: [],
           error: null,
           count: 0,
-        })
+        }),
       );
 
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
@@ -152,7 +152,7 @@ describe('ActivityHistory', () => {
           data: [],
           error: null,
           count: 0,
-        })
+        }),
       );
 
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
@@ -216,7 +216,7 @@ describe('ActivityHistory', () => {
                   data: null,
                   error: dbError,
                   count: null,
-                })
+                }),
               ),
             }),
           }),
@@ -243,7 +243,7 @@ describe('ActivityHistory', () => {
                 data: [],
                 error: null,
                 count: 0,
-              })
+              }),
             ),
           }),
         }),
@@ -271,7 +271,7 @@ describe('ActivityHistory', () => {
               data: [],
               error: null,
               count: 0,
-            })
+            }),
           ),
         }),
       });
@@ -298,7 +298,7 @@ describe('ActivityHistory', () => {
             data: [],
             error: null,
             count: 0,
-          })
+          }),
         ),
       });
 
@@ -329,7 +329,7 @@ describe('ActivityHistory', () => {
                   data: [],
                   error: null,
                   count: 0,
-                })
+                }),
               ),
             }),
           }),
@@ -356,7 +356,7 @@ describe('ActivityHistory', () => {
                   data: [],
                   error: null,
                   count: null,
-                })
+                }),
               ),
             }),
           }),
@@ -395,7 +395,7 @@ describe('ActivityHistory', () => {
               data: [],
               error: null,
               count: 0,
-            })
+            }),
           ),
         }),
       });
@@ -422,7 +422,7 @@ describe('ActivityHistory', () => {
           data: [],
           error: null,
           count: 0,
-        })
+        }),
       );
 
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
@@ -457,7 +457,7 @@ describe('ActivityHistory', () => {
                   data: null,
                   error: dbError,
                   count: null,
-                })
+                }),
               ),
             }),
           }),
@@ -505,7 +505,7 @@ describe('ActivityHistory', () => {
                   data: [stampAddedRow],
                   error: null,
                   count: 1,
-                })
+                }),
               ),
             }),
           }),
@@ -544,7 +544,7 @@ describe('ActivityHistory', () => {
                   data: [couponGeneratedRow],
                   error: null,
                   count: 1,
-                })
+                }),
               ),
             }),
           }),
@@ -580,7 +580,7 @@ describe('ActivityHistory', () => {
                   data: [couponUsedRow],
                   error: null,
                   count: 1,
-                })
+                }),
               ),
             }),
           }),
@@ -616,7 +616,7 @@ describe('ActivityHistory', () => {
                   data: [couponExpiredRow],
                   error: null,
                   count: 1,
-                })
+                }),
               ),
             }),
           }),
@@ -668,7 +668,7 @@ describe('ActivityHistory', () => {
                   data: activities,
                   error: null,
                   count: 3,
-                })
+                }),
               ),
             }),
           }),
@@ -697,7 +697,7 @@ describe('ActivityHistory', () => {
           data: [],
           error: null,
           count: 0,
-        })
+        }),
       );
 
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
@@ -726,7 +726,7 @@ describe('ActivityHistory', () => {
           data: [],
           error: null,
           count: 0,
-        })
+        }),
       );
 
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
@@ -755,7 +755,7 @@ describe('ActivityHistory', () => {
           data: [mockActivityViewRow],
           error: null,
           count: 1,
-        })
+        }),
       );
 
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
@@ -785,7 +785,7 @@ describe('ActivityHistory', () => {
           data: [],
           error: null,
           count: 0,
-        })
+        }),
       );
 
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
@@ -819,7 +819,7 @@ describe('ActivityHistory', () => {
                   data: null,
                   error: { message: 'Data is null' },
                   count: null,
-                })
+                }),
               ),
             }),
           }),
@@ -846,7 +846,7 @@ describe('ActivityHistory', () => {
                   data: null,
                   error: dbError,
                   count: null,
-                })
+                }),
               ),
             }),
           }),
@@ -874,7 +874,7 @@ describe('ActivityHistory', () => {
                   data: null,
                   error: dbError,
                   count: null,
-                })
+                }),
               ),
             }),
           }),
@@ -901,7 +901,7 @@ describe('ActivityHistory', () => {
                 data: [],
                 error: null,
                 count: 5,
-              })
+              }),
             ),
           }),
         }),
@@ -913,10 +913,7 @@ describe('ActivityHistory', () => {
 
       service.getUserActivityHistory().subscribe({
         next: () => {
-          expect(selectSpy).toHaveBeenCalledWith(
-            '*',
-            jasmine.objectContaining({ count: 'exact' })
-          );
+          expect(selectSpy).toHaveBeenCalledWith('*', jasmine.objectContaining({ count: 'exact' }));
           done();
         },
         error: done.fail,
@@ -930,7 +927,7 @@ describe('ActivityHistory', () => {
             data: [],
             error: null,
             count: 0,
-          })
+          }),
         ),
       });
 
@@ -946,7 +943,7 @@ describe('ActivityHistory', () => {
         next: () => {
           expect(orderSpy).toHaveBeenCalledWith(
             'created_at',
-            jasmine.objectContaining({ ascending: false })
+            jasmine.objectContaining({ ascending: false }),
           );
           done();
         },
@@ -972,7 +969,7 @@ describe('ActivityHistory', () => {
                   data: largeDataSet,
                   error: null,
                   count: 50,
-                })
+                }),
               ),
             }),
           }),
