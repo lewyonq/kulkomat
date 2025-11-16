@@ -37,7 +37,12 @@ import { CommonModule } from '@angular/common';
         [attr.aria-describedby]="'dialog-message'"
         tabindex="-1"
       >
-        <div class="dialog-container" (click)="$event.stopPropagation()" tabindex="-1" (keydown)="$event.stopPropagation()">
+        <div
+          class="dialog-container"
+          (click)="$event.stopPropagation()"
+          tabindex="-1"
+          (keydown)="$event.stopPropagation()"
+        >
           <!-- Dialog Header -->
           <div class="dialog-header">
             <h2 id="dialog-title" class="dialog-title">{{ title() }}</h2>

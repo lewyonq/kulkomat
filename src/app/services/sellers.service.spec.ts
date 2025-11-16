@@ -28,9 +28,9 @@ describe('SellersService', () => {
       from: jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            maybeSingle: jasmine.createSpy('maybeSingle').and.returnValue(
-              Promise.resolve({ data: null, error: null })
-            ),
+            maybeSingle: jasmine
+              .createSpy('maybeSingle')
+              .and.returnValue(Promise.resolve({ data: null, error: null })),
           }),
         }),
       }),
@@ -43,10 +43,7 @@ describe('SellersService', () => {
     });
 
     TestBed.configureTestingModule({
-      providers: [
-        SellersService,
-        { provide: AuthService, useValue: authServiceMock },
-      ],
+      providers: [SellersService, { provide: AuthService, useValue: authServiceMock }],
     });
 
     service = TestBed.inject(SellersService);
@@ -194,16 +191,16 @@ describe('SellersService', () => {
 
       const selectSpy = jasmine.createSpy('select').and.returnValue({
         eq: jasmine.createSpy('eq').and.returnValue({
-          maybeSingle: jasmine.createSpy('maybeSingle').and.returnValue(
-            Promise.resolve({ data: null, error: null })
-          ),
+          maybeSingle: jasmine
+            .createSpy('maybeSingle')
+            .and.returnValue(Promise.resolve({ data: null, error: null })),
         }),
       });
 
       const eqSpy = jasmine.createSpy('eq').and.returnValue({
-        maybeSingle: jasmine.createSpy('maybeSingle').and.returnValue(
-          Promise.resolve({ data: null, error: null })
-        ),
+        maybeSingle: jasmine
+          .createSpy('maybeSingle')
+          .and.returnValue(Promise.resolve({ data: null, error: null })),
       });
 
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
@@ -339,16 +336,16 @@ describe('SellersService', () => {
 
       const selectSpy = jasmine.createSpy('select').and.returnValue({
         eq: jasmine.createSpy('eq').and.returnValue({
-          maybeSingle: jasmine.createSpy('maybeSingle').and.returnValue(
-            Promise.resolve({ data: mockSellerRecord, error: null })
-          ),
+          maybeSingle: jasmine
+            .createSpy('maybeSingle')
+            .and.returnValue(Promise.resolve({ data: mockSellerRecord, error: null })),
         }),
       });
 
       const eqSpy = jasmine.createSpy('eq').and.returnValue({
-        maybeSingle: jasmine.createSpy('maybeSingle').and.returnValue(
-          Promise.resolve({ data: mockSellerRecord, error: null })
-        ),
+        maybeSingle: jasmine
+          .createSpy('maybeSingle')
+          .and.returnValue(Promise.resolve({ data: mockSellerRecord, error: null })),
       });
 
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({

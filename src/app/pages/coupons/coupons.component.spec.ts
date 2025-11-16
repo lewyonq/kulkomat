@@ -37,10 +37,7 @@ describe('CouponsComponent', () => {
 
   beforeEach(async () => {
     // Create mock services
-    mockCouponService = jasmine.createSpyObj('CouponService', [
-      'getUserCoupons',
-      'useCoupon',
-    ]);
+    mockCouponService = jasmine.createSpyObj('CouponService', ['getUserCoupons', 'useCoupon']);
 
     // Setup realtime channel mock
     mockRealtimeChannel = jasmine.createSpyObj('RealtimeChannel', ['on', 'subscribe']);
@@ -351,7 +348,9 @@ describe('CouponsComponent', () => {
 
         fixture.detectChanges();
 
-        expect(component['coupons']()[0].description).toBe('Jedna gałka lodów dowolnego smaku za darmo');
+        expect(component['coupons']()[0].description).toBe(
+          'Jedna gałka lodów dowolnego smaku za darmo',
+        );
       });
 
       it('should have correct icon for free_scoop', () => {
@@ -382,7 +381,7 @@ describe('CouponsComponent', () => {
         fixture.detectChanges();
 
         expect(component['coupons']()[0].iconGradient).toBe(
-          'linear-gradient(135deg, #667eea 0%, #764ba2 100%)'
+          'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
         );
       });
     });
@@ -446,7 +445,7 @@ describe('CouponsComponent', () => {
         fixture.detectChanges();
 
         expect(component['coupons']()[0].iconGradient).toBe(
-          'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)'
+          'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
         );
       });
     });
@@ -510,7 +509,7 @@ describe('CouponsComponent', () => {
         fixture.detectChanges();
 
         expect(component['coupons']()[0].iconGradient).toBe(
-          'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)'
+          'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
         );
       });
     });
@@ -816,7 +815,10 @@ describe('CouponsComponent', () => {
       };
       const error = new Error('Refresh failed');
 
-      mockCouponService.getUserCoupons.and.returnValues(of(initialResponse), throwError(() => error));
+      mockCouponService.getUserCoupons.and.returnValues(
+        of(initialResponse),
+        throwError(() => error),
+      );
 
       fixture.detectChanges();
 
@@ -837,7 +839,10 @@ describe('CouponsComponent', () => {
         offset: 0,
       };
 
-      mockCouponService.getUserCoupons.and.returnValues(throwError(() => error), of(successResponse));
+      mockCouponService.getUserCoupons.and.returnValues(
+        throwError(() => error),
+        of(successResponse),
+      );
 
       fixture.detectChanges();
       expect(component['error']()).toBeTruthy();
@@ -858,7 +863,7 @@ describe('CouponsComponent', () => {
       fixture.detectChanges();
 
       expect(component['getErrorMessage']()).toBe(
-        'Nie udało się połączyć z serwerem. Sprawdź połączenie internetowe.'
+        'Nie udało się połączyć z serwerem. Sprawdź połączenie internetowe.',
       );
     });
 
@@ -878,7 +883,7 @@ describe('CouponsComponent', () => {
       fixture.detectChanges();
 
       expect(component['getErrorMessage']()).toBe(
-        'Wystąpił błąd podczas ładowania kuponów. Spróbuj ponownie później.'
+        'Wystąpił błąd podczas ładowania kuponów. Spróbuj ponownie później.',
       );
     });
 
@@ -1021,7 +1026,9 @@ describe('CouponsComponent', () => {
   describe('Coupon Usage Error Messages', () => {
     it('should return specific message for already used error', () => {
       const error = new Error('Coupon already used');
-      expect(component['getUseCouponErrorMessage'](error)).toBe('Ten kupon został już wykorzystany.');
+      expect(component['getUseCouponErrorMessage'](error)).toBe(
+        'Ten kupon został już wykorzystany.',
+      );
     });
 
     it('should return specific message for not found error', () => {
@@ -1037,19 +1044,21 @@ describe('CouponsComponent', () => {
     it('should return network error message', () => {
       const error = new Error('Network error');
       expect(component['getUseCouponErrorMessage'](error)).toBe(
-        'Nie udało się połączyć z serwerem. Sprawdź połączenie internetowe.'
+        'Nie udało się połączyć z serwerem. Sprawdź połączenie internetowe.',
       );
     });
 
     it('should return auth error message', () => {
       const error = new Error('Not authenticated');
-      expect(component['getUseCouponErrorMessage'](error)).toBe('Sesja wygasła. Zaloguj się ponownie.');
+      expect(component['getUseCouponErrorMessage'](error)).toBe(
+        'Sesja wygasła. Zaloguj się ponownie.',
+      );
     });
 
     it('should return generic error message', () => {
       const error = new Error('Unknown error');
       expect(component['getUseCouponErrorMessage'](error)).toBe(
-        'Nie udało się wykorzystać kuponu. Spróbuj ponownie.'
+        'Nie udało się wykorzystać kuponu. Spróbuj ponownie.',
       );
     });
   });
@@ -1208,9 +1217,7 @@ describe('CouponsComponent', () => {
     });
 
     it('should handle very large coupon list', () => {
-      const coupons = Array.from({ length: 100 }, (_, i) =>
-        createMockCouponDTO({ id: i + 1 })
-      );
+      const coupons = Array.from({ length: 100 }, (_, i) => createMockCouponDTO({ id: i + 1 }));
       const mockResponse: CouponsListDTO = {
         coupons,
         total: 100,

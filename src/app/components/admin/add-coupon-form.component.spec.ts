@@ -377,7 +377,7 @@ describe('AddCouponFormComponent', () => {
 
       component.couponForm.patchValue({
         type: 'amount',
-        value: 25.50,
+        value: 25.5,
         expires_at: futureDate,
       });
 
@@ -386,7 +386,7 @@ describe('AddCouponFormComponent', () => {
       expect(component.formSubmit.emit).toHaveBeenCalledWith({
         short_id: 'XYZ789',
         type: 'amount',
-        value: 25.50,
+        value: 25.5,
         expires_at: futureDate,
       });
     });
@@ -582,7 +582,7 @@ describe('AddCouponFormComponent', () => {
     it('should handle decimal values for amount type', () => {
       component.couponForm.get('type')?.setValue('amount');
       const valueControl = component.couponForm.get('value');
-      const decimalValues = [0.01, 0.99, 1.50, 10.25, 99.99];
+      const decimalValues = [0.01, 0.99, 1.5, 10.25, 99.99];
 
       decimalValues.forEach((value) => {
         valueControl?.setValue(value);

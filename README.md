@@ -18,7 +18,7 @@
 
 - **Frontend**: Angular, TypeScript, Tailwind CSS v4
 - **Backend & Database**: Supabase
-- **Testing**: 
+- **Testing**:
   - Jasmine + Karma (unit & component tests)
   - Playwright (E2E tests)
 - **CI/CD & Hosting**: GitHub Actions, DigitalOcean (via Docker image)

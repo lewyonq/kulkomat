@@ -40,14 +40,11 @@ describe('ProfileService', () => {
       {
         user: signal(mockUser),
         currentProfile: signal(mockProfile),
-      }
+      },
     );
 
     TestBed.configureTestingModule({
-      providers: [
-        ProfileService,
-        { provide: AuthService, useValue: authServiceMock },
-      ],
+      providers: [ProfileService, { provide: AuthService, useValue: authServiceMock }],
     });
 
     service = TestBed.inject(ProfileService);
@@ -148,9 +145,7 @@ describe('ProfileService', () => {
 
       it('should handle profile fetch errors by propagating them', async () => {
         const mockError = new Error('Failed to fetch profile');
-        authServiceMock.getCurrentUserProfile.and.returnValue(
-          throwError(() => mockError)
-        );
+        authServiceMock.getCurrentUserProfile.and.returnValue(throwError(() => mockError));
 
         await expectAsync(service.getMyProfile()).toBeRejectedWith(mockError);
       });
@@ -211,7 +206,7 @@ describe('ProfileService', () => {
         });
 
         await expectAsync(service.ensureMyProfile()).toBeRejectedWithError(
-          'User not authenticated'
+          'User not authenticated',
         );
         expect(authServiceMock.refreshCurrentUserProfile).not.toHaveBeenCalled();
       });
@@ -223,7 +218,7 @@ describe('ProfileService', () => {
         });
 
         await expectAsync(service.ensureMyProfile()).toBeRejectedWithError(
-          'User not authenticated'
+          'User not authenticated',
         );
       });
     });
@@ -251,9 +246,7 @@ describe('ProfileService', () => {
 
       it('should handle profile refresh errors by propagating them', async () => {
         const mockError = new Error('Failed to refresh profile');
-        authServiceMock.refreshCurrentUserProfile.and.returnValue(
-          throwError(() => mockError)
-        );
+        authServiceMock.refreshCurrentUserProfile.and.returnValue(throwError(() => mockError));
 
         await expectAsync(service.ensureMyProfile()).toBeRejectedWith(mockError);
       });
@@ -399,7 +392,7 @@ describe('ProfileService', () => {
         });
 
         await expectAsync(service.ensureMyProfile()).toBeRejectedWithError(
-          'User not authenticated'
+          'User not authenticated',
         );
       });
     });
@@ -408,12 +401,14 @@ describe('ProfileService', () => {
       it('should return consistent data structure from getMyProfile', async () => {
         const result = await service.getMyProfile();
 
-        expect(result).toEqual(jasmine.objectContaining({
-          id: jasmine.any(String),
-          email: jasmine.any(String),
-          short_id: jasmine.any(String),
-          created_at: jasmine.any(String),
-        }));
+        expect(result).toEqual(
+          jasmine.objectContaining({
+            id: jasmine.any(String),
+            email: jasmine.any(String),
+            short_id: jasmine.any(String),
+            created_at: jasmine.any(String),
+          }),
+        );
       });
 
       it('should return consistent data structure from ensureMyProfile', async () => {
@@ -421,12 +416,14 @@ describe('ProfileService', () => {
 
         const result = await service.ensureMyProfile();
 
-        expect(result).toEqual(jasmine.objectContaining({
-          id: jasmine.any(String),
-          email: jasmine.any(String),
-          short_id: jasmine.any(String),
-          created_at: jasmine.any(String),
-        }));
+        expect(result).toEqual(
+          jasmine.objectContaining({
+            id: jasmine.any(String),
+            email: jasmine.any(String),
+            short_id: jasmine.any(String),
+            created_at: jasmine.any(String),
+          }),
+        );
       });
 
       it('should return same profile structure whether from cache or fetch', async () => {
@@ -475,18 +472,14 @@ describe('ProfileService', () => {
         });
 
         const testError = new Error('Observable error');
-        authServiceMock.getCurrentUserProfile.and.returnValue(
-          throwError(() => testError)
-        );
+        authServiceMock.getCurrentUserProfile.and.returnValue(throwError(() => testError));
 
         await expectAsync(service.getMyProfile()).toBeRejectedWith(testError);
       });
 
       it('should handle observable errors in refreshCurrentUserProfile', async () => {
         const testError = new Error('Observable error');
-        authServiceMock.refreshCurrentUserProfile.and.returnValue(
-          throwError(() => testError)
-        );
+        authServiceMock.refreshCurrentUserProfile.and.returnValue(throwError(() => testError));
 
         await expectAsync(service.ensureMyProfile()).toBeRejectedWith(testError);
       });

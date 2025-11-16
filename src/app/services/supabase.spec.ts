@@ -51,31 +51,29 @@ describe('Supabase', () => {
 
     supabaseClientMock = {
       auth: {
-        getSession: jasmine.createSpy('getSession').and.returnValue(
-          Promise.resolve({ data: { session: mockSession }, error: null })
-        ),
-        signInWithOAuth: jasmine.createSpy('signInWithOAuth').and.returnValue(
-          Promise.resolve({ data: {}, error: null })
-        ),
-        signOut: jasmine.createSpy('signOut').and.returnValue(
-          Promise.resolve({ error: null })
-        ),
-        onAuthStateChange: jasmine.createSpy('onAuthStateChange').and.returnValue(authSubscriptionMock),
+        getSession: jasmine
+          .createSpy('getSession')
+          .and.returnValue(Promise.resolve({ data: { session: mockSession }, error: null })),
+        signInWithOAuth: jasmine
+          .createSpy('signInWithOAuth')
+          .and.returnValue(Promise.resolve({ data: {}, error: null })),
+        signOut: jasmine.createSpy('signOut').and.returnValue(Promise.resolve({ error: null })),
+        onAuthStateChange: jasmine
+          .createSpy('onAuthStateChange')
+          .and.returnValue(authSubscriptionMock),
       },
       from: jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: mockProfile, error: null })
-            ),
-            maybeSingle: jasmine.createSpy('maybeSingle').and.returnValue(
-              Promise.resolve({ data: null, error: null })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: mockProfile, error: null })),
+            maybeSingle: jasmine
+              .createSpy('maybeSingle')
+              .and.returnValue(Promise.resolve({ data: null, error: null })),
           }),
         }),
-        insert: jasmine.createSpy('insert').and.returnValue(
-          Promise.resolve({ error: null })
-        ),
+        insert: jasmine.createSpy('insert').and.returnValue(Promise.resolve({ error: null })),
       }),
     };
 
@@ -123,7 +121,7 @@ describe('Supabase', () => {
         '550e8400e29b41d4a716446655440000', // missing dashes
       ];
 
-      invalidUUIDs.forEach(uuid => {
+      invalidUUIDs.forEach((uuid) => {
         const isValid = (service as any).isValidUUID(uuid);
         expect(isValid).toBe(false, `Should reject: ${uuid}`);
       });
@@ -147,7 +145,7 @@ describe('Supabase', () => {
     it('should validate correct short ID format (6-8 uppercase alphanumeric)', () => {
       const validShortIds = ['ABC123', 'ABCD1234', 'AB12CD34'];
 
-      validShortIds.forEach(shortId => {
+      validShortIds.forEach((shortId) => {
         const isValid = (service as any).isValidShortId(shortId);
         expect(isValid).toBe(true, `Should accept: ${shortId}`);
       });
@@ -163,7 +161,7 @@ describe('Supabase', () => {
         'АВС123', // non-ASCII characters
       ];
 
-      invalidShortIds.forEach(shortId => {
+      invalidShortIds.forEach((shortId) => {
         const isValid = (service as any).isValidShortId(shortId);
         expect(isValid).toBe(false, `Should reject: ${shortId}`);
       });
@@ -220,7 +218,7 @@ describe('Supabase', () => {
     it('should set error on initialization failure', fakeAsync(() => {
       const mockError = new Error('Init failed');
       supabaseClientMock.auth.getSession.and.returnValue(
-        Promise.resolve({ data: { session: null }, error: mockError })
+        Promise.resolve({ data: { session: null }, error: mockError }),
       );
 
       service = TestBed.inject(Supabase);
@@ -236,7 +234,7 @@ describe('Supabase', () => {
       };
 
       supabaseClientMock.auth.getSession.and.returnValue(
-        Promise.resolve({ data: { session: expiredSession }, error: null })
+        Promise.resolve({ data: { session: expiredSession }, error: null }),
       );
 
       spyOn(console, 'warn');
@@ -302,7 +300,7 @@ describe('Supabase', () => {
         subscribe: (callbacks: any) => {
           callbacks.next(mockProfile);
           return { unsubscribe: () => {} };
-        }
+        },
       } as any);
 
       authStateCallback('USER_UPDATED', updatedSession);
@@ -361,7 +359,7 @@ describe('Supabase', () => {
       };
 
       supabaseClientMock.auth.signInWithOAuth.and.returnValue(
-        Promise.resolve({ error: mockError })
+        Promise.resolve({ error: mockError }),
       );
 
       await expectAsync(service.signInWithGoogle()).toBeRejectedWith(mockError);
@@ -458,7 +456,10 @@ describe('Supabase', () => {
 
       const error = service.checkOAuthError();
       expect(error).toBe('Error');
-      expect(console.warn).toHaveBeenCalledWith('Failed to clean URL parameters:', jasmine.any(Error));
+      expect(console.warn).toHaveBeenCalledWith(
+        'Failed to clean URL parameters:',
+        jasmine.any(Error),
+      );
     });
   });
 
@@ -475,10 +476,9 @@ describe('Supabase', () => {
       await service.handleOAuthCallback(invalidUrl);
 
       // Should navigate to login with error
-      expect(routerMock.navigate).toHaveBeenCalledWith(
-        ['/login'],
-        { queryParams: { error_description: jasmine.any(String) } }
-      );
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/login'], {
+        queryParams: { error_description: jasmine.any(String) },
+      });
     });
 
     it('should handle successful OAuth callback and navigate to next URL', async () => {
@@ -499,14 +499,14 @@ describe('Supabase', () => {
     });
 
     it('should handle OAuth error in URL and navigate to login', async () => {
-      const callbackUrl = 'http://localhost:4200/auth/callback?error=access_denied&error_description=User+cancelled';
+      const callbackUrl =
+        'http://localhost:4200/auth/callback?error=access_denied&error_description=User+cancelled';
 
       await service.handleOAuthCallback(callbackUrl);
 
-      expect(routerMock.navigate).toHaveBeenCalledWith(
-        ['/login'],
-        { queryParams: { error_description: jasmine.any(String) } }
-      );
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/login'], {
+        queryParams: { error_description: jasmine.any(String) },
+      });
       expect(service.error()).toBeTruthy();
     });
 
@@ -515,15 +515,14 @@ describe('Supabase', () => {
       const sessionError: any = { message: 'Session fetch failed' };
 
       supabaseClientMock.auth.getSession.and.returnValue(
-        Promise.resolve({ data: { session: null }, error: sessionError })
+        Promise.resolve({ data: { session: null }, error: sessionError }),
       );
 
       await service.handleOAuthCallback(callbackUrl);
 
-      expect(routerMock.navigate).toHaveBeenCalledWith(
-        ['/login'],
-        { queryParams: { error_description: 'Session fetch failed' } }
-      );
+      expect(routerMock.navigate).toHaveBeenCalledWith(['/login'], {
+        queryParams: { error_description: 'Session fetch failed' },
+      });
     });
 
     it('should clean URL after successful callback', async () => {
@@ -631,9 +630,9 @@ describe('Supabase', () => {
       supabaseClientMock.from.and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: dbError })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: dbError })),
           }),
         }),
       });
@@ -651,9 +650,9 @@ describe('Supabase', () => {
       supabaseClientMock.from.and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: null })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: null })),
           }),
         }),
       });
@@ -723,9 +722,9 @@ describe('Supabase', () => {
       supabaseClientMock.from.and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: dbError })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: dbError })),
           }),
         }),
       });
@@ -773,9 +772,9 @@ describe('Supabase', () => {
       supabaseClientMock.from.and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: notFoundError })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: notFoundError })),
           }),
         }),
       });
@@ -820,12 +819,12 @@ describe('Supabase', () => {
       supabaseClientMock.from.and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            maybeSingle: jasmine.createSpy('maybeSingle').and.returnValue(
-              Promise.resolve({ data: existingProfile, error: null })
-            ),
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: mockProfile, error: null })
-            ),
+            maybeSingle: jasmine
+              .createSpy('maybeSingle')
+              .and.returnValue(Promise.resolve({ data: existingProfile, error: null })),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: mockProfile, error: null })),
           }),
         }),
       });
@@ -834,7 +833,7 @@ describe('Supabase', () => {
         subscribe: (callbacks: any) => {
           callbacks.next(mockProfile);
           return { unsubscribe: () => {} };
-        }
+        },
       } as any);
 
       await service.ensureProfileExists(mockUser.id);
@@ -850,24 +849,22 @@ describe('Supabase', () => {
       supabaseClientMock.from.and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            maybeSingle: jasmine.createSpy('maybeSingle').and.returnValue(
-              Promise.resolve({ data: null, error: null })
-            ),
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: mockProfile, error: null })
-            ),
+            maybeSingle: jasmine
+              .createSpy('maybeSingle')
+              .and.returnValue(Promise.resolve({ data: null, error: null })),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: mockProfile, error: null })),
           }),
         }),
-        insert: jasmine.createSpy('insert').and.returnValue(
-          Promise.resolve({ error: null })
-        ),
+        insert: jasmine.createSpy('insert').and.returnValue(Promise.resolve({ error: null })),
       });
 
       spyOn(service, 'refreshCurrentUserProfile').and.returnValue({
         subscribe: (callbacks: any) => {
           callbacks.next(mockProfile);
           return { unsubscribe: () => {} };
-        }
+        },
       } as any);
 
       await service.ensureProfileExists(mockUser.id);
@@ -876,7 +873,7 @@ describe('Supabase', () => {
         jasmine.objectContaining({
           id: mockUser.id,
           stamp_count: 0,
-        })
+        }),
       );
     });
 
@@ -886,14 +883,14 @@ describe('Supabase', () => {
       supabaseClientMock.from.and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            maybeSingle: jasmine.createSpy('maybeSingle').and.returnValue(
-              Promise.resolve({ data: null, error: null })
-            ),
+            maybeSingle: jasmine
+              .createSpy('maybeSingle')
+              .and.returnValue(Promise.resolve({ data: null, error: null })),
           }),
         }),
-        insert: jasmine.createSpy('insert').and.returnValue(
-          Promise.resolve({ error: duplicateError })
-        ),
+        insert: jasmine
+          .createSpy('insert')
+          .and.returnValue(Promise.resolve({ error: duplicateError })),
       });
 
       spyOn(console, 'warn');
@@ -910,14 +907,14 @@ describe('Supabase', () => {
       supabaseClientMock.from.and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            maybeSingle: jasmine.createSpy('maybeSingle').and.returnValue(
-              Promise.resolve({ data: null, error: null })
-            ),
+            maybeSingle: jasmine
+              .createSpy('maybeSingle')
+              .and.returnValue(Promise.resolve({ data: null, error: null })),
           }),
         }),
-        insert: jasmine.createSpy('insert').and.returnValue(
-          Promise.resolve({ error: createError })
-        ),
+        insert: jasmine
+          .createSpy('insert')
+          .and.returnValue(Promise.resolve({ error: createError })),
       });
 
       spyOn(console, 'error');
@@ -942,9 +939,9 @@ describe('Supabase', () => {
       supabaseClientMock.from.and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            maybeSingle: jasmine.createSpy('maybeSingle').and.returnValue(
-              Promise.resolve({ data: null, error: null })
-            ),
+            maybeSingle: jasmine
+              .createSpy('maybeSingle')
+              .and.returnValue(Promise.resolve({ data: null, error: null })),
           }),
         }),
       });
@@ -967,7 +964,7 @@ describe('Supabase', () => {
               // First call returns existing, second returns null (unique)
               return Promise.resolve({
                 data: callCount === 1 ? { short_id: 'EXIST1' } : null,
-                error: null
+                error: null,
               });
             }),
           }),
@@ -988,9 +985,9 @@ describe('Supabase', () => {
       supabaseClientMock.from.and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            maybeSingle: jasmine.createSpy('maybeSingle').and.returnValue(
-              Promise.resolve({ data: { short_id: 'EXISTS' }, error: null })
-            ),
+            maybeSingle: jasmine
+              .createSpy('maybeSingle')
+              .and.returnValue(Promise.resolve({ data: { short_id: 'EXISTS' }, error: null })),
           }),
         }),
       });
@@ -1001,7 +998,7 @@ describe('Supabase', () => {
         () => fail('Should have thrown'),
         (error: Error) => {
           expect(error.message).toBe('Failed to generate unique short_id after multiple attempts');
-        }
+        },
       );
 
       tick(10000); // Account for exponential backoff
@@ -1013,9 +1010,9 @@ describe('Supabase', () => {
       supabaseClientMock.from.and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            maybeSingle: jasmine.createSpy('maybeSingle').and.returnValue(
-              Promise.resolve({ data: null, error: null })
-            ),
+            maybeSingle: jasmine
+              .createSpy('maybeSingle')
+              .and.returnValue(Promise.resolve({ data: null, error: null })),
           }),
         }),
       });
@@ -1037,7 +1034,7 @@ describe('Supabase', () => {
               callCount++;
               return Promise.resolve({
                 data: callCount < 3 ? { short_id: 'EXISTS' } : null,
-                error: null
+                error: null,
               });
             }),
           }),

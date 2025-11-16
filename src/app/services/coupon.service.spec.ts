@@ -59,9 +59,9 @@ describe('CouponService', () => {
       from: jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: mockCoupon, error: null })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: mockCoupon, error: null })),
           }),
         }),
         update: jasmine.createSpy('update').and.returnValue({
@@ -69,9 +69,9 @@ describe('CouponService', () => {
             eq: jasmine.createSpy('eq').and.returnValue({
               eq: jasmine.createSpy('eq').and.returnValue({
                 select: jasmine.createSpy('select').and.returnValue({
-                  single: jasmine.createSpy('single').and.returnValue(
-                    Promise.resolve({ data: mockCoupon, error: null })
-                  ),
+                  single: jasmine
+                    .createSpy('single')
+                    .and.returnValue(Promise.resolve({ data: mockCoupon, error: null })),
                 }),
               }),
             }),
@@ -79,9 +79,9 @@ describe('CouponService', () => {
         }),
         insert: jasmine.createSpy('insert').and.returnValue({
           select: jasmine.createSpy('select').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: mockCoupon, error: null })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: mockCoupon, error: null })),
           }),
         }),
       }),
@@ -97,10 +97,7 @@ describe('CouponService', () => {
     });
 
     TestBed.configureTestingModule({
-      providers: [
-        CouponService,
-        { provide: AuthService, useValue: authServiceMock },
-      ],
+      providers: [CouponService, { provide: AuthService, useValue: authServiceMock }],
     });
 
     service = TestBed.inject(CouponService);
@@ -113,7 +110,7 @@ describe('CouponService', () => {
         statusText: 'OK',
         headers: new Headers({ 'content-range': '0-1/2' }),
         json: () => Promise.resolve(mockCoupons),
-      } as Response)
+      } as Response),
     );
   });
 
@@ -151,7 +148,7 @@ describe('CouponService', () => {
                 apikey: environment.supabase.anonKey,
                 Authorization: `Bearer ${mockSession.access_token}`,
               }),
-            })
+            }),
           );
           done();
         },
@@ -204,7 +201,7 @@ describe('CouponService', () => {
           ok: false,
           status: 500,
           statusText: 'Internal Server Error',
-        } as Response)
+        } as Response),
       );
 
       service.getUserCoupons().subscribe({
@@ -219,9 +216,9 @@ describe('CouponService', () => {
     });
 
     it('should handle network errors', (done) => {
-      window.fetch = jasmine.createSpy('fetch').and.returnValue(
-        Promise.reject(new Error('Network error'))
-      );
+      window.fetch = jasmine
+        .createSpy('fetch')
+        .and.returnValue(Promise.reject(new Error('Network error')));
 
       service.getUserCoupons().subscribe({
         next: () => done.fail('should not succeed'),
@@ -239,7 +236,7 @@ describe('CouponService', () => {
       window.fetch = jasmine.createSpy('fetch').and.returnValue(
         new Promise((resolve) => {
           setTimeout(() => resolve({} as Response), 15000);
-        })
+        }),
       );
 
       service.getUserCoupons().subscribe({
@@ -261,7 +258,7 @@ describe('CouponService', () => {
           status: 200,
           headers: new Headers({ 'content-range': '0-9/25' }),
           json: () => Promise.resolve(mockCoupons),
-        } as Response)
+        } as Response),
       );
 
       service.getUserCoupons().subscribe({
@@ -280,7 +277,7 @@ describe('CouponService', () => {
           status: 200,
           headers: new Headers(),
           json: () => Promise.resolve(mockCoupons),
-        } as Response)
+        } as Response),
       );
 
       service.getUserCoupons().subscribe({
@@ -333,9 +330,9 @@ describe('CouponService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: null })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: null })),
           }),
         }),
       });
@@ -356,9 +353,9 @@ describe('CouponService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: dbError })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: dbError })),
           }),
         }),
       });
@@ -422,9 +419,9 @@ describe('CouponService', () => {
             eq: jasmine.createSpy('eq').and.returnValue({
               eq: jasmine.createSpy('eq').and.returnValue({
                 select: jasmine.createSpy('select').and.returnValue({
-                  single: jasmine.createSpy('single').and.returnValue(
-                    Promise.resolve({ data: usedCoupon, error: null })
-                  ),
+                  single: jasmine
+                    .createSpy('single')
+                    .and.returnValue(Promise.resolve({ data: usedCoupon, error: null })),
                 }),
               }),
             }),
@@ -477,9 +474,9 @@ describe('CouponService', () => {
             eq: jasmine.createSpy('eq').and.returnValue({
               eq: jasmine.createSpy('eq').and.returnValue({
                 select: jasmine.createSpy('select').and.returnValue({
-                  single: jasmine.createSpy('single').and.returnValue(
-                    Promise.resolve({ data: null, error: null })
-                  ),
+                  single: jasmine
+                    .createSpy('single')
+                    .and.returnValue(Promise.resolve({ data: null, error: null })),
                 }),
               }),
             }),
@@ -506,9 +503,9 @@ describe('CouponService', () => {
             eq: jasmine.createSpy('eq').and.returnValue({
               eq: jasmine.createSpy('eq').and.returnValue({
                 select: jasmine.createSpy('select').and.returnValue({
-                  single: jasmine.createSpy('single').and.returnValue(
-                    Promise.resolve({ data: null, error: dbError })
-                  ),
+                  single: jasmine
+                    .createSpy('single')
+                    .and.returnValue(Promise.resolve({ data: null, error: dbError })),
                 }),
               }),
             }),
@@ -533,9 +530,9 @@ describe('CouponService', () => {
           eq: jasmine.createSpy('eq').and.returnValue({
             eq: jasmine.createSpy('eq').and.returnValue({
               select: jasmine.createSpy('select').and.returnValue({
-                single: jasmine.createSpy('single').and.returnValue(
-                  Promise.resolve({ data: usedCoupon, error: null })
-                ),
+                single: jasmine
+                  .createSpy('single')
+                  .and.returnValue(Promise.resolve({ data: usedCoupon, error: null })),
               }),
             }),
           }),
@@ -552,7 +549,7 @@ describe('CouponService', () => {
             jasmine.objectContaining({
               status: 'used',
               used_at: jasmine.any(String),
-            })
+            }),
           );
           done();
         },
@@ -609,17 +606,17 @@ describe('CouponService', () => {
       // Reset the mock for addCoupon tests - two-step process
       const insertMock = {
         select: jasmine.createSpy('select').and.returnValue({
-          single: jasmine.createSpy('single').and.returnValue(
-            Promise.resolve({ data: mockCoupon, error: null })
-          ),
+          single: jasmine
+            .createSpy('single')
+            .and.returnValue(Promise.resolve({ data: mockCoupon, error: null })),
         }),
       };
 
       const profileSelectMock = {
         eq: jasmine.createSpy('eq').and.returnValue({
-          single: jasmine.createSpy('single').and.returnValue(
-            Promise.resolve({ data: mockProfile, error: null })
-          ),
+          single: jasmine
+            .createSpy('single')
+            .and.returnValue(Promise.resolve({ data: mockProfile, error: null })),
         }),
       };
 
@@ -677,9 +674,9 @@ describe('CouponService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: null })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: null })),
           }),
         }),
       });
@@ -700,9 +697,9 @@ describe('CouponService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: profileError })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: profileError })),
           }),
         }),
       });
@@ -722,17 +719,17 @@ describe('CouponService', () => {
       const insertError = { message: 'Insert failed' };
       const profileSelectMock = {
         eq: jasmine.createSpy('eq').and.returnValue({
-          single: jasmine.createSpy('single').and.returnValue(
-            Promise.resolve({ data: mockProfile, error: null })
-          ),
+          single: jasmine
+            .createSpy('single')
+            .and.returnValue(Promise.resolve({ data: mockProfile, error: null })),
         }),
       };
 
       const insertMock = {
         select: jasmine.createSpy('select').and.returnValue({
-          single: jasmine.createSpy('single').and.returnValue(
-            Promise.resolve({ data: null, error: insertError })
-          ),
+          single: jasmine
+            .createSpy('single')
+            .and.returnValue(Promise.resolve({ data: null, error: insertError })),
         }),
       };
 
@@ -764,17 +761,17 @@ describe('CouponService', () => {
     it('should convert date to ISO format', (done) => {
       const insertSpy = jasmine.createSpy('insert').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
-          single: jasmine.createSpy('single').and.returnValue(
-            Promise.resolve({ data: mockCoupon, error: null })
-          ),
+          single: jasmine
+            .createSpy('single')
+            .and.returnValue(Promise.resolve({ data: mockCoupon, error: null })),
         }),
       });
 
       const profileSelectMock = {
         eq: jasmine.createSpy('eq').and.returnValue({
-          single: jasmine.createSpy('single').and.returnValue(
-            Promise.resolve({ data: mockProfile, error: null })
-          ),
+          single: jasmine
+            .createSpy('single')
+            .and.returnValue(Promise.resolve({ data: mockProfile, error: null })),
         }),
       };
 
@@ -797,7 +794,7 @@ describe('CouponService', () => {
           expect(insertSpy).toHaveBeenCalledWith(
             jasmine.objectContaining({
               expires_at: jasmine.stringMatching(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/),
-            })
+            }),
           );
           done();
         },
@@ -808,17 +805,17 @@ describe('CouponService', () => {
     it('should set coupon status to active', (done) => {
       const insertSpy = jasmine.createSpy('insert').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
-          single: jasmine.createSpy('single').and.returnValue(
-            Promise.resolve({ data: mockCoupon, error: null })
-          ),
+          single: jasmine
+            .createSpy('single')
+            .and.returnValue(Promise.resolve({ data: mockCoupon, error: null })),
         }),
       });
 
       const profileSelectMock = {
         eq: jasmine.createSpy('eq').and.returnValue({
-          single: jasmine.createSpy('single').and.returnValue(
-            Promise.resolve({ data: mockProfile, error: null })
-          ),
+          single: jasmine
+            .createSpy('single')
+            .and.returnValue(Promise.resolve({ data: mockProfile, error: null })),
         }),
       };
 
@@ -841,7 +838,7 @@ describe('CouponService', () => {
           expect(insertSpy).toHaveBeenCalledWith(
             jasmine.objectContaining({
               status: 'active',
-            })
+            }),
           );
           done();
         },
@@ -902,9 +899,9 @@ describe('CouponService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: errorWithoutMessage })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: errorWithoutMessage })),
           }),
         }),
       });
@@ -923,9 +920,9 @@ describe('CouponService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: dbError })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: dbError })),
           }),
         }),
       });
