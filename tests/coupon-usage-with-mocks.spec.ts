@@ -11,7 +11,30 @@ import * as path from 'path';
  */
 test.describe('Coupon Usage Flow (with API mocks)', () => {
   test.beforeEach(async ({ page }) => {
-    // Mockuj endpoint profilu użytkownika (potrzebny dla auth guard)
+    // Wczytaj dane mockowej sesji
+    const mockAuthFile = path.join(__dirname, 'auth/user.json');
+    const authData = JSON.parse(fs.readFileSync(mockAuthFile, 'utf-8'));
+
+    // Mockuj wszystkie endpointy Supabase Auth API
+    // 1. Mock GET /auth/v1/user - zwraca dane zalogowanego użytkownika
+    await page.route('**/auth/v1/user', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(authData.user),
+      });
+    });
+
+    // 2. Mock POST /auth/v1/token?grant_type=refresh_token - odświeżanie tokenu
+    await page.route('**/auth/v1/token*', async (route) => {
+      await route.fulfill({
+        status: 200,
+        contentType: 'application/json',
+        body: JSON.stringify(authData),
+      });
+    });
+
+    // 3. Mockuj endpoint profilu użytkownika (potrzebny dla auth guard)
     // Supabase REST API zwraca tablicę, nawet dla .single()
     await page.route('**/rest/v1/profiles*', async (route) => {
       await route.fulfill({
@@ -27,10 +50,6 @@ test.describe('Coupon Usage Flow (with API mocks)', () => {
         ]),
       });
     });
-
-    // Ustaw mockową sesję w localStorage PRZED pierwszym załadowaniem strony
-    const mockAuthFile = path.join(__dirname, 'auth/user.json');
-    const authData = JSON.parse(fs.readFileSync(mockAuthFile, 'utf-8'));
 
     // Pobierz Supabase URL ze zmiennej środowiskowej i wygeneruj klucz
     const supabaseUrl = process.env.SUPABASE_URL || 'http://localhost:54321';
@@ -53,6 +72,10 @@ test.describe('Coupon Usage Flow (with API mocks)', () => {
     // Odśwież stronę aby aplikacja wczytała sesję z localStorage
     await page.reload();
     await page.waitForLoadState('networkidle');
+
+    // Poczekaj na załadowanie aplikacji i zweryfikuj że użytkownik jest zalogowany
+    // Sprawdź czy link do kuponów jest widoczny (tylko dla zalogowanych)
+    await expect(page.getByRole('link', { name: /kupon/i })).toBeVisible({ timeout: 15000 });
   });
 
   test('should display active coupons and allow using them', async ({ page }) => {
