@@ -3,7 +3,7 @@ import { AdminDashboardPageComponent } from './admin-dashboard-page.component';
 import { AdminService } from '../../../services/admin.service';
 import { StampService } from '../../../services/stamp.service';
 import { of, throwError } from 'rxjs';
-import { ProfileDTO, ApiErrorResponse } from '../../../types';
+import { ProfileDTO } from '../../../types';
 import { provideRouter } from '@angular/router';
 
 describe('AdminDashboardPageComponent', () => {
@@ -448,9 +448,7 @@ describe('AdminDashboardPageComponent', () => {
     it('should not reset stampsToAdd on error', () => {
       component.stampsToAdd.set(5);
 
-      mockAdminService.addStampsToCustomer.and.returnValue(
-        throwError(() => new Error('Error')),
-      );
+      mockAdminService.addStampsToCustomer.and.returnValue(throwError(() => new Error('Error')));
 
       component.addStamps();
 
@@ -474,11 +472,7 @@ describe('AdminDashboardPageComponent', () => {
     });
 
     it('should handle valid ISO date strings', () => {
-      const testDates = [
-        '2024-01-01T00:00:00Z',
-        '2024-12-31T23:59:59Z',
-        '2023-06-15T12:00:00Z',
-      ];
+      const testDates = ['2024-01-01T00:00:00Z', '2024-12-31T23:59:59Z', '2023-06-15T12:00:00Z'];
 
       testDates.forEach((dateString) => {
         const result = component.formatDate(dateString);

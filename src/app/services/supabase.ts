@@ -236,7 +236,9 @@ export class Supabase implements OnDestroy {
       if (typeof window !== 'undefined') {
         try {
           window.history.replaceState({}, document.title, window.location.pathname);
-        } catch {}
+        } catch {
+          console.warn('Failed to clean URL parameters');
+        }
       }
 
       const defaultAfterLogin = (environment as any)?.auth?.defaultRedirectAfterLogin || '/';

@@ -1,6 +1,6 @@
 import { Injectable, inject } from '@angular/core';
 import { from, Observable, throwError } from 'rxjs';
-import { catchError, map, tap } from 'rxjs/operators';
+import { catchError, map } from 'rxjs/operators';
 import { AuthService } from './auth.service';
 import { CreateContactSubmissionCommand, CreateContactSubmissionResponseDTO } from '../types';
 

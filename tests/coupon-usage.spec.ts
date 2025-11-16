@@ -6,7 +6,9 @@ test.describe('Coupon Usage Flow', () => {
     await page.goto('/');
   });
 
-  test('should allow a logged-in user to navigate to coupons and use a coupon', async ({ page }) => {
+  test('should allow a logged-in user to navigate to coupons and use a coupon', async ({
+    page,
+  }) => {
     // 1. Sprawdź, czy użytkownik jest zalogowany
     // Link do kuponów powinien być widoczny tylko dla zalogowanych użytkowników
     const couponsLink = page.getByRole('link', { name: /przejdź do kuponów/i });
@@ -27,7 +29,7 @@ test.describe('Coupon Usage Flow', () => {
     const activeCoupon = page.locator('.coupon-card.clickable').first();
 
     // Jeśli nie ma aktywnych kuponów, test się pominie
-    const hasActiveCoupons = await activeCoupon.count() > 0;
+    const hasActiveCoupons = (await activeCoupon.count()) > 0;
 
     if (!hasActiveCoupons) {
       console.log('Brak aktywnych kuponów do przetestowania - pomijam test');
@@ -80,7 +82,7 @@ test.describe('Coupon Usage Flow', () => {
     // 3. Znajdź aktywny kupon
     const activeCoupon = page.locator('.coupon-card.clickable').first();
 
-    const hasActiveCoupons = await activeCoupon.count() > 0;
+    const hasActiveCoupons = (await activeCoupon.count()) > 0;
     if (!hasActiveCoupons) {
       console.log('Brak aktywnych kuponów - pomijam test');
       test.skip();
@@ -96,7 +98,9 @@ test.describe('Coupon Usage Flow', () => {
 
     // 6. Sprawdź zawartość dialogu
     await expect(page.getByText('Czy na pewno chcesz wykorzystać kupon?')).toBeVisible();
-    await expect(page.getByText('Pamiętaj, że sprzedawca musi widzieć wykorzystanie kuponu')).toBeVisible();
+    await expect(
+      page.getByText('Pamiętaj, że sprzedawca musi widzieć wykorzystanie kuponu'),
+    ).toBeVisible();
 
     // 7. Kliknij "Nie" aby anulować
     const cancelButton = page.getByRole('button', { name: 'Anuluj' });
@@ -120,7 +124,7 @@ test.describe('Coupon Usage Flow', () => {
     // 3. Znajdź nieaktywny kupon (bez klasy 'clickable')
     const inactiveCoupon = page.locator('.coupon-card.inactive').first();
 
-    const hasInactiveCoupons = await inactiveCoupon.count() > 0;
+    const hasInactiveCoupons = (await inactiveCoupon.count()) > 0;
     if (!hasInactiveCoupons) {
       console.log('Brak nieaktywnych kuponów - pomijam test');
       test.skip();

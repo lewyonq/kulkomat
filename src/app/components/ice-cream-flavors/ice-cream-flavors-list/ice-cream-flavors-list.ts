@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { map, Observable } from 'rxjs';
 import { FlavorVM } from '../../../types/view-models';
@@ -94,7 +94,9 @@ export class IceCreamFlavorsList implements OnInit {
    */
   flavors$!: Observable<FlavorVM[]>;
 
-  constructor(private iceCreamFlavorService: IceCreamFlavorService) {}
+  private iceCreamFlavorService = inject(IceCreamFlavorService);
+
+  constructor() {}
 
   ngOnInit(): void {
     this.flavors$ = this.iceCreamFlavorService

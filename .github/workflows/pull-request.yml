@@ -11,8 +11,28 @@ jobs:
     timeout-minutes: 10
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
       - name: Setup Node.js project
         uses: ./.github/actions/setup-node-project
+
+      - name: Create environment file
+        run: |
+          cat > src/app/environment/environment.ts << 'EOF'
+          export const environment = {
+            production: false,
+            supabase: {
+              url: 'https://mock.supabase.co',
+              anonKey: 'mock-anon-key',
+            },
+            auth: {
+              redirectUri: 'http://localhost:4200/auth/callback',
+              defaultRedirectAfterLogin: '/',
+              defaultRedirectAfterLogout: '/login',
+            },
+          };
+          EOF
 
       - name: Run ESLint
         run: npm run lint
@@ -27,8 +47,28 @@ jobs:
     needs: lint
 
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v5
+
       - name: Setup Node.js project
         uses: ./.github/actions/setup-node-project
+
+      - name: Create environment file
+        run: |
+          cat > src/app/environment/environment.ts << 'EOF'
+          export const environment = {
+            production: false,
+            supabase: {
+              url: 'https://mock.supabase.co',
+              anonKey: 'mock-anon-key',
+            },
+            auth: {
+              redirectUri: 'http://localhost:4200/auth/callback',
+              defaultRedirectAfterLogin: '/',
+              defaultRedirectAfterLogout: '/login',
+            },
+          };
+          EOF
 
       - name: Run unit tests with coverage
         run: npm run test -- --no-watch --code-coverage --browsers=ChromeHeadless
@@ -114,8 +154,8 @@ jobs:
   status-comment:
     name: Post Status Comment
     runs-on: ubuntu-latest
-    needs: [lint, unit-test, e2e-test]
-    if: always() && needs.lint.result == 'success' && needs.unit-test.result == 'success' && needs.e2e-test.result == 'success'
+    needs: [lint, unit-test]
+    if: always() && needs.lint.result == 'success' && needs.unit-test.result == 'success'
     permissions:
       pull-requests: write
 
@@ -130,7 +170,6 @@ jobs:
 
             - ✅ **Lint**: Code quality checks passed
             - ✅ **Unit Tests**: All unit tests passed
-            - ✅ **E2E Tests**: End-to-end tests passed
 
             **Status**: Ready for review
             **Commit**: ${{ github.event.pull_request.head.sha }}

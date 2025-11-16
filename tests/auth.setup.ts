@@ -31,7 +31,7 @@ setup('authenticate', async ({ page }) => {
   if (!supabaseUrl) {
     throw new Error(
       'SUPABASE_URL environment variable is not set. ' +
-      'Please set it before running tests: export SUPABASE_URL=https://your-project.supabase.co'
+        'Please set it before running tests: export SUPABASE_URL=https://your-project.supabase.co',
     );
   }
 
@@ -46,7 +46,7 @@ setup('authenticate', async ({ page }) => {
     ({ key, value }) => {
       window.localStorage.setItem(key, value);
     },
-    { key: storageKey, value: JSON.stringify(authData) }
+    { key: storageKey, value: JSON.stringify(authData) },
   );
 
   // Odśwież stronę, aby aplikacja załadowała się z sesją
@@ -54,7 +54,9 @@ setup('authenticate', async ({ page }) => {
 
   // Poczekaj na załadowanie strony i upewnij się, że użytkownik jest zalogowany
   // Sprawdź czy link do kuponów jest widoczny - to oznacza że użytkownik jest zalogowany
-  await expect(page.getByRole('link', { name: /przejdź do kuponów/i })).toBeVisible({ timeout: 10000 });
+  await expect(page.getByRole('link', { name: /przejdź do kuponów/i })).toBeVisible({
+    timeout: 10000,
+  });
 
   // Zapisz stan sesji (localStorage + cookies) do pliku authFile
   // Ten plik będzie używany przez wszystkie testy

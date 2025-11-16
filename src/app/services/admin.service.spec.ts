@@ -2,8 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { AdminService } from './admin.service';
 import { AuthService } from './auth.service';
 import { ProfileDTO, CouponDTO } from '../types';
-import { of, throwError } from 'rxjs';
-import { signal } from '@angular/core';
 
 describe('AdminService', () => {
   let service: AdminService;
@@ -42,15 +40,13 @@ describe('AdminService', () => {
       from: jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: mockProfile, error: null })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: mockProfile, error: null })),
           }),
         }),
       }),
-      rpc: jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: null, error: null })
-      ),
+      rpc: jasmine.createSpy('rpc').and.returnValue(Promise.resolve({ data: null, error: null })),
     };
 
     // Create AuthService mock with a spy for the user signal
@@ -61,10 +57,7 @@ describe('AdminService', () => {
     });
 
     TestBed.configureTestingModule({
-      providers: [
-        AdminService,
-        { provide: AuthService, useValue: authServiceMock },
-      ],
+      providers: [AdminService, { provide: AuthService, useValue: authServiceMock }],
     });
 
     service = TestBed.inject(AdminService);
@@ -122,9 +115,9 @@ describe('AdminService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: null })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: null })),
           }),
         }),
       });
@@ -146,9 +139,9 @@ describe('AdminService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: dbError })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: dbError })),
           }),
         }),
       });
@@ -241,9 +234,9 @@ describe('AdminService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: null })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: null })),
           }),
         }),
       });
@@ -264,9 +257,9 @@ describe('AdminService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: dbError })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: dbError })),
           }),
         }),
       });
@@ -350,9 +343,9 @@ describe('AdminService', () => {
 
     it('should handle RPC errors', (done) => {
       const rpcError = { message: 'Invalid user_id' };
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: null, error: rpcError })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: null, error: rpcError }));
 
       service.addStampsToCustomer('invalid-uuid', 3).subscribe({
         next: () => done.fail('should not succeed'),
@@ -366,9 +359,9 @@ describe('AdminService', () => {
     });
 
     it('should handle generic RPC failures', (done) => {
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.reject(new Error('Network error'))
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.reject(new Error('Network error')));
 
       service.addStampsToCustomer('customer-uuid', 3).subscribe({
         next: () => done.fail('should not succeed'),
@@ -424,9 +417,9 @@ describe('AdminService', () => {
     const expiryDate = '2024-12-31T23:59:59Z';
 
     it('should successfully create a free_scoop coupon', (done) => {
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: mockCoupon, error: null })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: mockCoupon, error: null }));
 
       service.createManualCoupon('customer-uuid', 'free_scoop', null, expiryDate).subscribe({
         next: (coupon) => {
@@ -452,9 +445,9 @@ describe('AdminService', () => {
         value: 15,
       };
 
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: discountCoupon, error: null })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: discountCoupon, error: null }));
 
       service.createManualCoupon('customer-uuid', 'percentage', 15, expiryDate).subscribe({
         next: (coupon) => {
@@ -472,9 +465,9 @@ describe('AdminService', () => {
     });
 
     it('should set loading state during operation', (done) => {
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: mockCoupon, error: null })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: mockCoupon, error: null }));
 
       service.createManualCoupon('customer-uuid', 'free_scoop', null, expiryDate).subscribe({
         next: () => {
@@ -487,9 +480,9 @@ describe('AdminService', () => {
 
     it('should handle RPC errors', (done) => {
       const rpcError = { message: 'Invalid coupon type' };
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: null, error: rpcError })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: null, error: rpcError }));
 
       service.createManualCoupon('customer-uuid', 'invalid_type', null, expiryDate).subscribe({
         next: () => done.fail('should not succeed'),
@@ -504,9 +497,9 @@ describe('AdminService', () => {
 
     it('should handle database constraint violations', (done) => {
       const constraintError = { message: 'User does not exist' };
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: null, error: constraintError })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: null, error: constraintError }));
 
       service.createManualCoupon('non-existent-uuid', 'free_scoop', null, expiryDate).subscribe({
         next: () => done.fail('should not succeed'),
@@ -519,9 +512,9 @@ describe('AdminService', () => {
     });
 
     it('should handle invalid expiry date format', (done) => {
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: mockCoupon, error: null })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: mockCoupon, error: null }));
 
       const invalidDate = 'invalid-date';
       service.createManualCoupon('customer-uuid', 'free_scoop', null, invalidDate).subscribe({
@@ -540,9 +533,9 @@ describe('AdminService', () => {
     });
 
     it('should handle past expiry date', (done) => {
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: mockCoupon, error: null })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: mockCoupon, error: null }));
 
       const pastDate = '2020-01-01T00:00:00Z';
       service.createManualCoupon('customer-uuid', 'free_scoop', null, pastDate).subscribe({
@@ -556,9 +549,9 @@ describe('AdminService', () => {
     });
 
     it('should clear previous errors before new request', (done) => {
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: mockCoupon, error: null })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: mockCoupon, error: null }));
       service.error.set(new Error('Previous error'));
 
       service.createManualCoupon('customer-uuid', 'free_scoop', null, expiryDate).subscribe({
@@ -579,9 +572,9 @@ describe('AdminService', () => {
     };
 
     it('should successfully use a coupon', (done) => {
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: usedCoupon, error: null })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: usedCoupon, error: null }));
 
       service.useCoupon(1, 'customer-uuid').subscribe({
         next: (coupon) => {
@@ -601,9 +594,9 @@ describe('AdminService', () => {
     });
 
     it('should set loading state during operation', (done) => {
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: usedCoupon, error: null })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: usedCoupon, error: null }));
 
       service.useCoupon(1, 'customer-uuid').subscribe({
         next: () => {
@@ -616,9 +609,9 @@ describe('AdminService', () => {
 
     it('should handle coupon not found error', (done) => {
       const notFoundError = { message: 'Coupon not found' };
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: null, error: notFoundError })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: null, error: notFoundError }));
 
       service.useCoupon(999, 'customer-uuid').subscribe({
         next: () => done.fail('should not succeed'),
@@ -633,9 +626,9 @@ describe('AdminService', () => {
 
     it('should handle already used coupon error', (done) => {
       const alreadyUsedError = { message: 'Coupon already used' };
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: null, error: alreadyUsedError })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: null, error: alreadyUsedError }));
 
       service.useCoupon(1, 'customer-uuid').subscribe({
         next: () => done.fail('should not succeed'),
@@ -649,9 +642,9 @@ describe('AdminService', () => {
 
     it('should handle expired coupon error', (done) => {
       const expiredError = { message: 'Coupon has expired' };
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: null, error: expiredError })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: null, error: expiredError }));
 
       service.useCoupon(1, 'customer-uuid').subscribe({
         next: () => done.fail('should not succeed'),
@@ -665,9 +658,9 @@ describe('AdminService', () => {
 
     it('should handle user mismatch error', (done) => {
       const mismatchError = { message: 'Coupon does not belong to this user' };
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: null, error: mismatchError })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: null, error: mismatchError }));
 
       service.useCoupon(1, 'wrong-user-id').subscribe({
         next: () => done.fail('should not succeed'),
@@ -680,9 +673,9 @@ describe('AdminService', () => {
     });
 
     it('should handle RPC failures', (done) => {
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.reject(new Error('Database unavailable'))
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.reject(new Error('Database unavailable')));
 
       service.useCoupon(1, 'customer-uuid').subscribe({
         next: () => done.fail('should not succeed'),
@@ -695,9 +688,9 @@ describe('AdminService', () => {
     });
 
     it('should handle negative coupon ID', (done) => {
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: usedCoupon, error: null })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: usedCoupon, error: null }));
 
       service.useCoupon(-1, 'customer-uuid').subscribe({
         next: () => {
@@ -713,9 +706,9 @@ describe('AdminService', () => {
     });
 
     it('should handle zero coupon ID', (done) => {
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: usedCoupon, error: null })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: usedCoupon, error: null }));
 
       service.useCoupon(0, 'customer-uuid').subscribe({
         next: () => {
@@ -730,9 +723,9 @@ describe('AdminService', () => {
     });
 
     it('should clear previous errors before new request', (done) => {
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: usedCoupon, error: null })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: usedCoupon, error: null }));
       service.error.set(new Error('Previous error'));
 
       service.useCoupon(1, 'customer-uuid').subscribe({
@@ -751,9 +744,9 @@ describe('AdminService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: errorWithoutMessage })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: errorWithoutMessage })),
           }),
         }),
       });
@@ -793,9 +786,9 @@ describe('AdminService', () => {
       supabaseClientMock.from = jasmine.createSpy('from').and.returnValue({
         select: jasmine.createSpy('select').and.returnValue({
           eq: jasmine.createSpy('eq').and.returnValue({
-            single: jasmine.createSpy('single').and.returnValue(
-              Promise.resolve({ data: null, error: dbError })
-            ),
+            single: jasmine
+              .createSpy('single')
+              .and.returnValue(Promise.resolve({ data: null, error: dbError })),
           }),
         }),
       });
@@ -832,11 +825,7 @@ describe('AdminService', () => {
     });
 
     it('should delegate UUID validation to database layer', (done) => {
-      const testUuids = [
-        'customer-uuid',
-        '550e8400-e29b-41d4-a716-446655440000',
-        'invalid-uuid',
-      ];
+      const testUuids = ['customer-uuid', '550e8400-e29b-41d4-a716-446655440000', 'invalid-uuid'];
       let completedCount = 0;
 
       testUuids.forEach((uuid) => {
@@ -876,9 +865,9 @@ describe('AdminService', () => {
     });
 
     it('should handle coupon type variations', (done) => {
-      supabaseClientMock.rpc = jasmine.createSpy('rpc').and.returnValue(
-        Promise.resolve({ data: mockCoupon, error: null })
-      );
+      supabaseClientMock.rpc = jasmine
+        .createSpy('rpc')
+        .and.returnValue(Promise.resolve({ data: mockCoupon, error: null }));
 
       const couponTypes = ['free_scoop', 'percentage', 'amount'];
       const expiryDate = '2024-12-31T23:59:59Z';

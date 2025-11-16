@@ -3,7 +3,7 @@ import { CanActivateFn, Router } from '@angular/router';
 import { Supabase } from '../services/supabase';
 import { environment } from '../environment/environment';
 
-export const loginRedirectGuard: CanActivateFn = async (route, _state) => {
+export const loginRedirectGuard: CanActivateFn = async (route) => {
   const supabase = inject(Supabase);
   const router = inject(Router);
 

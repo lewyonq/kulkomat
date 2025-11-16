@@ -22,7 +22,9 @@ describe('StampProgressComponent', () => {
 
     // Setup default mock responses
     mockStampService.getActiveStampsCount.and.returnValue(of(0));
-    mockStampService.watchActiveStampsCount.and.returnValue(watchActiveStampsCountSubject.asObservable());
+    mockStampService.watchActiveStampsCount.and.returnValue(
+      watchActiveStampsCountSubject.asObservable(),
+    );
 
     // Add signal properties separately to avoid type conflicts
     Object.defineProperty(mockStampService, 'isLoading', {
@@ -279,7 +281,7 @@ describe('StampProgressComponent', () => {
     it('should handle getActiveStampsCount error gracefully', (done) => {
       const errorSpy = spyOn(console, 'error');
       mockStampService.getActiveStampsCount.and.returnValue(
-        throwError(() => new Error('Failed to fetch'))
+        throwError(() => new Error('Failed to fetch')),
       );
 
       fixture.detectChanges();
@@ -287,7 +289,7 @@ describe('StampProgressComponent', () => {
       setTimeout(() => {
         expect(errorSpy).toHaveBeenCalledWith(
           'Failed to subscribe to stamp count updates',
-          jasmine.any(Error)
+          jasmine.any(Error),
         );
         done();
       }, 0);
@@ -349,7 +351,7 @@ describe('StampProgressComponent', () => {
     it('should handle watchActiveStampsCount error gracefully', (done) => {
       const errorSpy = spyOn(console, 'error');
       mockStampService.watchActiveStampsCount.and.returnValue(
-        throwError(() => new Error('Watch failed'))
+        throwError(() => new Error('Watch failed')),
       );
 
       fixture.detectChanges();
@@ -357,7 +359,7 @@ describe('StampProgressComponent', () => {
       setTimeout(() => {
         expect(errorSpy).toHaveBeenCalledWith(
           'Failed to subscribe to stamp count updates',
-          jasmine.any(Error)
+          jasmine.any(Error),
         );
         done();
       }, 0);
