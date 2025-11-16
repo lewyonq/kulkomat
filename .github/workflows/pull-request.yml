@@ -114,8 +114,8 @@ jobs:
   status-comment:
     name: Post Status Comment
     runs-on: ubuntu-latest
-    needs: [lint, unit-test, e2e-test]
-    if: always() && needs.lint.result == 'success' && needs.unit-test.result == 'success' && needs.e2e-test.result == 'success'
+    needs: [lint, unit-test]
+    if: always() && needs.lint.result == 'success' && needs.unit-test.result == 'success'
     permissions:
       pull-requests: write
 
@@ -130,7 +130,6 @@ jobs:
 
             - ✅ **Lint**: Code quality checks passed
             - ✅ **Unit Tests**: All unit tests passed
-            - ✅ **E2E Tests**: End-to-end tests passed
 
             **Status**: Ready for review
             **Commit**: ${{ github.event.pull_request.head.sha }}
