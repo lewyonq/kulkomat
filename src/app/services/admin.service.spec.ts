@@ -2,8 +2,6 @@ import { TestBed } from '@angular/core/testing';
 import { AdminService } from './admin.service';
 import { AuthService } from './auth.service';
 import { ProfileDTO, CouponDTO } from '../types';
-import { of, throwError } from 'rxjs';
-import { signal } from '@angular/core';
 
 describe('AdminService', () => {
   let service: AdminService;

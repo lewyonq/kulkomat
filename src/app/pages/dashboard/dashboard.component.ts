@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, computed, signal, inject } from '@angular/core';
+import { Component, OnInit, computed, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RealtimeChannel } from '@supabase/supabase-js';
 import { take } from 'rxjs/operators';
@@ -165,7 +165,7 @@ import { IceCreamFlavorsList } from '../../components/ice-cream-flavors/ice-crea
     `,
   ],
 })
-export class DashboardComponent implements OnInit, OnDestroy {
+export class DashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private couponService = inject(CouponService);
   private realtimeSubscription: RealtimeChannel | null = null;
@@ -180,8 +180,6 @@ export class DashboardComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.loadActiveCouponsCount();
   }
-
-  ngOnDestroy(): void {}
 
   /**
    * Load active coupons count

@@ -631,6 +631,7 @@ export class CouponsComponent implements OnInit, OnDestroy {
         year: 'numeric',
       })}`;
     } catch (err) {
+      console.error('Error formatting expiry date:', err);
       return `Ważny do ${dateString}`;
     }
   }

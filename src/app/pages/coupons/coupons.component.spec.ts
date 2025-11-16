@@ -3,7 +3,7 @@ import { CouponsComponent } from './coupons.component';
 import { CouponService } from '../../services/coupon.service';
 import { AuthService } from '../../services/auth.service';
 import { Router } from '@angular/router';
-import { of, throwError, BehaviorSubject } from 'rxjs';
+import { of, throwError } from 'rxjs';
 import { CouponDTO, CouponsListDTO, CouponType, CouponStatus } from '../../types';
 import { signal } from '@angular/core';
 import { RealtimeChannel, SupabaseClient } from '@supabase/supabase-js';

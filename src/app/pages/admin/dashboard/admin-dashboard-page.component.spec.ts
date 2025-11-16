@@ -3,7 +3,7 @@ import { AdminDashboardPageComponent } from './admin-dashboard-page.component';
 import { AdminService } from '../../../services/admin.service';
 import { StampService } from '../../../services/stamp.service';
 import { of, throwError } from 'rxjs';
-import { ProfileDTO, ApiErrorResponse } from '../../../types';
+import { ProfileDTO } from '../../../types';
 import { provideRouter } from '@angular/router';
 
 describe('AdminDashboardPageComponent', () => {

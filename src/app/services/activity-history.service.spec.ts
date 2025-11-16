@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { ActivityHistory } from './activity-history';
 import { AuthService } from './auth.service';
-import { of, throwError } from 'rxjs';
 import {
   ActivityHistoryDTO,
   ActivityHistoryQueryParams,
@@ -177,8 +176,6 @@ describe('ActivityHistory', () => {
     });
 
     it('should set loading state during fetch', (done) => {
-      let loadingDuringFetch = false;
-
       service.getUserActivityHistory().subscribe({
         next: () => {
           expect(service.isLoading()).toBe(false);
@@ -186,11 +183,6 @@ describe('ActivityHistory', () => {
         },
         error: done.fail,
       });
-
-      // Check if loading was set at the start (checked synchronously)
-      setTimeout(() => {
-        loadingDuringFetch = service.isLoading();
-      }, 0);
     });
 
     it('should clear previous errors before new request', (done) => {

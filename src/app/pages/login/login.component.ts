@@ -98,7 +98,9 @@ export class LoginComponent implements OnInit {
         if (msg) {
           this.error.set(msg);
         }
-      } catch {}
+      } catch {
+        this.error.set('Wystąpił błąd podczas próby logowania. Spróbuj ponownie później.');
+      }
     }
   }
 

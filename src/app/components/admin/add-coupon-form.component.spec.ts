@@ -1,8 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { AddCouponFormComponent } from './add-coupon-form.component';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { DebugElement } from '@angular/core';
-import { By } from '@angular/platform-browser';
 
 describe('AddCouponFormComponent', () => {
   let component: AddCouponFormComponent;

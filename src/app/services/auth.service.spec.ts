@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { Supabase } from './supabase';
 import { signal, computed } from '@angular/core';
 import { of, throwError } from 'rxjs';
-import { Session, User, AuthError } from '@supabase/supabase-js';
+import { Session, User } from '@supabase/supabase-js';
 import { ProfileDTO } from '../types';
 
 describe('AuthService', () => {
@@ -337,7 +337,7 @@ describe('AuthService', () => {
       try {
         await service.signOut();
       } catch (error) {
-        // Expected to throw
+        console.error('Sign out error:', error);
       }
 
       // Note: In current implementation, navigation happens after signOut completes

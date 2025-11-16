@@ -1,4 +1,4 @@
-import { Component, ChangeDetectionStrategy, output, input, OnInit, signal } from '@angular/core';
+import { Component, ChangeDetectionStrategy, output, input, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -193,7 +193,9 @@ export class AddCouponFormComponent implements OnInit {
   couponForm!: FormGroup;
   private submitted = signal<boolean>(false);
 
-  constructor(private fb: FormBuilder) {}
+  private fb = inject(FormBuilder);
+
+  constructor() {}
 
   ngOnInit(): void {
     this.initializeForm();

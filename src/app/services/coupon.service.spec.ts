@@ -2,7 +2,6 @@ import { TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { CouponService } from './coupon.service';
 import { AuthService } from './auth.service';
 import { CouponDTO, CouponsListDTO, AddCouponFormViewModel } from '../types';
-import { of, throwError } from 'rxjs';
 import { environment } from '../environment/environment';
 
 describe('CouponService', () => {

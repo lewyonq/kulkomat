@@ -387,7 +387,7 @@ describe('Supabase', () => {
 
     it('should return null when no error in URL', () => {
       (window as any).URLSearchParams = class {
-        constructor(search: string) {}
+        constructor() {}
         get() {
           return null;
         }
@@ -399,7 +399,7 @@ describe('Supabase', () => {
 
     it('should return sanitized error description when error exists', () => {
       (window as any).URLSearchParams = class {
-        constructor(search: string) {}
+        constructor() {}
         get(key: string) {
           if (key === 'error') return 'access_denied';
           if (key === 'error_description') return 'User cancelled login';
@@ -416,7 +416,7 @@ describe('Supabase', () => {
 
     it('should sanitize malicious error description to prevent XSS', () => {
       (window as any).URLSearchParams = class {
-        constructor(search: string) {}
+        constructor() {}
         get(key: string) {
           if (key === 'error') return 'test';
           if (key === 'error_description') return '<script>alert("xss")</script>';
@@ -432,7 +432,7 @@ describe('Supabase', () => {
 
     it('should return default message when error exists but no description', () => {
       (window as any).URLSearchParams = class {
-        constructor(search: string) {}
+        constructor() {}
         get(key: string) {
           if (key === 'error') return 'unknown_error';
           return null;
@@ -445,7 +445,7 @@ describe('Supabase', () => {
 
     it('should handle history.replaceState failure gracefully', () => {
       (window as any).URLSearchParams = class {
-        constructor(search: string) {}
+        constructor() {}
         get(key: string) {
           if (key === 'error') return 'test';
           if (key === 'error_description') return 'Error';

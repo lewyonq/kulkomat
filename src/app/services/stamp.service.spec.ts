@@ -1,7 +1,6 @@
 import { TestBed } from '@angular/core/testing';
 import { StampService } from './stamp.service';
 import { AuthService } from './auth.service';
-import { of, throwError } from 'rxjs';
 
 describe('StampService', () => {
   let service: StampService;
