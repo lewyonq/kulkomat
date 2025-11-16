@@ -1,5 +1,10 @@
 import { test, expect } from '@playwright/test';
-import { createMockCoupon, mockGetCoupons, mockUseCoupon } from './helpers/mock-api';
+import {
+  createMockCoupon,
+  mockGetCoupons,
+  mockUseCoupon,
+  setupMockRoutes,
+} from './helpers/mock-api';
 
 /**
  * Testy flow kuponów z mockowanym API
@@ -9,38 +14,67 @@ import { createMockCoupon, mockGetCoupons, mockUseCoupon } from './helpers/mock-
  */
 test.describe('Coupon Usage Flow (with API mocks)', () => {
   test.beforeEach(async ({ page }) => {
-    // Mockuj endpoint profilu użytkownika (potrzebny dla auth guard)
-    // Supabase REST API zwraca tablicę, nawet dla .single()
-    await page.route('**/rest/v1/profiles*', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify([
-          {
-            id: '00000000-0000-0000-0000-000000000001',
-            short_id: 'TEST123',
-            stamp_count: 5,
-            created_at: new Date().toISOString(),
-          },
-        ]),
-      });
-    });
+    // Setup route handlers PRZED przejściem do strony
+    await setupMockRoutes(page);
 
-    // Przed każdym testem przejdź do strony głównej
+    // Przejdź do strony głównej
     await page.goto('/');
+
+    // Ustaw mockową sesję w localStorage
+    // Używamy environment variable SUPABASE_URL aby wygenerować prawidłowy klucz
+    const supabaseUrl = process.env.SUPABASE_URL;
+    if (supabaseUrl) {
+      try {
+        const url = new URL(supabaseUrl);
+        const projectRef = url.hostname.split('.')[0];
+        const storageKey = `sb-${projectRef}-auth-token`;
+
+        await page.evaluate(
+          ({ key, value }) => {
+            window.localStorage.setItem(key, value);
+          },
+          {
+            key: storageKey,
+            value: JSON.stringify({
+              access_token: 'mock-test-access-token',
+              token_type: 'bearer',
+              expires_in: 315360000,
+              expires_at: 2050000000,
+              refresh_token: 'mock-test-refresh-token',
+              user: {
+                id: '00000000-0000-0000-0000-000000000001',
+                aud: 'authenticated',
+                role: 'authenticated',
+                email: 'test@kulkomat.test',
+              },
+            }),
+          },
+        );
+
+        // Reload aby załadować sesję z localStorage
+        await page.reload();
+      } catch (e) {
+        console.warn('Could not setup mock session:', e);
+      }
+    } else {
+      console.warn(
+        'SUPABASE_URL not set - tests may fail. Set it in your environment or .env file.',
+      );
+    }
+
     await page.waitForLoadState('networkidle');
   });
 
   test('should display active coupons and allow using them', async ({ page }) => {
     // 1. Przygotuj mockowe dane
     const activeCoupon = createMockCoupon({
-      id: 'test-coupon-1',
+      id: 1,
       type: 'free_scoop',
       status: 'active',
     });
 
     const usedCoupon = createMockCoupon({
-      id: 'test-coupon-2',
+      id: 2,
       type: 'percentage',
       value: 20,
       status: 'used',

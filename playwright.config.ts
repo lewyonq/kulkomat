@@ -28,6 +28,7 @@ export default defineConfig({
       testMatch: /.*\.setup\.ts/,
     },
 
+    // Projekt dla testów z prawdziwym backendem (wymaga setupu)
     {
       name: 'chromium',
       use: {
@@ -36,6 +37,17 @@ export default defineConfig({
         storageState: 'playwright/.auth/user.json',
       },
       dependencies: ['setup'], // Uruchom testy chromium PO zakończeniu setupu
+      testIgnore: /.*with-mocks\.spec\.ts/, // Ignoruj testy z mockami
+    },
+
+    // Projekt dla testów z mockami (NIE wymaga setupu ani prawdziwego backendu)
+    {
+      name: 'chromium-mocks',
+      use: {
+        ...devices['Desktop Chrome'],
+        // NIE używamy storageState - localStorage jest ustawiany dynamicznie w testach
+      },
+      testMatch: /.*with-mocks\.spec\.ts/, // Tylko testy z mockami
     },
   ],
 
