@@ -23,7 +23,6 @@ function getSupabaseStorageKey(supabaseUrl: string): string {
 }
 
 setup('authenticate', async ({ page }) => {
-  // Wczytaj dane mockowej sesji OAuth2
   const authData = JSON.parse(fs.readFileSync(mockAuthFile, 'utf-8'));
 
   // Pobierz Supabase URL ze zmiennej środowiskowej
