@@ -112,11 +112,19 @@ For CI/CD workflows to run properly, configure the following secrets in your Git
 
 - `SUPABASE_URL`: Your Supabase project URL (e.g., `https://your-project.supabase.co`)
 - `SUPABASE_ANON_KEY`: Your Supabase anonymous key
-- `AUTH_REDIRECT_URI`: OAuth redirect URI for authentication
+- `AUTH_REDIRECT_URI`: OAuth redirect URI for authentication (e.g., `https://your-domain.com/auth/callback`)
 
-These secrets are used by:
-- **Playwright workflow**: E2E tests require `SUPABASE_URL` to generate correct localStorage keys
-- **Pull Request workflow**: Full CI pipeline including E2E tests with environment configuration
+### How CI/CD Works
+
+Both workflows (`playwright.yml` and `pull-request.yml`) follow this pattern:
+
+1. **Create environment file** from secrets (since `environment.ts` is gitignored)
+2. **Build the application** (`npm run build`)
+3. **Start HTTP server** on port 4200 in background
+4. **Run Playwright tests** with `SUPABASE_URL` environment variable
+5. **Stop server** and upload test reports
+
+This ensures tests run against a production-like build in CI/CD.
 
 ## License
 

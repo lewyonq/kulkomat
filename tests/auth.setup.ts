@@ -37,7 +37,6 @@ setup('authenticate', async ({ page }) => {
 
   // Wygeneruj klucz localStorage na podstawie URL
   const storageKey = getSupabaseStorageKey(supabaseUrl);
-  console.log(`Setting up authentication with storage key: ${storageKey}`);
 
   // Przejdź do strony głównej aplikacji
   await page.goto('/');
@@ -56,8 +55,6 @@ setup('authenticate', async ({ page }) => {
   // Poczekaj na załadowanie strony i upewnij się, że użytkownik jest zalogowany
   // Sprawdź czy link do kuponów jest widoczny - to oznacza że użytkownik jest zalogowany
   await expect(page.getByRole('link', { name: /przejdź do kuponów/i })).toBeVisible({ timeout: 10000 });
-
-  console.log('Authentication setup complete - user is logged in');
 
   // Zapisz stan sesji (localStorage + cookies) do pliku authFile
   // Ten plik będzie używany przez wszystkie testy
