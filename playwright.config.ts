@@ -46,10 +46,9 @@ export default defineConfig({
       testMatch: /.*with-mocks\.spec\.ts/,
       use: {
         ...devices['Desktop Chrome'],
-        // Użyj zapisanego stanu sesji. To nas loguje!
-        storageState: 'playwright/.auth/user.json',
+        // Nie używamy storageState - wszystko jest mockowane
       },
-      dependencies: ['setup'], // Uruchom testy PO zakończeniu setupu
+      // Brak dependencies - testy działają niezależnie dzięki mockom
     },
   ],
 

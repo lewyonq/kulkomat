@@ -1,5 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { createMockCoupon, mockGetCoupons, mockUseCoupon } from './helpers/mock-api';
+import * as fs from 'fs';
+import * as path from 'path';
 
 /**
  * Testy flow kuponów z mockowanym API
@@ -26,8 +28,30 @@ test.describe('Coupon Usage Flow (with API mocks)', () => {
       });
     });
 
-    // Przed każdym testem przejdź do strony głównej
+    // Ustaw mockową sesję w localStorage PRZED pierwszym załadowaniem strony
+    const mockAuthFile = path.join(__dirname, 'auth/user.json');
+    const authData = JSON.parse(fs.readFileSync(mockAuthFile, 'utf-8'));
+
+    // Pobierz Supabase URL ze zmiennej środowiskowej i wygeneruj klucz
+    const supabaseUrl = process.env.SUPABASE_URL || 'http://localhost:54321';
+    const projectRef = supabaseUrl.includes('supabase.co')
+      ? new URL(supabaseUrl).hostname.split('.')[0]
+      : 'localhost';
+    const storageKey = `sb-${projectRef}-auth-token`;
+
+    // Najpierw idź do strony głównej aby ustawić origin dla localStorage
     await page.goto('/');
+
+    // Teraz ustaw localStorage
+    await page.evaluate(
+      ({ key, value }) => {
+        window.localStorage.setItem(key, value);
+      },
+      { key: storageKey, value: JSON.stringify(authData) },
+    );
+
+    // Odśwież stronę aby aplikacja wczytała sesję z localStorage
+    await page.reload();
     await page.waitForLoadState('networkidle');
   });
 
