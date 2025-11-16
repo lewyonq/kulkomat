@@ -9,26 +9,8 @@ import { createMockCoupon, mockGetCoupons, mockUseCoupon } from './helpers/mock-
  */
 test.describe('Coupon Usage Flow (with API mocks)', () => {
   test.beforeEach(async ({ page }) => {
-    // Mockuj endpoint profilu użytkownika (potrzebny dla auth guard)
-    // Supabase REST API zwraca tablicę, nawet dla .single()
-    await page.route('**/rest/v1/profiles*', async (route) => {
-      await route.fulfill({
-        status: 200,
-        contentType: 'application/json',
-        body: JSON.stringify([
-          {
-            id: '00000000-0000-0000-0000-000000000001',
-            short_id: 'TEST123',
-            stamp_count: 5,
-            created_at: new Date().toISOString(),
-          },
-        ]),
-      });
-    });
-
     // Przed każdym testem przejdź do strony głównej
     await page.goto('/');
-    await page.waitForLoadState('networkidle');
   });
 
   test('should display active coupons and allow using them', async ({ page }) => {
@@ -54,10 +36,9 @@ test.describe('Coupon Usage Flow (with API mocks)', () => {
 
     // 4. Przejdź do strony kuponów
     await page.goto('/coupons');
-    await page.waitForLoadState('networkidle');
 
-    // 5. Poczekaj na załadowanie kuponów - czekaj na pierwszy element
-    await page.locator('.coupon-card').first().waitFor({ state: 'visible', timeout: 10000 });
+    // 5. Poczekaj na załadowanie kuponów
+    await page.waitForTimeout(1000);
 
     // 6. Sprawdź czy oba kupony są widoczne
     const couponCards = page.locator('.coupon-card');
@@ -95,13 +76,12 @@ test.describe('Coupon Usage Flow (with API mocks)', () => {
 
     // 2. Przejdź do strony kuponów
     await page.goto('/coupons');
-    await page.waitForLoadState('networkidle');
 
-    // 3. Poczekaj na załadowanie - czekaj na empty state
-    const emptyState = page.locator('.empty-state');
-    await emptyState.waitFor({ state: 'visible', timeout: 10000 });
+    // 3. Poczekaj na załadowanie
+    await page.waitForTimeout(1000);
 
     // 4. Sprawdź pusty stan
+    const emptyState = page.locator('.empty-state');
     await expect(emptyState).toBeVisible();
 
     // 5. Sprawdź tekst
@@ -126,10 +106,7 @@ test.describe('Coupon Usage Flow (with API mocks)', () => {
 
     // 3. Przejdź do strony kuponów
     await page.goto('/coupons');
-    await page.waitForLoadState('networkidle');
-
-    // 3.5 Poczekaj na załadowanie kuponów
-    await page.locator('.coupon-card').first().waitFor({ state: 'visible', timeout: 10000 });
+    await page.waitForTimeout(1000);
 
     // 4. Sprawdź że jest dokładnie 1 aktywny (klikalny) kupon
     const clickableCoupons = page.locator('.coupon-card.clickable');
@@ -147,10 +124,7 @@ test.describe('Coupon Usage Flow (with API mocks)', () => {
 
     // 2. Przejdź do kuponów
     await page.goto('/coupons');
-    await page.waitForLoadState('networkidle');
-
-    // 2.5 Poczekaj na kupon
-    await page.locator('.coupon-card.clickable').first().waitFor({ state: 'visible', timeout: 10000 });
+    await page.waitForTimeout(1000);
 
     // 3. Kliknij na kupon
     await page.locator('.coupon-card.clickable').first().click();
